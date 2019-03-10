@@ -6,17 +6,12 @@ About MCRatings
 
 MCRatings is a companion tool for JRiver Media Center to help tag a movie collection. It retrieves IMDb, Metacritic and Rotten Tomatoes movie ratings, along with other movie metadata such as Actors, Director, Studios, etc from Open Movie Database (OMDb). You can decide what changes to keep/skip, and which JRiver fields to update.
 
-<br>
-<br>
-
 [Features](#Features)<br>
 [Requirements](#Requirements)<br>
 [Quick Start](#Quick-Start)<br>
 [User Guide](https://github.com/zybexXL/MCRatings/wiki)<br>
 [Screenshots](https://github.com/zybexXL/MCRatings/wiki/Screenshots)<br>
 [Download](https://github.com/zybexXL/MCRatings/releases/latest)<br>
-
-<br>
 
 *Note: MCRatings was previously called JRatings*
 
