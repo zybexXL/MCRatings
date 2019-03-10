@@ -666,20 +666,18 @@ namespace MCRatings
 
             var bar = new ProgressUI("Saving changes", SaveChanges, changed);
             bar.progress.totalItems = changed.Count;
+            bar.ShowDialog();
 
-            if (bar.ShowDialog() == DialogResult.OK && bar.progress.result == true)
-            {
-                string msg = $"{bar.progress.success} saved";
-                if (bar.progress.fail > 0) msg += $", {bar.progress.fail} failed";
-                if (bar.progress.skip > 0) msg += $", {bar.progress.skip} skipped";
+            string msg = $"{bar.progress.success} saved";
+            if (bar.progress.fail > 0) msg += $", {bar.progress.fail} failed";
+            if (bar.progress.skip > 0) msg += $", {bar.progress.skip} skipped";
 
-                SetStatus(msg);
-                UpdateDataGrid(bar.progress.startTime);
-                updateModifiedCount();
-                if (bar.progress.fail > 0)
-                    MessageBox.Show($"Error saving changed movies to JRiver!\n{bar.progress.fail} movies still have unsaved changes.",
-                        "Save failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            SetStatus(msg);
+            UpdateDataGrid(bar.progress.startTime);
+            updateModifiedCount();
+            if (bar.progress.fail > 0)
+                MessageBox.Show($"Error saving changed movies to JRiver!\n{bar.progress.fail} movies still have unsaved changes.",
+                    "Save failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             gridMovies.Focus();
         }
@@ -705,6 +703,7 @@ namespace MCRatings
 
                 if (jrAPI.SaveMovie(movie))
                 {
+                    movie.clearUpdates();
                     movie[AppField.Status] = "saved";
                     progress.success++;
                 }
@@ -1097,10 +1096,7 @@ namespace MCRatings
                 {
                     int mod = m.isModified(f, row.Cells[(int)f].Value as string);
                     if (mod > 0)
-                    {
                         row.Cells[(int)f].Style.BackColor = mod == 1 ? getColor(CellColor.Overwrite) : getColor(CellColor.NewValue);
-                        row.Cells[(int)f].Style.ForeColor = Color.Black;
-                    }
                     else if (hasStatus && m.isUpdated(f))
                         row.Cells[(int)f].Style.ForeColor = Color.Green;
                     //if (hasStatus && !m.isUpdated(f) && !string.IsNullOrEmpty(row.Cells[(int)f].Value as string) && f != AppField.Imported && f != AppField.File)
