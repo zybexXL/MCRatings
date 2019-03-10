@@ -416,7 +416,7 @@
             this.linkLabel4.Size = new System.Drawing.Size(73, 15);
             this.linkLabel4.TabIndex = 5;
             this.linkLabel4.TabStop = true;
-            this.linkLabel4.Tag = "https://yabb.jriver.com/interact/index.php/topic,119743.0.html";
+            this.linkLabel4.Tag = "https://yabb.jriver.com/interact/index.php/topic,119792.0.html";
             this.linkLabel4.Text = "JRiver forum";
             this.linkLabel4.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
             // 
