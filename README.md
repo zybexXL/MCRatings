@@ -16,6 +16,10 @@ MCRatings is a companion tool for JRiver Media Center to help tag a movie collec
 
 <br>
 
+*Note: MCRatings was previously called JRatings*
+
+<br>
+
 Features
 ------
 This is what **MCRatings** can do for you:
