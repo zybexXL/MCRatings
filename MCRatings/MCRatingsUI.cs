@@ -1096,17 +1096,9 @@ namespace MCRatings
                 {
                     int mod = m.isModified(f, row.Cells[(int)f].Value as string);
                     if (mod > 0)
-                    {
                         row.Cells[(int)f].Style.BackColor = mod == 1 ? getColor(CellColor.Overwrite) : getColor(CellColor.NewValue);
-                        row.Cells[(int)f].Style.ForeColor = SystemColors.ControlText;
-                    }
                     else if (mod == 0 && hasStatus && m.isUpdated(f))
-                    {
                         row.Cells[(int)f].Style.ForeColor = Color.Green;
-                        row.Cells[(int)f].Style.BackColor = f == AppField.IMDbID ? getColor(CellColor.ColumnEdit) : getColor(CellColor.Default);
-                    }
-                    //if (hasStatus && !m.isUpdated(f) && !string.IsNullOrEmpty(row.Cells[(int)f].Value as string) && f != AppField.Imported && f != AppField.File)
-                    //    row.Cells[(int)f].Style.BackColor = Color.FromArgb(224, 224, 224);
                     else
                         row.Cells[(int)f].Style = null;
                 }
