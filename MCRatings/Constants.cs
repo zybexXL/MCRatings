@@ -87,8 +87,8 @@ namespace MCRatings
 
         public static string FileCleanup =
             "proper remastered rerip remux repack " +
-            " unrated extended theatrical uncut" +
-            " dubbed subbed aka" +
+            " unrated extended theatrical uncut director's" +
+            " dubbed subbed aka cd1 cd2 " +
             " webdl web-dl webrip web-rip dvd dvdrip dvd-rip hdtv hdrip hd-rip bdrip brrip br-rip bluray blu-ray" +
             " xvid divx h264 x264 hevc h265 x265" +
             " 2160p 1440p 1080p 720p 480p 576p" +

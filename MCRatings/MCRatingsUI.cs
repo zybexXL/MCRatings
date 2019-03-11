@@ -1096,9 +1096,15 @@ namespace MCRatings
                 {
                     int mod = m.isModified(f, row.Cells[(int)f].Value as string);
                     if (mod > 0)
+                    {
                         row.Cells[(int)f].Style.BackColor = mod == 1 ? getColor(CellColor.Overwrite) : getColor(CellColor.NewValue);
+                        row.Cells[(int)f].Style.ForeColor = Color.Empty;   // inherit
+                    }
                     else if (mod == 0 && hasStatus && m.isUpdated(f))
+                    {
                         row.Cells[(int)f].Style.ForeColor = Color.Green;
+                        row.Cells[(int)f].Style.BackColor = Color.Empty;   // inherit
+                    }
                     else
                         row.Cells[(int)f].Style = null;
                 }

@@ -204,8 +204,8 @@ namespace MCRatings
             string fyear = this[AppField.FYear];
             matchTitle = FuzzyEquals(FTitle, Title);
             int.TryParse(Year, out int ynum);
-            matchYear = fyear == Year;
-            matchYear1 = fyear == Year || fyear == (ynum + 1).ToString() || fyear == (ynum - 1).ToString();
+            matchYear = (fyear ?? "") == (Year ?? "");
+            matchYear1 = matchYear || fyear == (ynum + 1).ToString() || fyear == (ynum - 1).ToString();
             return matchTitle && matchYear;
         }
 
