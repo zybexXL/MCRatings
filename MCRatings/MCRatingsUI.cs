@@ -135,7 +135,7 @@ namespace MCRatings
                             value = textbox.SelectedText;
                     }
                     if (!string.IsNullOrEmpty(value))
-                        Clipboard.SetText(value);
+                        Clipboard.SetText(value.Trim());
                     return true;
                 }
             return base.ProcessCmdKey(ref msg, keyData);
@@ -403,6 +403,12 @@ namespace MCRatings
                     row[(int)AppField.Selected] = m.selected;
                     foreach (AppField c in Enum.GetValues(typeof(AppField)))
                         if ((int)c > 1) row[(int)c] = m[c];     // skip first 2
+
+                    // sortable numeric columns
+                    row[(int)AppField.IMDbVotes] = (m[AppField.IMDbVotes] ?? "").PadLeft(10);
+                    row[(int)AppField.RottenTomatoes] = (m[AppField.RottenTomatoes] ?? "").PadLeft(3);
+                    row[(int)AppField.Metascore] = (m[AppField.Metascore] ?? "").PadLeft(3);
+                    row[(int)AppField.Runtime] = (m[AppField.Runtime] ?? "").PadLeft(3);
                 }
             }
             gridMovies.Refresh();
@@ -432,6 +438,12 @@ namespace MCRatings
                 values[(int)AppField.Selected] = m.selected;
                 foreach (AppField c in Enum.GetValues(typeof(AppField)))
                     if ((int)c > 1) values[(int)c] = m[c];     // skip first 2
+
+                // sortable numeric columns
+                values[(int)AppField.IMDbVotes] = (m[AppField.IMDbVotes] ?? "").PadLeft(10);
+                values[(int)AppField.RottenTomatoes] = (m[AppField.RottenTomatoes] ?? "").PadLeft(3);
+                values[(int)AppField.Metascore] = (m[AppField.Metascore] ?? "").PadLeft(3);
+                values[(int)AppField.Runtime] = (m[AppField.Runtime] ?? "").PadLeft(3);
                 dt.Rows.Add(values);
             }
 
@@ -1094,7 +1106,7 @@ namespace MCRatings
             {
                 if (f >= AppField.Title)
                 {
-                    int mod = m.isModified(f, row.Cells[(int)f].Value as string);
+                    int mod = m.isModified(f, m[f]);
                     if (mod > 0)
                     {
                         row.Cells[(int)f].Style.BackColor = mod == 1 ? getColor(CellColor.Overwrite) : getColor(CellColor.NewValue);
@@ -1172,7 +1184,7 @@ namespace MCRatings
             {
                 string text = gridMovies[e.ColumnIndex, e.RowIndex].Value?.ToString();
                 if (!string.IsNullOrEmpty(text))
-                    Clipboard.SetText(text);
+                    Clipboard.SetText(text.Trim());
             }
         }
 

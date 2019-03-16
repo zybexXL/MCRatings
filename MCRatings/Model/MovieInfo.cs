@@ -231,17 +231,23 @@ namespace MCRatings
             if (string.IsNullOrWhiteSpace(title))
                 return null;
 
+            // handle "<original_title>.AKA.<english_title>" common format - keep english title
+            Match aka = Regex.Match(title, @".*\WAKA\W(.*)", RegexOptions.IgnoreCase);
+            if (aka.Success)
+                title = aka.Groups[1].Value;
+
+            // merge embedded and user provided tags, generate regex
             customtags = customtags ?? "";
             string tags = $"{Constants.FileCleanup} {customtags}".Trim();
-            //tags = Regex.Escape(tags.Replace(@"\r\n", " "));
             tags = Regex.Replace(tags.Trim(), @"\s+", "|").Replace("||", "|").Trim('|');
             tags = $@"((?:\W|^)({tags})(?:\W|$))";
-            //tags = $"({tags})";
 
+            // remove dots and underscores, trim trailing/starting parenthesis
             title = Regex.Replace(title, @"[\._]", " ").Trim();
             title = Regex.Replace(title, @"[\s\[\]\(\)\{\}\-]+$", "");
             title = Regex.Replace(title, @"^[\s\[\]\(\)\{\}\-]+", "");
 
+            // recursively remove preceding tags, keep title before trailing tags
             var t = Regex.Match(title, tags, RegexOptions.IgnoreCase);
             if (t.Success)
             {
@@ -250,7 +256,8 @@ namespace MCRatings
                     return CleanTitle(title.Substring(t.Groups[1].Length));
                 title = title.Substring(0, split);
             }
-            //title = Regex.Replace(FTitle, @"[\._]", " ");
+
+            // trim trailing/starting parenthesis after cleanup
             title = Regex.Replace(title, @"[\s\[\]\(\)\{\}\-]+$", "");
             title = Regex.Replace(title, @"^[\s\[\]\(\)\{\}\-]+", "");
             return title;

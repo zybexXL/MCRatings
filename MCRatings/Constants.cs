@@ -85,14 +85,16 @@ namespace MCRatings
             { AppField.Filter, new FieldInfo("Filter", true, 50, 0) },          // hidden
         };
 
+        // items used for filename cleanup
+        // dots and underscores are removed from filename before this step, so these particules should not include them
         public static string FileCleanup =
-            "proper remastered rerip remux repack " +
-            " unrated extended theatrical uncut director's" +
-            " dubbed subbed aka cd1 cd2 " +
-            " webdl web-dl webrip web-rip dvd dvdrip dvd-rip hdtv hdrip hd-rip bdrip brrip br-rip bluray blu-ray" +
+            "proper remastered rerip remux repack" +
+            " unrated extended theatrical uncut directors collectors" +
+            " dubbed subbed cd1 cd2" +
+            " webdl web-dl webrip web-rip dvd dvdscr dvdrip dvd-rip hdtv hdrip hd-rip bdrip brrip br-rip bluray blu-ray" +
             " xvid divx h264 x264 hevc h265 x265" +
-            " 2160p 1440p 1080p 720p 480p 576p" +
-            " dts ac3 ac5 atmos truehd true-hd hdr mp3 flac";
+            " 2160p 1440p 1080p 720p 480p 576p imax" +
+            " dts ac3 ac5 dd5 atmos truehd true-hd hdr mp3 flac";
         //" german italian french english japanese chinese spanish portuguese";
 
         public static List<SoundBite> SoundBank = new List<SoundBite>()
