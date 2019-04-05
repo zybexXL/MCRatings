@@ -62,6 +62,7 @@
             this.label13 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -477,6 +478,19 @@
             this.label15.TabIndex = 8;
             this.label15.Text = "-";
             // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label16.ForeColor = System.Drawing.Color.Red;
+            this.label16.Location = new System.Drawing.Point(260, 94);
+            this.label16.Margin = new System.Windows.Forms.Padding(3);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(67, 15);
+            this.label16.TabIndex = 0;
+            this.label16.Text = "test version";
+            this.label16.Visible = false;
+            // 
             // About
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -501,6 +515,7 @@
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnUpdate);
             this.Controls.Add(this.label5);
+            this.Controls.Add(this.label16);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.label11);
@@ -566,5 +581,6 @@
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label label16;
     }
 }

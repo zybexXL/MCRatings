@@ -21,6 +21,7 @@ namespace MCRatings
         public List<JRFieldMap> Fields = new List<JRFieldMap>();
         public int CacheDays;
         public uint[] CellColors;
+        public bool FastStart = false;
 
         [XmlIgnore]
         public Dictionary<AppField, JRFieldMap> FieldMap = new Dictionary<AppField, JRFieldMap>();
@@ -54,6 +55,7 @@ namespace MCRatings
                     settings.APIKeys = saved.APIKeys;
                     settings.valid = saved.valid;
                     settings.CacheDays = saved.CacheDays;
+                    settings.FastStart = saved.FastStart;
                     settings.Silent = saved.Silent;
                     settings.FileCleanup = saved.FileCleanup?.Replace("\n","\r\n");
 
@@ -99,6 +101,7 @@ namespace MCRatings
             FileCleanup = "";
             Silent = false;
             CacheDays = Constants.MaxCacheDays;
+            FastStart = false;
             // colors are NOT reset here
         }
     }

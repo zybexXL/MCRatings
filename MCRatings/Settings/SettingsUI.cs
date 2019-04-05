@@ -66,6 +66,7 @@ namespace MCRatings
                     if (show) MessageBox.Show($"Please enter a valid field name for {Constants.ViewColumnInfo[field].JRField}",
                         "Empty field", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     ok = false;
+                    //show = false;
                 }
                 else if (enabled && !jr.Fields.ContainsKey(value.ToLower()))
                 {
@@ -73,6 +74,7 @@ namespace MCRatings
                     if (show) MessageBox.Show($"Field '{value}' doesn't exist in JRiver, please fix or disable the field.",
                         $"Invalid '{Constants.ViewColumnInfo[field].JRField}' field name", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     ok = false;
+                    //show = false;
                 }
             }
             return ok;
@@ -95,6 +97,7 @@ namespace MCRatings
                     Program.settings.FieldMap[field] = new JRFieldMap(field, value, enabled, overwrite);
                 }
                 Program.settings.Silent = !audio;
+                Program.settings.FastStart = chkFastStart.Checked;
                 Program.settings.FileCleanup = txtCleanup.Text?.Trim();
                 Program.settings.APIKeys = txtAPIKeys.Text?.Trim();
                 Program.settings.Save();
@@ -114,6 +117,7 @@ namespace MCRatings
             txtCleanup.Text = settings.FileCleanup;
             txtAPIKeys.Text = settings.APIKeys;
             audio = !settings.Silent;
+            chkFastStart.Checked = settings.FastStart;
             btnAudio.Image = audio ? Properties.Resources.speaker_on : Properties.Resources.speaker_off;
         }
 
@@ -225,6 +229,22 @@ namespace MCRatings
             dirty = true;
             audio = !audio;
             btnAudio.Image = audio ? Properties.Resources.speaker_on : Properties.Resources.speaker_off;
+        }
+
+        private void fastStart_CheckedChanged(object sender, EventArgs e)
+        {
+            dirty = true;
+        }
+
+        private void linkHelp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            try
+            {
+                string url = ((Control)sender).Tag as string;
+                if (!string.IsNullOrEmpty(url))
+                    Process.Start(url);
+            }
+            catch { }
         }
     }
 }

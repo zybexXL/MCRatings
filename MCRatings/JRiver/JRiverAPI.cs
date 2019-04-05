@@ -1,6 +1,7 @@
 ﻿using MediaCenter;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -92,34 +93,52 @@ namespace MCRatings
             return Fields;
         }
 
-        public List<JRiverPlaylist> getPlaylists()
+        public IEnumerable<JRiverPlaylist> getPlaylists()
         {
             Playlists = new List<JRiverPlaylist>();
             try
             {
-                var iList = jr.GetPlaylists();
+                IMJPlaylistsAutomation iList = jr.GetPlaylists();
                 int count = iList.GetNumberPlaylists();
                 for (int i = 0; i < count; i++)
                 {
-                    var list = iList.GetPlaylist(i);
-                    var iFiles = list.GetFiles();
-                    iFiles.Filter(Constants.JRFileFilter);
-                    int fcount = iFiles.GetNumberFiles();
-                    if (fcount > 0 && !Regex.IsMatch(list.Name, @"\d:\d\d"))
-                        Playlists.Add(new JRiverPlaylist(list.GetID(), list.Name, fcount, list.Path));
+                    IMJPlaylistAutomation list = iList.GetPlaylist(i);
+
+                    if (list.Get("type") == "1") continue;      // 0 = playlist, 1 = playlist group, 2 = smartlist
+                    string name = list.Name ?? "playlist";
+
+                    if (Regex.IsMatch(name, @"^audio|podcast|\d:\d\d", RegexOptions.IgnoreCase))
+                        continue;
+
+                    int fcount = -1;
+                    if (!Program.settings.FastStart)
+                    {
+                        IMJFilesAutomation iFiles = list.GetFiles();
+                        iFiles.Filter(Constants.JRFileFilter);
+                        fcount = iFiles.GetNumberFiles();
+                    }
+
+                    if (Program.settings.FastStart || fcount > 0)
+                    {
+                        var playlist = new JRiverPlaylist(list.GetID(), name, fcount);
+                        Playlists.Add(playlist);
+                        yield return playlist;
+                    }
                 }
             }
-            catch { }
-            Playlists = Playlists.OrderBy(p => p.Name.ToLower()).ToList();
-            return Playlists;
+            finally
+            {
+                Playlists = Playlists.OrderBy(p => p.Name.ToLower()).ToList();
+            }
         }
 
         public IEnumerable<MovieInfo> getMovies(JRiverPlaylist playlist)
         {
-            var pl = jr.GetPlaylistByID(playlist.ID);
-            var files = pl.GetFiles();
+            IMJPlaylistAutomation pl = jr.GetPlaylistByID(playlist.ID);
+            IMJFilesAutomation files = pl.GetFiles();
             files.Filter(Constants.JRFileFilter);
             int num = files.GetNumberFiles();
+            playlist.Filecount = num;
             for (int i = 0; i < num; i++)
                 yield return getMovieInfo(files.GetFile(i));
         }

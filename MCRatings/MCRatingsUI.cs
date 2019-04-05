@@ -258,6 +258,7 @@ namespace MCRatings
             else
                 comboLists.SelectedItem = jrAPI.Playlists.FirstOrDefault();
 
+            currentPlaylist = comboLists.SelectedIndex;
             return true;
         }
 
@@ -271,7 +272,14 @@ namespace MCRatings
 
             progress.subtitle = "Reading playlists";
             progress.Update(true);
-            jrAPI.getPlaylists();
+            foreach (var playlist in jrAPI.getPlaylists())
+            {
+                if (!Program.settings.FastStart)
+                {
+                    progress.subtitle = $"Reading playlist - {playlist.Name}";
+                    progress.Update(true);
+                }
+            }
 
             progress.subtitle = "Reading fields";
             progress.Update();
@@ -297,15 +305,18 @@ namespace MCRatings
                 args.Graphics.DrawString(item.Name, args.Font, sb, r1);
             }
 
-            string txt = item.Filecount.ToString();
-            SizeF size = args.Graphics.MeasureString(txt, args.Font);
-            Rectangle r2 = args.Bounds;
-            r2.X = args.Bounds.Width - (int)size.Width - 1;
-            r2.Width = (int)size.Width + 1;
-
-            using (SolidBrush sb = new SolidBrush(args.State.HasFlag(DrawItemState.Selected) ? Color.White : Color.DarkCyan))
+            if (item.Filecount >= 0)
             {
-                args.Graphics.DrawString(item.Filecount.ToString(), args.Font, sb, r2);
+                string txt = item.Filecount.ToString();
+                SizeF size = args.Graphics.MeasureString(txt, args.Font);
+                Rectangle r2 = args.Bounds;
+                r2.X = args.Bounds.Width - (int)size.Width - 1;
+                r2.Width = (int)size.Width + 1;
+
+                using (SolidBrush sb = new SolidBrush(args.State.HasFlag(DrawItemState.Selected) ? Color.White : Color.DarkCyan))
+                {
+                    args.Graphics.DrawString(item.Filecount.ToString(), args.Font, sb, r2);
+                }
             }
         }
 
@@ -371,7 +382,8 @@ namespace MCRatings
             {
                 if (progress.cancelled)
                     return;
-
+                if (progress.totalItems < 0)
+                    progress.totalItems = playlist.Filecount;
                 progress.currentItem = ++i;
                 if (movie != null)
                 {

@@ -28,8 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsUI));
             this.gridFields = new System.Windows.Forms.DataGridView();
             this.dgSetting = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgField = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -47,6 +49,9 @@
             this.btnDiscard = new System.Windows.Forms.Button();
             this.lblReset = new System.Windows.Forms.LinkLabel();
             this.btnAudio = new System.Windows.Forms.Button();
+            this.chkFastStart = new System.Windows.Forms.CheckBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.linkHelp = new System.Windows.Forms.LinkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.gridFields)).BeginInit();
             this.SuspendLayout();
             // 
@@ -55,9 +60,8 @@
             this.gridFields.AllowUserToAddRows = false;
             this.gridFields.AllowUserToDeleteRows = false;
             this.gridFields.AllowUserToResizeRows = false;
-            this.gridFields.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gridFields.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.gridFields.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
             this.gridFields.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.gridFields.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -66,14 +70,14 @@
             this.dgOverwrite,
             this.dgEnabled});
             this.gridFields.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
-            this.gridFields.Location = new System.Drawing.Point(13, 24);
+            this.gridFields.Location = new System.Drawing.Point(13, 26);
             this.gridFields.Margin = new System.Windows.Forms.Padding(2);
             this.gridFields.MultiSelect = false;
             this.gridFields.Name = "gridFields";
             this.gridFields.RowHeadersVisible = false;
             this.gridFields.RowTemplate.Height = 24;
             this.gridFields.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.gridFields.Size = new System.Drawing.Size(415, 367);
+            this.gridFields.Size = new System.Drawing.Size(382, 324);
             this.gridFields.TabIndex = 5;
             this.gridFields.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridFields_CellContentClick);
             this.gridFields.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridFields_CellValueChanged);
@@ -114,31 +118,31 @@
             // 
             // label1
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(12, 405);
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(412, 165);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(114, 13);
+            this.label1.Size = new System.Drawing.Size(131, 15);
             this.label1.TabIndex = 8;
             this.label1.Text = "Cleanup filenames:";
             // 
             // txtCleanup
             // 
-            this.txtCleanup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtCleanup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCleanup.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCleanup.Location = new System.Drawing.Point(13, 421);
+            this.txtCleanup.Location = new System.Drawing.Point(415, 183);
+            this.txtCleanup.Multiline = true;
             this.txtCleanup.Name = "txtCleanup";
             this.txtCleanup.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtCleanup.Size = new System.Drawing.Size(415, 22);
+            this.txtCleanup.Size = new System.Drawing.Size(307, 50);
             this.txtCleanup.TabIndex = 7;
             this.txtCleanup.TextChanged += new System.EventHandler(this.txtCleanup_TextChanged);
             // 
             // btnSave
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.Location = new System.Drawing.Point(351, 531);
+            this.btnSave.Location = new System.Drawing.Point(647, 326);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 6;
@@ -148,32 +152,32 @@
             // 
             // label2
             // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(12, 467);
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(414, 36);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(101, 13);
+            this.label2.Size = new System.Drawing.Size(110, 15);
             this.label2.TabIndex = 10;
             this.label2.Text = "OMDb API Keys:";
             // 
             // txtAPIKeys
             // 
-            this.txtAPIKeys.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtAPIKeys.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAPIKeys.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtAPIKeys.Location = new System.Drawing.Point(13, 483);
+            this.txtAPIKeys.Location = new System.Drawing.Point(415, 54);
+            this.txtAPIKeys.Multiline = true;
             this.txtAPIKeys.Name = "txtAPIKeys";
-            this.txtAPIKeys.Size = new System.Drawing.Size(415, 22);
+            this.txtAPIKeys.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtAPIKeys.Size = new System.Drawing.Size(307, 50);
             this.txtAPIKeys.TabIndex = 9;
             this.txtAPIKeys.TextChanged += new System.EventHandler(this.txtAPIKeys_TextChanged);
             // 
             // label3
             // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
             this.label3.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.label3.Location = new System.Drawing.Point(269, 467);
+            this.label3.Location = new System.Drawing.Point(414, 107);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(159, 13);
             this.label3.TabIndex = 10;
@@ -181,14 +185,13 @@
             // 
             // linkLabel1
             // 
-            this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.linkLabel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
-            this.linkLabel1.Location = new System.Drawing.Point(12, 508);
+            this.linkLabel1.Location = new System.Drawing.Point(414, 124);
             this.linkLabel1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(188, 13);
+            this.linkLabel1.Size = new System.Drawing.Size(233, 16);
             this.linkLabel1.TabIndex = 11;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Tag = "http://www.omdbapi.com/apikey.aspx";
@@ -198,10 +201,9 @@
             // 
             // label4
             // 
-            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
             this.label4.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.label4.Location = new System.Drawing.Point(226, 405);
+            this.label4.Location = new System.Drawing.Point(414, 236);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(202, 13);
             this.label4.TabIndex = 10;
@@ -210,17 +212,17 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.Location = new System.Drawing.Point(10, 9);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(194, 13);
+            this.label5.Size = new System.Drawing.Size(233, 15);
             this.label5.TabIndex = 8;
             this.label5.Text = "MCRatings to JRiver field mapping:";
             // 
             // btnDiscard
             // 
             this.btnDiscard.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDiscard.Location = new System.Drawing.Point(265, 531);
+            this.btnDiscard.Location = new System.Drawing.Point(561, 326);
             this.btnDiscard.Name = "btnDiscard";
             this.btnDiscard.Size = new System.Drawing.Size(75, 23);
             this.btnDiscard.TabIndex = 6;
@@ -230,11 +232,10 @@
             // 
             // lblReset
             // 
-            this.lblReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblReset.AutoSize = true;
             this.lblReset.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.lblReset.LinkColor = System.Drawing.Color.Navy;
-            this.lblReset.Location = new System.Drawing.Point(393, 9);
+            this.lblReset.Location = new System.Drawing.Point(360, 11);
             this.lblReset.Name = "lblReset";
             this.lblReset.Size = new System.Drawing.Size(35, 13);
             this.lblReset.TabIndex = 12;
@@ -249,18 +250,57 @@
             this.btnAudio.FlatAppearance.BorderSize = 0;
             this.btnAudio.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAudio.Image = global::MCRatings.Properties.Resources.speaker_on;
-            this.btnAudio.Location = new System.Drawing.Point(13, 529);
+            this.btnAudio.Location = new System.Drawing.Point(413, 324);
             this.btnAudio.Name = "btnAudio";
             this.btnAudio.Size = new System.Drawing.Size(26, 26);
             this.btnAudio.TabIndex = 14;
+            this.toolTip1.SetToolTip(this.btnAudio, "Mute sound effects");
             this.btnAudio.UseVisualStyleBackColor = false;
             this.btnAudio.Click += new System.EventHandler(this.btnAudio_Click);
+            // 
+            // chkFastStart
+            // 
+            this.chkFastStart.AutoSize = true;
+            this.chkFastStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkFastStart.Location = new System.Drawing.Point(417, 280);
+            this.chkFastStart.Name = "chkFastStart";
+            this.chkFastStart.Size = new System.Drawing.Size(146, 20);
+            this.chkFastStart.TabIndex = 15;
+            this.chkFastStart.Text = "Fast playlist loading";
+            this.toolTip1.SetToolTip(this.chkFastStart, resources.GetString("chkFastStart.ToolTip"));
+            this.chkFastStart.UseVisualStyleBackColor = true;
+            this.chkFastStart.CheckedChanged += new System.EventHandler(this.fastStart_CheckedChanged);
+            // 
+            // toolTip1
+            // 
+            this.toolTip1.AutoPopDelay = 30000;
+            this.toolTip1.InitialDelay = 500;
+            this.toolTip1.ReshowDelay = 100;
+            // 
+            // linkHelp
+            // 
+            this.linkHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.linkHelp.AutoSize = true;
+            this.linkHelp.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.linkHelp.LinkColor = System.Drawing.Color.Teal;
+            this.linkHelp.Location = new System.Drawing.Point(647, 9);
+            this.linkHelp.Margin = new System.Windows.Forms.Padding(3);
+            this.linkHelp.Name = "linkHelp";
+            this.linkHelp.Size = new System.Drawing.Size(75, 15);
+            this.linkHelp.TabIndex = 16;
+            this.linkHelp.TabStop = true;
+            this.linkHelp.Tag = "https://github.com/zybexXL/MCRatings/wiki#Configuration";
+            this.linkHelp.Text = "Settings help";
+            this.toolTip1.SetToolTip(this.linkHelp, "Hey, you never know, maybe someone has written it already...");
+            this.linkHelp.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkHelp_LinkClicked);
             // 
             // SettingsUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(438, 561);
+            this.ClientSize = new System.Drawing.Size(734, 361);
+            this.Controls.Add(this.linkHelp);
+            this.Controls.Add(this.chkFastStart);
             this.Controls.Add(this.btnAudio);
             this.Controls.Add(this.lblReset);
             this.Controls.Add(this.linkLabel1);
@@ -274,11 +314,13 @@
             this.Controls.Add(this.btnDiscard);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.gridFields);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.MinimumSize = new System.Drawing.Size(454, 489);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(675, 400);
             this.Name = "SettingsUI";
+            this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Settings";
@@ -310,5 +352,8 @@
         private System.Windows.Forms.DataGridViewCheckBoxColumn dgOverwrite;
         private System.Windows.Forms.DataGridViewCheckBoxColumn dgEnabled;
         private System.Windows.Forms.Button btnAudio;
+        private System.Windows.Forms.CheckBox chkFastStart;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.LinkLabel linkHelp;
     }
 }

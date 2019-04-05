@@ -425,6 +425,12 @@
             this.chkShowSelected.UseVisualStyleBackColor = true;
             this.chkShowSelected.CheckedChanged += new System.EventHandler(this.chkShowSelected_CheckedChanged);
             // 
+            // toolTip1
+            // 
+            this.toolTip1.AutoPopDelay = 30000;
+            this.toolTip1.InitialDelay = 500;
+            this.toolTip1.ReshowDelay = 100;
+            // 
             // chkOverwrite
             // 
             this.chkOverwrite.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));

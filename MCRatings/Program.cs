@@ -10,8 +10,8 @@ namespace MCRatings
 {
     static class Program
     {
-        public static Version version = new Version(1, 1, 1);          // major, minor, revision
-        public static string tagline = "There can be only one!";    // changes on every major or minor release
+        public static Version version = new Version(1, 2);                       // major, minor, revision
+        public static string tagline = "One man's struggle to take it easy";     // changes on every major or minor release
         public static Settings settings;
 
         /// <summary>

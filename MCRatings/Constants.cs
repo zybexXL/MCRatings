@@ -21,7 +21,7 @@ namespace MCRatings
 
     public class Constants
     {
-        public static string JRFileFilter = "[media sub type]=movie"; //"[media type]=Video";
+        public static string JRFileFilter = "[Media Sub Type]=Movie"; //"[media type]=Video";
 
         public static string DataFolder = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),

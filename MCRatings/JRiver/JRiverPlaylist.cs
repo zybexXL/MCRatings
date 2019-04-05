@@ -12,9 +12,9 @@ namespace MCRatings
         public int ID { get; set; }
         public string Name { get; set; }
         public int Filecount { get; set; }
-        public string Path;
+        public string Path { get; set; }
 
-        public JRiverPlaylist(int id, string name, int count, string path)
+        public JRiverPlaylist(int id, string name, int count, string path = null)
         {
             ID = id;
             Name = name;
