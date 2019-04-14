@@ -29,7 +29,7 @@ namespace MCRatings
             try
             {
                 // quick and dirty JSON extraction
-                Match m1 = Regex.Match(json, @"""tag_name"": ?""([\d\.]+)""");
+                Match m1 = Regex.Match(json, @"""tag_name"": ?""v?([\d\.]+)""");
                 ver.version = Version.Parse(m1.Groups[1].Value);
 
                 m1 = Regex.Match(json, @"""html_url"": ?""(.+?)""");

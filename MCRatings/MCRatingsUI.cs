@@ -670,6 +670,10 @@ namespace MCRatings
 
             if (fieldEnabled && value != movie[field] && (string.IsNullOrEmpty(movie[field]) || (fieldOverwrite && masterOverwrite)))
             {
+                // special handling for Revenue - only overwrite if value is higher
+                if (field == AppField.Revenue && Util.NumberValue(value) < Util.NumberValue(movie[field]))
+                    return false;
+
                 movie[field] = value;
                 return true;
             }

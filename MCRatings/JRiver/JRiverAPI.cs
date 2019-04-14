@@ -203,12 +203,12 @@ namespace MCRatings
                         if (f == AppField.Release)
                         {
                             if (DateTime.TryParseExact(movie[f], "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime release))
-                                value = ExtensionMethods.DaysSince1900(release).ToString();
+                                value = Util.DaysSince1900(release).ToString();
                         }
                         if (f == AppField.Year && (jrfield == "Year" || jrfield == "Date") && int.TryParse(movie[f], out int year))
                         {
                             jrfield = "Date";
-                            value = ExtensionMethods.DaysSince1900(new DateTime(year, 1,1)).ToString();
+                            value = Util.DaysSince1900(new DateTime(year, 1,1)).ToString();
                         }
                         if (setFieldValue(file, jrfield, value))
                             movie.UpdateSnapshot(f);

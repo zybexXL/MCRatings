@@ -59,7 +59,7 @@ namespace MCRatings
 
             if (long.TryParse(fields[AppField.Imported], out long seconds))
             {
-                DateImported = ExtensionMethods.EpochToDateTime(seconds).ToLocalTime();
+                DateImported = Util.EpochToDateTime(seconds).ToLocalTime();
                 fields[AppField.Imported] = DateImported.ToString("yyyy-MM-dd HH:mm");
             }
 
