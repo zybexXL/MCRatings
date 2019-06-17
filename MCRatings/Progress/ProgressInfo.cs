@@ -17,6 +17,7 @@ namespace MCRatings
         public int fail;
         public int skip;
         public object args;
+        public int opcode;
         public bool result;
         public bool canCancel = true;
         public bool canOverwrite = false;

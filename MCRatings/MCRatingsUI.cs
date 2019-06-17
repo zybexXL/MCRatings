@@ -511,17 +511,22 @@ namespace MCRatings
 
         #region OMDB fetch
 
-        private void btnGetMovieInfo_Click(object sender, EventArgs e)
+        private List<MovieInfo> GetSelectedMovies(bool selectCurrent = true)
         {
-            bool noCache = ModifierKeys.HasFlag(Keys.Shift);
-
             var selected = movies.Where(m => m.selected).ToList();
-            if (selected.Count == 0 && gridMovies.CurrentRow != null)
+            if (selected.Count == 0 && selectCurrent && gridMovies.CurrentRow != null)
             {
                 MovieInfo currmovie = (MovieInfo)gridMovies.CurrentRow.Cells[0].Value as MovieInfo;
                 if (currmovie != null)
                     selected = new List<MovieInfo> { currmovie };
             }
+            return selected;
+        }
+
+        private void btnGetMovieInfo_Click(object sender, EventArgs e)
+        {
+            bool noCache = ModifierKeys.HasFlag(Keys.Shift);
+            var selected = GetSelectedMovies(true); 
 
             if (selected.Count == 0)
             {
@@ -1058,6 +1063,21 @@ namespace MCRatings
             updateModifiedCount();
         }
 
+        private void menuShortcutFilename_Click(object sender, EventArgs e)
+        {
+            createShortcuts(1);
+        }
+
+        private void menuShortcutTitle_Click(object sender, EventArgs e)
+        {
+            createShortcuts(2);
+        }
+
+        private void menuShortcutID_Click(object sender, EventArgs e)
+        {
+            createShortcuts(3);
+        }
+
         #endregion
 
         #region datagrid events
@@ -1352,6 +1372,73 @@ namespace MCRatings
         {
             if (dragSelect)
                 e.Cancel = true;
+        }
+
+        #endregion
+
+        #region IMDB shortcuts
+
+        private void createShortcuts(int operation)
+        {
+            var selected = GetSelectedMovies(true);
+            if (selected.Count > 0)
+            {
+                var bar = new ProgressUI("Creating IMDB shortcuts", createShortcutsTask, selected);
+                bar.progress.totalItems = selected.Count;
+                bar.progress.useAltTitle = chkUseJRTitle.Checked;
+                bar.progress.opcode = operation;
+
+                bar.ShowDialog();   // ignore result
+                SetStatus($"{bar.progress.success} shortcuts created/updated");
+            }
+            else SetStatus("No movies selected");
+        }
+
+        private void createShortcutsTask(ProgressInfo progress)
+        {
+            progress.result = false;
+            List<MovieInfo> movies = progress.args as List<MovieInfo>;
+            if (movies == null) return;
+
+            int i = 0;
+            foreach (var movie in movies)
+            {
+                if (progress.cancelled)
+                    return;
+
+                while (progress.paused)
+                    Thread.Sleep(250);
+
+                string imdb = movie[AppField.IMDbID];
+                string title = progress.useAltTitle ? movie.Title : movie.FTitle;
+                string year = progress.useAltTitle ? movie.Year : movie.FYear;
+                string file = Path.GetFileNameWithoutExtension(movie[AppField.File]);
+                string dir = Path.GetDirectoryName(movie[AppField.File]);
+
+                progress.currentItem = ++i;
+                if (string.IsNullOrEmpty(imdb)) continue;
+                progress.subtitle = title;
+                progress.Update(false);
+
+                string imdbfile = null;
+                switch (progress.opcode)
+                {
+                    case 1: imdbfile = $"{file}.url"; break;
+                    case 2: imdbfile = $"{title} [{year}].url"; break;
+                    case 3: imdbfile = $"IMDb_{imdb}.url"; break;
+                }
+                try
+                {
+                    string text = $"[InternetShortcut]\r\nURL=https://www.imdb.com/title/{imdb}/\r\n";
+                    File.WriteAllText(Path.Combine(dir, imdbfile), text);
+                    progress.success++;
+                }
+                catch
+                {
+                    progress.fail++;
+                }
+            }
+            progress.result = true;
         }
 
         #endregion
