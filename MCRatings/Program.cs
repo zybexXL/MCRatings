@@ -11,7 +11,7 @@ namespace MCRatings
     static class Program
     {
         public static Version version = new Version(1, 3, 0);                    // major, minor, revision
-        public static string tagline = "One man's struggle to take it easy";     // changes on every major or minor release
+        public static string tagline = "In space no one can hear you scream";     // changes on every major or minor release
         public static Settings settings;
 
         /// <summary>
