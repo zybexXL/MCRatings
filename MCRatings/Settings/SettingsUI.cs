@@ -100,6 +100,7 @@ namespace MCRatings
                 Program.settings.FastStart = chkFastStart.Checked;
                 Program.settings.FileCleanup = txtCleanup.Text?.Trim();
                 Program.settings.APIKeys = txtAPIKeys.Text?.Trim();
+                Program.settings.TMDbAPIKeys = txtTMDBkeys.Text?.Trim();
                 Program.settings.Save();
                 dirty = false;
             }
@@ -116,6 +117,7 @@ namespace MCRatings
 
             txtCleanup.Text = settings.FileCleanup;
             txtAPIKeys.Text = settings.APIKeys;
+            txtTMDBkeys.Text = settings.TMDbAPIKeys;
             audio = !settings.Silent;
             chkFastStart.Checked = settings.FastStart;
             btnAudio.Image = audio ? Properties.Resources.speaker_on : Properties.Resources.speaker_off;
@@ -165,9 +167,9 @@ namespace MCRatings
                 btnDiscard_Click(null, EventArgs.Empty);
         }
 
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void linkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start(linkLabel1.Tag.ToString());
+            Process.Start(((LinkLabel)sender).Tag.ToString());
         }
 
         private void lblReset_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -178,6 +180,7 @@ namespace MCRatings
                 Settings settings = new Settings();
                 settings.Reset();
                 settings.APIKeys = txtAPIKeys.Text;
+                settings.TMDbAPIKeys = txtTMDBkeys.Text;
                 settings.FileCleanup = txtCleanup.Text;
                 ShowSettings(settings);
                 dirty = true;

@@ -43,24 +43,29 @@ namespace MCRatings
         Dictionary<AppField, string> fields = new Dictionary<AppField, string>();       // current values
         Dictionary<AppField, string> snapshot = new Dictionary<AppField, string>();     // copy for change detection (original values)
         Dictionary<AppField, string> updates = new Dictionary<AppField, string>();      // received values
+        Dictionary<int, string> playlists = new Dictionary<int, string>();
 
         public DateTime modified { get; private set; }
         public bool isDirty { get { return dirtyFieldMask > 0; } }
         public ulong dirtyFieldMask = 0;
         private bool trackChanges = false;
 
-
-        public MovieInfo(int key, Dictionary<AppField, string> JRfields)
+        public MovieInfo(int key, Dictionary<AppField, string> JRfields, Dictionary<int, string> Playlists)
         {
             JRKey = key;
             fields = new Dictionary<AppField, string>(JRfields);
             fields.TryGetValue(AppField.File, out Fullpath);
             Filename = Path.GetFileNameWithoutExtension(Fullpath);
+            playlists = Playlists;
+
+            string lists = ($"{playlists.Count}\n\n" + string.Join("\n",playlists.Keys.OrderBy(k=>k).Select(k=>$"{playlists[k]} [ID: {k}]").ToList())).Trim();
+            if (lists == "0") lists = "";
+            fields[AppField.Playlists] = lists;
 
             if (long.TryParse(fields[AppField.Imported], out long seconds))
             {
                 DateImported = Util.EpochToDateTime(seconds).ToLocalTime();
-                fields[AppField.Imported] = DateImported.ToString("yyyy-MM-dd HH:mm");
+                fields[AppField.Imported] = DateImported.ToString("yyyy-MM-dd HH:mm:ss");
             }
 
             TakeSnapshot();
@@ -104,7 +109,7 @@ namespace MCRatings
             modified = DateTime.Now;
             if (trackChanges)
             {
-                if (field >= AppField.Title && field != AppField.Filter)
+                if (field >= AppField.Title)
                 {
                     bool changed = false;
                     if (snapshot.TryGetValue(field, out string original))

@@ -16,7 +16,8 @@ namespace MCRatings
     {
         public bool valid = false;
         public bool Silent = false;
-        public string APIKeys;
+        public string APIKeys;          // omdb
+        public string TMDbAPIKeys;      // tmdb
         public string FileCleanup;
         public List<JRFieldMap> Fields = new List<JRFieldMap>();
         public int CacheDays;
@@ -38,6 +39,18 @@ namespace MCRatings
             }
         }
 
+        [XmlIgnore]
+        public List<string> TMDBkeyList
+        {
+            get
+            {
+                return string.IsNullOrEmpty(TMDbAPIKeys) ? new List<string>() :
+                    TMDbAPIKeys.Trim()
+                    .Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                    .ToList();
+            }
+        }
+
         public Settings()
         {
         }
@@ -53,6 +66,7 @@ namespace MCRatings
                 {
                     Settings saved = (Settings)ser.Deserialize(reader);
                     settings.APIKeys = saved.APIKeys;
+                    settings.TMDbAPIKeys = saved.TMDbAPIKeys;
                     settings.valid = saved.valid;
                     settings.CacheDays = saved.CacheDays;
                     settings.FastStart = saved.FastStart;
@@ -98,6 +112,7 @@ namespace MCRatings
 
             Fields = FieldMap.Values.ToList();
             APIKeys = "";
+            TMDbAPIKeys = "";
             FileCleanup = "";
             Silent = false;
             CacheDays = Constants.MaxCacheDays;

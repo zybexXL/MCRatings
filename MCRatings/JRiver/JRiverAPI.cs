@@ -147,6 +147,18 @@ namespace MCRatings
         { 
             try
             {
+                // get playlists
+                Dictionary<int, string> lists = new Dictionary<int, string>();
+                IMJPlaylistsAutomation p = movie.GetPlaylists();
+                int count = p.GetNumberPlaylists();
+                for (int i = 0; i < count; i++)
+                {
+                    var pl = p.GetPlaylist(i);
+                    if (pl.Get("type") == "0")      // 0 = playlist, 1 = playlist group, 2 = smartlist
+                        lists[pl.GetID()] = pl.Name;
+                }
+                
+                // get fields
                 Dictionary<AppField, string> JRfields = new Dictionary<AppField, string>();
                 foreach (AppField f in Enum.GetValues(typeof(AppField)))
                     if (Constants.ViewColumnInfo[f].isJRField)
@@ -160,7 +172,7 @@ namespace MCRatings
                     if (int.TryParse(JRfields[AppField.Release], out int yyyy))
                         JRfields[AppField.Release] = $"{yyyy}-01-02";
                 }
-                MovieInfo info = new MovieInfo(movie.GetKey(), JRfields);
+                MovieInfo info = new MovieInfo(movie.GetKey(), JRfields, lists);
                 return info;
             }
             catch { }
@@ -193,31 +205,81 @@ namespace MCRatings
 
                 foreach (AppField f in Enum.GetValues(typeof(AppField)))
                 {
-                    if (Constants.ViewColumnInfo[f].isJRField
-                       && Program.settings.FieldMap.TryGetValue(f, out JRFieldMap map)
-                       && map.enabled
-                       && movie.isModified(f))
+                    JRFieldMap map = null;
+                    if (movie.isModified(f) && (f == AppField.Playlists
+                        || (Constants.ViewColumnInfo[f].isJRField && Program.settings.FieldMap.TryGetValue(f, out map) && map.enabled)))
                     {
                         string value = movie[f];
-                        string jrfield = map.JRfield;
+                        string jrfield = map?.JRfield;
                         if (f == AppField.Release)
                         {
-                            if (DateTime.TryParseExact(movie[f], "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime release))
+                            if (DateTime.TryParseExact(movie[f], "yyyy-M-d", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime release))
                                 value = Util.DaysSince1900(release).ToString();
+                            else
+                            {
+                                ok = false;
+                                continue;
+                            }
+                        }
+                        if (f == AppField.Imported)
+                        {
+                            if (DateTime.TryParseExact(movie[f], "yyyy-M-d H:m:s", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime imported))
+                                value = Util.DateTimeToEpoch(imported).ToString();
+                            else
+                            {
+                                ok = false;
+                                continue;
+                            }
                         }
                         if (f == AppField.Year && (jrfield == "Year" || jrfield == "Date") && int.TryParse(movie[f], out int year))
                         {
                             jrfield = "Date";
-                            value = Util.DaysSince1900(new DateTime(year, 1,1)).ToString();
+                            value = Util.DaysSince1900(new DateTime(year, 1, 1)).ToString();
                         }
-                        if (setFieldValue(file, jrfield, value))
+
+                        bool saved = (f == AppField.Playlists) ? setPlaylistMembership(file, value) : setFieldValue(file, jrfield, value);
+                        if (saved)
                             movie.UpdateSnapshot(f);
                         else
                             ok = false;
+
                     }
                 }
             }
             catch { }
+            return ok;
+        }
+
+        private bool setPlaylistMembership(IMJFileAutomation file, string value)
+        {
+            bool ok = true;
+            try
+            {
+                var m = Regex.Matches(value ?? "", @"\[ID: (\d+)\]");
+                List<int> newLists = m.Cast<Match>().Select(x => int.Parse(x.Groups[1].Value)).ToList();
+
+                string fname = file.Get("Filename", true);
+                // remove from old lists
+                var currLists = file.GetPlaylists();
+                int count = currLists.GetNumberPlaylists();
+                for (int i = 0; i < count; i++)
+                {
+                    var list = currLists.GetPlaylist(i);
+                    int id = list.GetID();
+                    if (!newLists.Contains(id))
+                        ok &= list.RemoveFile(fname);
+                    else
+                        newLists.Remove(id);
+                }
+
+                // add to new lists
+                foreach (int i in newLists)
+                {
+                    var list = jr.GetPlaylistByID(i);
+                    ok &= list.AddFile(fname, -1);
+                }
+            }
+            catch { ok = false; }
             return ok;
         }
 

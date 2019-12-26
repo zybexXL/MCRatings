@@ -4,12 +4,14 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Media;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -20,6 +22,7 @@ namespace MCRatings
     public partial class MCRatingsUI : Form
     {
         OMDbAPI omdbAPI = new OMDbAPI(Program.settings.APIkeyList);
+        TMDbAPI tmdbAPI = new TMDbAPI(Program.settings.TMDBkeyList);
         JRiverAPI jrAPI = new JRiverAPI();
         List<MovieInfo> movies = new List<MovieInfo>();
         bool loading = true;
@@ -32,6 +35,7 @@ namespace MCRatings
         bool spacePressed = false;
         Point LastMouseClick;
         private SoundPlayer Player = new SoundPlayer();
+        string clipPlaylists = "MCRatings.Playlists";
 
         public MCRatingsUI()
         {
@@ -135,7 +139,7 @@ namespace MCRatings
                             value = textbox.SelectedText;
                     }
                     if (!string.IsNullOrEmpty(value))
-                        Clipboard.SetText(value.Trim());
+                        try { Clipboard.SetText(value.Trim()); } catch { }
                     return true;
                 }
             return base.ProcessCmdKey(ref msg, keyData);
@@ -148,7 +152,10 @@ namespace MCRatings
         private void btnSettings_Click(object sender, EventArgs e)
         {
             if (new SettingsUI(jrAPI).ShowDialog() == DialogResult.OK)
+            {
                 omdbAPI = new OMDbAPI(Program.settings.APIkeyList);
+                tmdbAPI = new TMDbAPI(Program.settings.TMDBkeyList);
+            }
         }
 
         private void menuColorGuide_Click(object sender, EventArgs e)
@@ -166,6 +173,9 @@ namespace MCRatings
                 gridMovies.Columns[(int)AppField.IMDbID].DefaultCellStyle.BackColor = getColor(CellColor.ColumnEdit);
                 gridMovies.Columns[(int)AppField.FTitle].DefaultCellStyle.BackColor = getColor(CellColor.ColumnEdit);
                 gridMovies.Columns[(int)AppField.FYear].DefaultCellStyle.BackColor = getColor(CellColor.ColumnEdit);
+                gridMovies.Columns[(int)AppField.Imported].DefaultCellStyle.BackColor = getColor(CellColor.ColumnEdit);
+                gridMovies.Columns[(int)AppField.Playlists].DefaultCellStyle.BackColor = getColor(CellColor.ColumnEdit);
+
             }
             gridMovies.Refresh();
 
@@ -465,7 +475,7 @@ namespace MCRatings
             gridMovies.DataSource = bs;
 
             // fix column headers, set read only, hide disabled columns
-            gridMovies.Columns[1].HeaderText = "";
+            gridMovies.Columns[(int)AppField.Selected].HeaderText = "";
             foreach (AppField f in Enum.GetValues(typeof(AppField)))
             {
                 var info = Constants.ViewColumnInfo[f];
@@ -492,13 +502,16 @@ namespace MCRatings
             gridMovies.Columns[(int)AppField.IMDbID].DefaultCellStyle.BackColor = getColor(CellColor.ColumnEdit);
             gridMovies.Columns[(int)AppField.FTitle].DefaultCellStyle.BackColor = getColor(CellColor.ColumnEdit);
             gridMovies.Columns[(int)AppField.FYear].DefaultCellStyle.BackColor = getColor(CellColor.ColumnEdit);
+            gridMovies.Columns[(int)AppField.Imported].DefaultCellStyle.BackColor = getColor(CellColor.ColumnEdit);
+            gridMovies.Columns[(int)AppField.Playlists].DefaultCellStyle.BackColor = getColor(CellColor.ColumnEdit);
             gridMovies.Columns[(int)AppField.Status].DefaultCellStyle.BackColor = Color.Gainsboro;
 
             gridMovies.Columns[(int)AppField.Selected].Frozen = true;
+            gridMovies.Columns[(int)AppField.Playlists].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
 
             // adjust column order
-            gridMovies.Columns[(int)AppField.IMDbID].DisplayIndex = 3;
-            gridMovies.Columns[(int)AppField.Imported].DisplayIndex = 8;
+            gridMovies.Columns[(int)AppField.IMDbID].DisplayIndex = 4;
+            //gridMovies.Columns[(int)AppField.Imported].DisplayIndex = 5;
 
             if (gridMovies.Rows.Count > 0)
                 gridMovies.CurrentCell = gridMovies.Rows[0].Cells[1];
@@ -608,10 +621,14 @@ namespace MCRatings
                 progress.Update(false);
 
                 string omdb;
+                string tmdb = null;
                 if (FindByName)
                     omdb = omdbAPI?.getByTitle(title, year);
                 else
+                {
                     omdb = omdbAPI?.getByIMDB(movie[AppField.IMDbID], noCache: progress.noCache);
+                    tmdb = tmdbAPI?.getByIMDB(movie[AppField.IMDbID], noCache: progress.noCache);
+                }
 
                 if (omdbAPI.lastResponse == 401)    // unauthorized, keys expended
                 {
@@ -620,17 +637,21 @@ namespace MCRatings
                     return;
                 }
 
-                var info = OMDbInfo.Parse(omdb);
-                if (info != null && info.valid)
+                var info = OMDbMovie.Parse(omdb);
+                if (FindByName && tmdb == null)
+                    tmdb = tmdbAPI?.getByIMDB(info.imdbID, noCache: progress.noCache);
+
+                var info2 = TMDbMovie.Parse(tmdb);
+                if (info != null && info.isValid)
                 {
                     progress.success++;
                     movie.clearUpdates();
-                    bool ok = overwriteField(movie, AppField.IMDbID, info.IMDBid, progress.canOverwrite);
-                    ok |= overwriteField(movie, AppField.IMDbRating, info.ImdbScore, progress.canOverwrite);
-                    ok |= overwriteField(movie, AppField.IMDbVotes, info.ImdbVotes, progress.canOverwrite);
+                    bool ok = overwriteField(movie, AppField.IMDbID, info.imdbID, progress.canOverwrite);
+                    ok |= overwriteField(movie, AppField.IMDbRating, info.imdbRating, progress.canOverwrite);
+                    ok |= overwriteField(movie, AppField.IMDbVotes, info.imdbVotes, progress.canOverwrite);
                     ok |= overwriteField(movie, AppField.RottenTomatoes, info.RottenScore, progress.canOverwrite);
-                    ok |= overwriteField(movie, AppField.Metascore, info.MetaScore, progress.canOverwrite);
-                    ok |= overwriteField(movie, AppField.MPAARating, info.MPAARating, progress.canOverwrite);
+                    ok |= overwriteField(movie, AppField.Metascore, info.Metascore, progress.canOverwrite);
+                    ok |= overwriteField(movie, AppField.MPAARating, info.Rated, progress.canOverwrite);
                     ok |= overwriteField(movie, AppField.Runtime, info.Runtime, progress.canOverwrite);
                     ok |= overwriteField(movie, AppField.Genre, info.Genre, progress.canOverwrite);
                     ok |= overwriteField(movie, AppField.Director, info.Director, progress.canOverwrite);
@@ -645,9 +666,20 @@ namespace MCRatings
                     ok |= overwriteField(movie, AppField.Website, info.Website, progress.canOverwrite);
                     ok |= overwriteField(movie, AppField.Release, info.Released, progress.canOverwrite);
 
-                    ok |= overwriteField(movie, AppField.Title, info.title, progress.canOverwrite);
-                    ok |= overwriteField(movie, AppField.Year, info.year, progress.canOverwrite);
+                    ok |= overwriteField(movie, AppField.Title, info.Title, progress.canOverwrite);
+                    ok |= overwriteField(movie, AppField.Year, info.Year, progress.canOverwrite);
 
+                    if (info2 != null && info2.isValid)
+                    {
+                        ok |= overwriteField(movie, AppField.TMDbScore, info2.vote_average.ToString("0.0"), progress.canOverwrite);
+                        ok |= overwriteField(movie, AppField.Tagline, info2.tagline, progress.canOverwrite);
+                        ok |= overwriteField(movie, AppField.OriginalTitle, info2.original_title, progress.canOverwrite);
+                        string collection = info2.belongs_to_collection?.name ?? "";
+                        Match m = Regex.Match(collection, @"^(.*) collection\s*$", RegexOptions.IgnoreCase);
+                        if (m.Success)
+                            collection = m.Groups[1].Value;    
+                        ok |= overwriteField(movie, AppField.Collection, collection, progress.canOverwrite);
+                    }
                     movie[AppField.Status] = ok && movie.isDirty ? "updated" : "no change";
                     movie.selected = false;
                 }
@@ -673,11 +705,15 @@ namespace MCRatings
 
             movie.setUpdate(field, value);
 
-            if (fieldEnabled && value != movie[field] && (string.IsNullOrEmpty(movie[field]) || (fieldOverwrite && masterOverwrite)))
+            if (fieldEnabled && value != movie[field] && (string.IsNullOrEmpty(movie[field]) || (fieldOverwrite && masterOverwrite) || (field == AppField.Collection)))
             {
                 // special handling for Revenue - only overwrite if value is higher
                 if (field == AppField.Revenue && Util.NumberValue(value) < Util.NumberValue(movie[field]))
                     return false;
+
+                // special handling for Collection (merge with existing list)
+                if (field == AppField.Collection)
+                    value = mergeList(movie[field], value);
 
                 movie[field] = value;
                 return true;
@@ -685,6 +721,22 @@ namespace MCRatings
             return false;
         }
 
+        private string mergeList(string list1, string list2)
+        {
+            if (string.IsNullOrWhiteSpace(list1)) return list2;
+            if (string.IsNullOrWhiteSpace(list2)) return list1;
+            var l1 = list1.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Select(l=>l.Trim()).Where(l=>!string.IsNullOrWhiteSpace(l)).ToList();
+            var l2 = list2.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Select(l => l.Trim()).Where(l => !string.IsNullOrWhiteSpace(l)).ToList();
+            var l1lower = l1.Select(l => l.ToLower()).ToList();
+
+            foreach (var l in l2)
+                if (!l1lower.Contains(l.ToLower()))
+                {
+                    l1.Add(l);
+                    l1lower.Add(l.ToLower());
+                }
+            return string.Join("; ", l1);
+        }
         #endregion
 
         #region JRiver Save
@@ -1102,7 +1154,7 @@ namespace MCRatings
                 bs.ResumeBinding();
 
                 if (!chkShowSelected.Checked)
-                    gridMovies.CurrentCell = gridMovies[2, e.RowIndex];
+                    gridMovies.CurrentCell = gridMovies[3, e.RowIndex];
                 updateSelectedCount();
             }
         }
@@ -1220,23 +1272,38 @@ namespace MCRatings
             {
                 string text = gridMovies[e.ColumnIndex, e.RowIndex].Value?.ToString();
                 if (!string.IsNullOrEmpty(text))
-                    Clipboard.SetText(text.Trim());
+                    try { Clipboard.SetText(text.Trim()); } catch { }
             }
         }
 
         // Cell End edit => update underlying MovieInfo object, update modified count
         private void grid2_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
+            if (e.RowIndex < 0) return;
+
             if ((e.ColumnIndex == (int)AppField.IMDbID ||
                 e.ColumnIndex == (int)AppField.FTitle ||
-                e.ColumnIndex == (int)AppField.FYear) && e.RowIndex >= 0)
+                e.ColumnIndex == (int)AppField.Imported ||
+                e.ColumnIndex == (int)AppField.FYear))
             {
                 MovieInfo m = gridMovies.Rows[e.RowIndex].Cells[0].Value as MovieInfo;
                 string txt = gridMovies.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
-                m[(AppField)e.ColumnIndex] = txt;
+
+                if (e.ColumnIndex == (int)AppField.Imported)
+                {
+                    if (!DateTime.TryParseExact(txt, "yyyy-M-d H:m:s", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime imported))
+                    {
+                        gridMovies.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = m[(AppField)e.ColumnIndex];
+                        return;
+                    }
+                }
+                if (m[(AppField)e.ColumnIndex] != txt)
+                {
+                    m[(AppField)e.ColumnIndex] = txt;
+                    if (e.ColumnIndex == (int)AppField.IMDbID || e.ColumnIndex == (int)AppField.Imported)
+                        updateModifiedCount();
+                }
             }
-            if (e.ColumnIndex == (int)AppField.IMDbID)
-                updateModifiedCount();
         }
 
         // ToolTip needed - get cell contents, wrap text if too long; append [Previous Value] when value changed
@@ -1372,6 +1439,28 @@ namespace MCRatings
         {
             if (dragSelect)
                 e.Cancel = true;
+
+            //DataGridView.HitTestInfo hit = gridMovies.HitTest(LastMouseClick.X, LastMouseClick.Y);
+            //bool disablePaste = (hit.ColumnIndex == 0 || hit.RowIndex >= 0);
+            //if (hit.RowIndex >= 0 && hit.ColumnIndex > 1 && hit.Type == DataGridViewHitTestType.Cell)
+            //{
+            //    AppField field = (AppField)hit.ColumnIndex;
+            //    string value = null;
+            //    try
+            //    {
+            //        if (field == AppField.Playlists && !Clipboard.ContainsData(clipPlaylists))
+
+            //        }
+            //        else if (!gridMovies.Columns[hit.ColumnIndex].ReadOnly && Clipboard.ContainsText())
+            //            value = Clipboard.GetText();
+            //    }
+            //menuPaste.Enabled = true;
+            //if (Clipboard.ContainsText())
+            //    menuPaste.Text = "Paste field";
+            //else if (Clipboard.ContainsData("MCRatings.MovieInfo"))
+            //    menuPaste.Text = "Paste row";
+            //else
+            //    menuPaste.Enabled = false;
         }
 
         #endregion
@@ -1442,5 +1531,56 @@ namespace MCRatings
         }
 
         #endregion
+
+        private void menuCopyField_Click(object sender, EventArgs e)
+        {
+            DataGridView.HitTestInfo hit = gridMovies.HitTest(LastMouseClick.X, LastMouseClick.Y);
+            if (hit.RowIndex >= 0 && hit.ColumnIndex > 1 && hit.Type == DataGridViewHitTestType.Cell)
+            {
+                try
+                {
+                    string text = gridMovies[hit.ColumnIndex, hit.RowIndex].Value?.ToString();
+                    if (string.IsNullOrEmpty(text)) return;
+
+                    AppField field = (AppField)hit.ColumnIndex;
+                    if (field == AppField.Playlists)
+                        Clipboard.SetData(clipPlaylists, text);
+                    else
+                        Clipboard.SetText(text);
+                }
+                catch { }
+            }
+        }
+
+        private void menuPaste_Click(object sender, EventArgs e)
+        {
+            DataGridView.HitTestInfo hit = gridMovies.HitTest(LastMouseClick.X, LastMouseClick.Y);
+            if (hit.RowIndex >= 0 && hit.ColumnIndex > 1 && hit.Type == DataGridViewHitTestType.Cell)
+            {  
+                AppField field = (AppField)hit.ColumnIndex;
+                string value = null;
+                try
+                {
+                    if (field == AppField.Playlists)
+                    {
+                        if (!Clipboard.ContainsData(clipPlaylists))
+                            return;
+                        else
+                            value = (string)Clipboard.GetData(clipPlaylists);
+                    }
+                    else if (!gridMovies.Columns[hit.ColumnIndex].ReadOnly && Clipboard.ContainsText())
+                        value = Clipboard.GetText();
+                    else return;
+                }
+                catch { }
+                if (value == null) return;
+
+                MovieInfo m = gridMovies.Rows[hit.RowIndex].Cells[0].Value as MovieInfo;
+                gridMovies.Rows[hit.RowIndex].Cells[hit.ColumnIndex].Value = value;
+                m[(AppField)hit.ColumnIndex] = value;
+                gridMovies.Refresh();
+                updateModifiedCount();
+            }
+        }
     }
 }

@@ -13,10 +13,11 @@ namespace MCRatings
 
     public enum AppField
     {
-        Movie=0, Selected, Status, FTitle, FYear, Title, Year, Release, Imported, IMDbID,
-        IMDbRating, IMDbVotes, RottenTomatoes, Metascore, MPAARating,
-        Runtime, Genre, Production, Director, Writers, Actors, Description, Language, Country,
-        Revenue, Awards, Website, File, Filter
+        Movie=0, Selected, Filter, Status, FTitle, FYear,       // non-JR fields
+        Title, Year, Imported, Playlists, Release, IMDbID,
+        IMDbRating, IMDbVotes, TMDbScore, RottenTomatoes, Metascore, MPAARating,
+        Runtime, Genre, OriginalTitle, Collection, Production, Director, Writers, Actors, Tagline, Description, Language, Country,
+        Revenue, Awards, Website, File
     }
 
     public class Constants
@@ -62,17 +63,22 @@ namespace MCRatings
             { AppField.Title, new FieldInfo("JRiver Title", "Name", true, 250, 0) },
             { AppField.Year, new FieldInfo("Year", "Year", true, 50, 1) },              //year of "Date"
             { AppField.Release, new FieldInfo("Release", "Date (release)", true, 75, 1) },
-            { AppField.Imported, new FieldInfo("Imported", true, 100, 1) },
+            { AppField.Imported, new FieldInfo("Imported", "Date Imported", false, 120, 1) },
             { AppField.IMDbID, new FieldInfo("IMDbID", "IMDb ID", false, 75, 1) },
             { AppField.IMDbRating, new FieldInfo("IMDb", "IMDb Rating", true, 50, 1) },
             { AppField.IMDbVotes, new FieldInfo("Votes", "IMDb Votes", true, 75, 2) },
+            { AppField.TMDbScore, new FieldInfo("TMDb", "TMDb Score", true, 50, 1) },
             { AppField.RottenTomatoes, new FieldInfo("Rotten", "Rotten Tomatoes", true, 50, 1) },
             { AppField.Metascore, new FieldInfo("Meta", "Metascore", true, 50, 1) },
             { AppField.MPAARating, new FieldInfo("MPAA", "MPAA Rating", true, 60, 1) },
             { AppField.Runtime, new FieldInfo("Runtime", "Runtime", true, 60, 1) },
+            { AppField.Playlists, new FieldInfo("Lists", true, 50, 1) },
             { AppField.Genre, new FieldInfo("Genre", "Genre", true, 100, 0) },
+            { AppField.OriginalTitle, new FieldInfo("Original Title", "Original Title", true, 200, 0) },
+            { AppField.Collection, new FieldInfo("Collection", "Collection", true, 100, 0) },
             { AppField.Director, new FieldInfo("Director", "Director", true, 100, 0) },
             { AppField.Actors, new FieldInfo("Actors", "Actors", true, 100, 0) },
+            { AppField.Tagline, new FieldInfo("Tagline", "Tag Line", true, 200, 0) },
             { AppField.Description, new FieldInfo("Description", "Description", true, 200, 0) },
             { AppField.Production, new FieldInfo("Studios", "Studios", true, 100, 0) },
             { AppField.Writers, new FieldInfo("Writers", "Screenwriter", true, 100, 0) },

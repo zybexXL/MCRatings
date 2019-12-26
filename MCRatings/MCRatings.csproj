@@ -78,6 +78,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -96,6 +97,12 @@
     <Compile Include="About.Designer.cs">
       <DependentUpon>About.cs</DependentUpon>
     </Compile>
+    <Compile Include="Cache.cs" />
+    <Compile Include="OMDb\OMDbMovie.cs" />
+    <Compile Include="OMDb\OMDbRating.cs" />
+    <Compile Include="TMDb\TMDbAPI.cs" />
+    <Compile Include="TMDb\TMDbSearch.cs" />
+    <Compile Include="TMDb\TMDbMovie.cs" />
     <Compile Include="Settings\JRFieldMap.cs" />
     <Compile Include="Upgrade\AutoUpgrade.cs" />
     <Compile Include="Settings\ColorEditor.cs">
@@ -124,7 +131,6 @@
     <Compile Include="JRiver\JRiverAPI.cs" />
     <Compile Include="Model\MovieInfo.cs" />
     <Compile Include="OMDb\OMDbAPI.cs" />
-    <Compile Include="OMDb\OMDbInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Progress\ProgressUI.cs">
       <SubType>Form</SubType>
@@ -196,6 +202,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="MCRatings.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="obj\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

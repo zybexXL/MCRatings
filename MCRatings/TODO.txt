@@ -1,0 +1,24 @@
+
+- editable "imported" column
+- copy/paste playlists
+- copy/paste full row?
+- copy/paste ALL JR fields + playlists?
+- playlists column?
+
+Settings:
+- per field source: OMDB/TMDB/disabled
+- TMDB api key(s)
+- max num actors/directors/etc
+- create missing fields?
+- TMDB language preference
+
+TMDB:
+- get posters?
+- get actor pics?
+- new fields: TMDb Rating, tagline, etc
+
+Main:
+- Get from OMDB/TMDB (override settings?)
+
+
+- startup check: single popup for multiple missing fields

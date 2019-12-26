@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsUI));
             this.gridFields = new System.Windows.Forms.DataGridView();
             this.dgSetting = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -52,6 +52,10 @@
             this.chkFastStart = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.linkHelp = new System.Windows.Forms.LinkLabel();
+            this.txtTMDBkeys = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.gridFields)).BeginInit();
             this.SuspendLayout();
             // 
@@ -77,15 +81,15 @@
             this.gridFields.RowHeadersVisible = false;
             this.gridFields.RowTemplate.Height = 24;
             this.gridFields.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.gridFields.Size = new System.Drawing.Size(382, 324);
+            this.gridFields.Size = new System.Drawing.Size(382, 446);
             this.gridFields.TabIndex = 5;
             this.gridFields.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridFields_CellContentClick);
             this.gridFields.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridFields_CellValueChanged);
             // 
             // dgSetting
             // 
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgSetting.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dgSetting.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgSetting.HeaderText = "MCRatings field";
             this.dgSetting.Name = "dgSetting";
             this.dgSetting.ReadOnly = true;
@@ -95,9 +99,9 @@
             // dgField
             // 
             this.dgField.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgField.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dgField.DefaultCellStyle = dataGridViewCellStyle4;
             this.dgField.HeaderText = "JRiver field (Display)";
             this.dgField.Name = "dgField";
             this.dgField.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
@@ -120,7 +124,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(412, 165);
+            this.label1.Location = new System.Drawing.Point(412, 285);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(131, 15);
             this.label1.TabIndex = 8;
@@ -131,7 +135,7 @@
             this.txtCleanup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCleanup.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCleanup.Location = new System.Drawing.Point(415, 183);
+            this.txtCleanup.Location = new System.Drawing.Point(415, 303);
             this.txtCleanup.Multiline = true;
             this.txtCleanup.Name = "txtCleanup";
             this.txtCleanup.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
@@ -142,7 +146,7 @@
             // btnSave
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.Location = new System.Drawing.Point(647, 326);
+            this.btnSave.Location = new System.Drawing.Point(647, 448);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 6;
@@ -197,13 +201,13 @@
             this.linkLabel1.Tag = "http://www.omdbapi.com/apikey.aspx";
             this.linkLabel1.Text = "Click here to register for a free API key";
             this.linkLabel1.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.label4.Location = new System.Drawing.Point(414, 236);
+            this.label4.Location = new System.Drawing.Point(414, 356);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(202, 13);
             this.label4.TabIndex = 10;
@@ -222,7 +226,7 @@
             // btnDiscard
             // 
             this.btnDiscard.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDiscard.Location = new System.Drawing.Point(561, 326);
+            this.btnDiscard.Location = new System.Drawing.Point(561, 448);
             this.btnDiscard.Name = "btnDiscard";
             this.btnDiscard.Size = new System.Drawing.Size(75, 23);
             this.btnDiscard.TabIndex = 6;
@@ -250,7 +254,7 @@
             this.btnAudio.FlatAppearance.BorderSize = 0;
             this.btnAudio.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAudio.Image = global::MCRatings.Properties.Resources.speaker_on;
-            this.btnAudio.Location = new System.Drawing.Point(413, 324);
+            this.btnAudio.Location = new System.Drawing.Point(413, 446);
             this.btnAudio.Name = "btnAudio";
             this.btnAudio.Size = new System.Drawing.Size(26, 26);
             this.btnAudio.TabIndex = 14;
@@ -262,7 +266,7 @@
             // 
             this.chkFastStart.AutoSize = true;
             this.chkFastStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkFastStart.Location = new System.Drawing.Point(417, 280);
+            this.chkFastStart.Location = new System.Drawing.Point(417, 390);
             this.chkFastStart.Name = "chkFastStart";
             this.chkFastStart.Size = new System.Drawing.Size(146, 20);
             this.chkFastStart.TabIndex = 15;
@@ -294,18 +298,71 @@
             this.toolTip1.SetToolTip(this.linkHelp, "Hey, you never know, maybe someone has written it already...");
             this.linkHelp.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkHelp_LinkClicked);
             // 
+            // txtTMDBkeys
+            // 
+            this.txtTMDBkeys.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtTMDBkeys.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtTMDBkeys.Location = new System.Drawing.Point(415, 176);
+            this.txtTMDBkeys.Multiline = true;
+            this.txtTMDBkeys.Name = "txtTMDBkeys";
+            this.txtTMDBkeys.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtTMDBkeys.Size = new System.Drawing.Size(307, 50);
+            this.txtTMDBkeys.TabIndex = 9;
+            this.txtTMDBkeys.TextChanged += new System.EventHandler(this.txtAPIKeys_TextChanged);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(414, 158);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(108, 15);
+            this.label6.TabIndex = 10;
+            this.label6.Text = "TMDb API Keys:";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.label7.Location = new System.Drawing.Point(414, 229);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(159, 13);
+            this.label7.TabIndex = 10;
+            this.label7.Text = "Enter key(s) separated by space";
+            // 
+            // linkLabel2
+            // 
+            this.linkLabel2.AutoSize = true;
+            this.linkLabel2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.linkLabel2.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
+            this.linkLabel2.Location = new System.Drawing.Point(414, 246);
+            this.linkLabel2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.linkLabel2.Name = "linkLabel2";
+            this.linkLabel2.Size = new System.Drawing.Size(233, 16);
+            this.linkLabel2.TabIndex = 11;
+            this.linkLabel2.TabStop = true;
+            this.linkLabel2.Tag = "https://www.themoviedb.org/settings/api";
+            this.linkLabel2.Text = "Click here to register for a free API key";
+            this.linkLabel2.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
+            // 
             // SettingsUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(734, 361);
+            this.ClientSize = new System.Drawing.Size(734, 483);
             this.Controls.Add(this.linkHelp);
             this.Controls.Add(this.chkFastStart);
             this.Controls.Add(this.btnAudio);
             this.Controls.Add(this.lblReset);
+            this.Controls.Add(this.linkLabel2);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.label4);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.label3);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.txtTMDBkeys);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtAPIKeys);
             this.Controls.Add(this.label5);
@@ -355,5 +412,9 @@
         private System.Windows.Forms.CheckBox chkFastStart;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.LinkLabel linkHelp;
+        private System.Windows.Forms.TextBox txtTMDBkeys;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.LinkLabel linkLabel2;
     }
 }

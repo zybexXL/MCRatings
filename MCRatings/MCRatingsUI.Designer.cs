@@ -33,7 +33,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MCRatingsUI));
             this.gridMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.menuTitle = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuSelect = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuSelectCriteria = new System.Windows.Forms.ToolStripMenuItem();
             this.menuSelectValidID = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.menuSelectMissingID = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,14 +55,17 @@
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.menuSelectChanged = new System.Windows.Forms.ToolStripMenuItem();
             this.menuSelectUnchanged = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuRevert = new System.Windows.Forms.ToolStripMenuItem();
             this.menuRevertField = new System.Windows.Forms.ToolStripMenuItem();
             this.menuRevertThisColumn = new System.Windows.Forms.ToolStripMenuItem();
             this.menuRevertRow = new System.Windows.Forms.ToolStripMenuItem();
             this.menuRevertSelectedRows = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuDiscardChanges = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuCopyField = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuPaste = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.menuCreateShortcuts = new System.Windows.Forms.ToolStripMenuItem();
             this.menuShortcutFilename = new System.Windows.Forms.ToolStripMenuItem();
             this.menuShortcutTitle = new System.Windows.Forms.ToolStripMenuItem();
@@ -96,26 +100,19 @@
             this.gridMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.gridMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuTitle,
-            this.toolStripMenuItem1,
-            this.menuSelectAll,
-            this.menuClearSelection,
-            this.menuToggleSelection,
-            this.toolStripSeparator6,
-            this.menuSelectChanged,
-            this.menuSelectUnchanged,
+            this.menuSelect,
+            this.menuRevert,
             this.toolStripSeparator1,
-            this.menuRevertField,
-            this.menuRevertThisColumn,
-            this.menuRevertRow,
-            this.menuRevertSelectedRows,
-            this.toolStripSeparator2,
             this.menuDiscardChanges,
             this.toolStripSeparator7,
+            this.menuCopyField,
+            this.menuPaste,
+            this.toolStripSeparator2,
             this.menuCreateShortcuts,
             this.menuColorGuide});
             this.gridMenu.Name = "contextMenuStrip1";
             this.gridMenu.ShowImageMargin = false;
-            this.gridMenu.Size = new System.Drawing.Size(168, 336);
+            this.gridMenu.Size = new System.Drawing.Size(168, 198);
             this.gridMenu.Opening += new System.ComponentModel.CancelEventHandler(this.gridMenu_Opening);
             // 
             // menuTitle
@@ -128,9 +125,23 @@
             this.menuTitle.Size = new System.Drawing.Size(167, 22);
             this.menuTitle.Text = "VISIBLE ROWS:";
             // 
-            // toolStripMenuItem1
+            // menuSelect
             // 
-            this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuSelect.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuSelectCriteria,
+            this.menuSelectAll,
+            this.menuClearSelection,
+            this.menuToggleSelection,
+            this.toolStripSeparator6,
+            this.menuSelectChanged,
+            this.menuSelectUnchanged});
+            this.menuSelect.Name = "menuSelect";
+            this.menuSelect.Size = new System.Drawing.Size(167, 22);
+            this.menuSelect.Text = "Select...";
+            // 
+            // menuSelectCriteria
+            // 
+            this.menuSelectCriteria.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuSelectValidID,
             this.toolStripSeparator4,
             this.menuSelectMissingID,
@@ -145,9 +156,9 @@
             this.menuSelectAdded5,
             this.menuSelectAdded7,
             this.menuSelectAdded30});
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(167, 22);
-            this.toolStripMenuItem1.Text = "Select criteria...";
+            this.menuSelectCriteria.Name = "menuSelectCriteria";
+            this.menuSelectCriteria.Size = new System.Drawing.Size(168, 22);
+            this.menuSelectCriteria.Text = "Select criteria...";
             // 
             // menuSelectValidID
             // 
@@ -247,7 +258,7 @@
             this.menuSelectAll.ShortcutKeyDisplayString = "";
             this.menuSelectAll.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
             this.menuSelectAll.ShowShortcutKeys = false;
-            this.menuSelectAll.Size = new System.Drawing.Size(167, 22);
+            this.menuSelectAll.Size = new System.Drawing.Size(168, 22);
             this.menuSelectAll.Text = "Select all";
             this.menuSelectAll.Click += new System.EventHandler(this.menuSelectAll_Click);
             // 
@@ -257,73 +268,79 @@
             this.menuClearSelection.ShortcutKeyDisplayString = "";
             this.menuClearSelection.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
             this.menuClearSelection.ShowShortcutKeys = false;
-            this.menuClearSelection.Size = new System.Drawing.Size(167, 22);
+            this.menuClearSelection.Size = new System.Drawing.Size(168, 22);
             this.menuClearSelection.Text = "Clear selection";
             this.menuClearSelection.Click += new System.EventHandler(this.menuClearSelection_Click);
             // 
             // menuToggleSelection
             // 
             this.menuToggleSelection.Name = "menuToggleSelection";
-            this.menuToggleSelection.Size = new System.Drawing.Size(167, 22);
+            this.menuToggleSelection.Size = new System.Drawing.Size(168, 22);
             this.menuToggleSelection.Text = "Toggle selection";
             this.menuToggleSelection.Click += new System.EventHandler(this.menuToggleSelection_Click);
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(164, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(165, 6);
             // 
             // menuSelectChanged
             // 
             this.menuSelectChanged.Name = "menuSelectChanged";
-            this.menuSelectChanged.Size = new System.Drawing.Size(167, 22);
+            this.menuSelectChanged.Size = new System.Drawing.Size(168, 22);
             this.menuSelectChanged.Text = "Select changed";
             this.menuSelectChanged.Click += new System.EventHandler(this.menuSelectChanged_Click);
             // 
             // menuSelectUnchanged
             // 
             this.menuSelectUnchanged.Name = "menuSelectUnchanged";
-            this.menuSelectUnchanged.Size = new System.Drawing.Size(167, 22);
+            this.menuSelectUnchanged.Size = new System.Drawing.Size(168, 22);
             this.menuSelectUnchanged.Text = "Select unchanged";
             this.menuSelectUnchanged.Click += new System.EventHandler(this.menuSelectUnchanged_Click);
             // 
-            // toolStripSeparator1
+            // menuRevert
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(164, 6);
+            this.menuRevert.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuRevertField,
+            this.menuRevertThisColumn,
+            this.menuRevertRow,
+            this.menuRevertSelectedRows});
+            this.menuRevert.Name = "menuRevert";
+            this.menuRevert.Size = new System.Drawing.Size(167, 22);
+            this.menuRevert.Text = "Revert...";
             // 
             // menuRevertField
             // 
             this.menuRevertField.Name = "menuRevertField";
-            this.menuRevertField.Size = new System.Drawing.Size(167, 22);
+            this.menuRevertField.Size = new System.Drawing.Size(181, 22);
             this.menuRevertField.Text = "Revert this field";
             this.menuRevertField.Click += new System.EventHandler(this.menuRevertField_Click);
             // 
             // menuRevertThisColumn
             // 
             this.menuRevertThisColumn.Name = "menuRevertThisColumn";
-            this.menuRevertThisColumn.Size = new System.Drawing.Size(167, 22);
+            this.menuRevertThisColumn.Size = new System.Drawing.Size(181, 22);
             this.menuRevertThisColumn.Text = "Revert this column";
             this.menuRevertThisColumn.Click += new System.EventHandler(this.menuRevertThisColumn_Click);
             // 
             // menuRevertRow
             // 
             this.menuRevertRow.Name = "menuRevertRow";
-            this.menuRevertRow.Size = new System.Drawing.Size(167, 22);
+            this.menuRevertRow.Size = new System.Drawing.Size(181, 22);
             this.menuRevertRow.Text = "Revert this row";
             this.menuRevertRow.Click += new System.EventHandler(this.menuRevertRow_Click);
             // 
             // menuRevertSelectedRows
             // 
             this.menuRevertSelectedRows.Name = "menuRevertSelectedRows";
-            this.menuRevertSelectedRows.Size = new System.Drawing.Size(167, 22);
+            this.menuRevertSelectedRows.Size = new System.Drawing.Size(181, 22);
             this.menuRevertSelectedRows.Text = "Revert selected rows";
             this.menuRevertSelectedRows.Click += new System.EventHandler(this.menuRevertSelectedRows_Click);
             // 
-            // toolStripSeparator2
+            // toolStripSeparator1
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(164, 6);
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(164, 6);
             // 
             // menuDiscardChanges
             // 
@@ -336,6 +353,25 @@
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
             this.toolStripSeparator7.Size = new System.Drawing.Size(164, 6);
+            // 
+            // menuCopyField
+            // 
+            this.menuCopyField.Name = "menuCopyField";
+            this.menuCopyField.Size = new System.Drawing.Size(167, 22);
+            this.menuCopyField.Text = "Copy field";
+            this.menuCopyField.Click += new System.EventHandler(this.menuCopyField_Click);
+            // 
+            // menuPaste
+            // 
+            this.menuPaste.Name = "menuPaste";
+            this.menuPaste.Size = new System.Drawing.Size(167, 22);
+            this.menuPaste.Text = "Paste field";
+            this.menuPaste.Click += new System.EventHandler(this.menuPaste_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(164, 6);
             // 
             // menuCreateShortcuts
             // 
@@ -350,21 +386,21 @@
             // menuShortcutFilename
             // 
             this.menuShortcutFilename.Name = "menuShortcutFilename";
-            this.menuShortcutFilename.Size = new System.Drawing.Size(180, 22);
+            this.menuShortcutFilename.Size = new System.Drawing.Size(169, 22);
             this.menuShortcutFilename.Text = "Filename.url";
             this.menuShortcutFilename.Click += new System.EventHandler(this.menuShortcutFilename_Click);
             // 
             // menuShortcutTitle
             // 
             this.menuShortcutTitle.Name = "menuShortcutTitle";
-            this.menuShortcutTitle.Size = new System.Drawing.Size(180, 22);
+            this.menuShortcutTitle.Size = new System.Drawing.Size(169, 22);
             this.menuShortcutTitle.Text = "Title [Year].url";
             this.menuShortcutTitle.Click += new System.EventHandler(this.menuShortcutTitle_Click);
             // 
             // menuShortcutID
             // 
             this.menuShortcutID.Name = "menuShortcutID";
-            this.menuShortcutID.Size = new System.Drawing.Size(180, 22);
+            this.menuShortcutID.Size = new System.Drawing.Size(169, 22);
             this.menuShortcutID.Text = "IMDB_tt000000.url";
             this.menuShortcutID.Click += new System.EventHandler(this.menuShortcutID_Click);
             // 
@@ -618,7 +654,6 @@
             this.gridMovies.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.gridMovies.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.gridMovies.ContextMenuStrip = this.gridMenu;
-            this.gridMovies.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.gridMovies.Location = new System.Drawing.Point(10, 63);
             this.gridMovies.MultiSelect = false;
             this.gridMovies.Name = "gridMovies";
@@ -731,7 +766,7 @@
         private System.Windows.Forms.CheckBox chkShowSelected;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.ContextMenuStrip gridMenu;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem menuSelectCriteria;
         private System.Windows.Forms.ToolStripMenuItem menuSelectValidID;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem menuSelectMissingID;
@@ -756,7 +791,6 @@
         private System.Windows.Forms.CheckBox chkOverwrite;
         private System.Windows.Forms.ToolStripMenuItem menuRevertField;
         private System.Windows.Forms.ToolStripMenuItem menuRevertRow;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem menuDiscardChanges;
         private System.Windows.Forms.ComboBox comboLists;
         private System.Windows.Forms.Label label1;
@@ -776,6 +810,11 @@
         private System.Windows.Forms.ToolStripMenuItem menuShortcutTitle;
         private System.Windows.Forms.ToolStripMenuItem menuShortcutFilename;
         private System.Windows.Forms.ToolStripMenuItem menuShortcutID;
+        private System.Windows.Forms.ToolStripMenuItem menuSelect;
+        private System.Windows.Forms.ToolStripMenuItem menuRevert;
+        private System.Windows.Forms.ToolStripMenuItem menuCopyField;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem menuPaste;
     }
 }
 
