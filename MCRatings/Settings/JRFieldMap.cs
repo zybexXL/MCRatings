@@ -14,17 +14,15 @@ namespace MCRatings
         public string JRfield;
         public bool enabled;
         public bool overwrite;
-        public bool numeric;
 
         public JRFieldMap() { }   // for serialization
 
-        public JRFieldMap(AppField _field, string _JRField, bool _enabled = true, bool _overwrite = true, bool _numeric = false)
+        public JRFieldMap(AppField _field, string _JRField, bool _enabled = true, bool _overwrite = true)
         {
             field = _field;
             JRfield = _JRField;
             enabled = _enabled;
             overwrite = _overwrite;
-            numeric = _numeric;
         }
     }
 

@@ -16,8 +16,8 @@ namespace MCRatings
         Movie=0, Selected, Filter, Status, FTitle, FYear,       // non-JR fields
         Title, Year, Imported, Playlists, Release, IMDbID,
         IMDbRating, IMDbVotes, TMDbScore, RottenTomatoes, Metascore, MPAARating,
-        Runtime, Genre, OriginalTitle, Collection, Production, Director, Writers, Actors, Tagline, Description, Language, Country,
-        Revenue, Awards, Website, File
+        Runtime, Genre, OriginalTitle, Series, Collections, Production, Director, Writers, Actors, Tagline, Description, Language, Country,
+        Revenue, Awards, Trailer, Website, File
     }
 
     public class Constants
@@ -75,7 +75,8 @@ namespace MCRatings
             { AppField.Playlists, new FieldInfo("Lists", true, 50, 1) },
             { AppField.Genre, new FieldInfo("Genre", "Genre", true, 100, 0) },
             { AppField.OriginalTitle, new FieldInfo("Original Title", "Original Title", true, 200, 0) },
-            { AppField.Collection, new FieldInfo("Collection", "Collection", true, 100, 0) },
+            { AppField.Series, new FieldInfo("Series", "Series", true, 100, 0) },
+            { AppField.Collections, new FieldInfo("Collections", "Collections", true, 100, 0) },
             { AppField.Director, new FieldInfo("Director", "Director", true, 100, 0) },
             { AppField.Actors, new FieldInfo("Actors", "Actors", true, 100, 0) },
             { AppField.Tagline, new FieldInfo("Tagline", "Tag Line", true, 200, 0) },
@@ -86,6 +87,7 @@ namespace MCRatings
             { AppField.Country, new FieldInfo("Country", "Country", true, 100, 0) },
             { AppField.Revenue, new FieldInfo("Revenue", "Gross Revenue", true, 100, 2) },
             { AppField.Awards, new FieldInfo("Awards", "Awards", true, 100, 0) },
+            { AppField.Trailer, new FieldInfo("Trailer", "Trailer", true, 100, 0) },
             { AppField.Website, new FieldInfo("Website", "Website", true, 100, 0) },
             { AppField.File, new FieldInfo("File", true, 500, 0) },
             { AppField.Filter, new FieldInfo("Filter", true, 50, 0) },          // hidden

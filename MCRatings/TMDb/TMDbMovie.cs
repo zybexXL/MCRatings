@@ -67,6 +67,27 @@ namespace MCRatings
             return null;
         }
 
+        public string Get(AppField field)
+        {
+            switch (field)
+            {
+                case AppField.Trailer:
+                    var video = videos?.results?.FirstOrDefault(v => v.type.ToLower() == "trailer");
+                    if (video == null) video = videos?.results?.FirstOrDefault(v => v.type.ToLower() == "clip");
+                    if (video != null)
+                    {
+                        switch (video.site.ToLower())
+                        {
+                            case "youtube": return $"https://www.youtube.com/watch?v={video.key}";
+                            case "vimeo": return $"https://vimeo.com/{video.key}";
+                            default: return $"webmedia://{video.site}/{video.key}";
+                        }
+                    }
+                    break;
+            }
+            return null;
+        }
+
         private void fixValues()
         {
             // get RottenScore, normalize values
@@ -196,8 +217,8 @@ namespace MCRatings
         public string iso_3166_1;  // country
         public string key;         // youtube video ID
         public string name;
-        public string site;
-        public string type;
+        public string site;        // "YouTube"
+        public string type;        // "Trailer"
         public int size;
     }
 

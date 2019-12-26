@@ -14,6 +14,9 @@ namespace MCRatings
     [Serializable]
     public class Settings
     {
+        const int CURRVERSION = 2;
+
+        public int version;
         public bool valid = false;
         public bool Silent = false;
         public string APIKeys;          // omdb
@@ -23,6 +26,7 @@ namespace MCRatings
         public int CacheDays;
         public uint[] CellColors;
         public bool FastStart = false;
+        public bool Collections = false;
 
         [XmlIgnore]
         public Dictionary<AppField, JRFieldMap> FieldMap = new Dictionary<AppField, JRFieldMap>();
@@ -71,7 +75,9 @@ namespace MCRatings
                     settings.CacheDays = saved.CacheDays;
                     settings.FastStart = saved.FastStart;
                     settings.Silent = saved.Silent;
-                    settings.FileCleanup = saved.FileCleanup?.Replace("\n","\r\n");
+                    settings.FileCleanup = saved.FileCleanup?.Replace("\n", "\r\n");
+                    settings.version = saved.version;
+                    settings.Collections = saved.Collections;
 
                     if (saved.Fields != null)
                         foreach (var field in saved.Fields)
@@ -81,6 +87,12 @@ namespace MCRatings
                     settings.CellColors = saved.CellColors;
                     if (settings.CellColors == null || settings.CellColors.Length != Constants.CellColors.Length)
                         settings.CellColors = (uint[])Constants.CellColors.Clone();
+                }
+                // upgrade settings
+                if (settings.valid && settings.version < CURRVERSION)
+                {
+                    settings.version = CURRVERSION;
+                    settings.Save();
                 }
             }
             catch { }    // errors are handled by the caller when settings is null

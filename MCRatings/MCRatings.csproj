@@ -98,6 +98,7 @@
       <DependentUpon>About.cs</DependentUpon>
     </Compile>
     <Compile Include="Cache.cs" />
+    <Compile Include="Collection\CollectionMovies.cs" />
     <Compile Include="OMDb\OMDbMovie.cs" />
     <Compile Include="OMDb\OMDbRating.cs" />
     <Compile Include="TMDb\TMDbAPI.cs" />

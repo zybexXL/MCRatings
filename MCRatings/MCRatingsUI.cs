@@ -14,6 +14,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows.Forms;
 
 namespace MCRatings
@@ -497,7 +498,8 @@ namespace MCRatings
             gridMovies.Columns[(int)AppField.Selected].SortMode = DataGridViewColumnSortMode.Automatic;
             gridMovies.Columns[(int)AppField.Movie].Visible = false;
             gridMovies.Columns[(int)AppField.Filter].Visible = false;
-
+            gridMovies.Columns[(int)AppField.Collections].Visible = Program.settings.Collections;
+            
             // column colors
             gridMovies.Columns[(int)AppField.IMDbID].DefaultCellStyle.BackColor = getColor(CellColor.ColumnEdit);
             gridMovies.Columns[(int)AppField.FTitle].DefaultCellStyle.BackColor = getColor(CellColor.ColumnEdit);
@@ -506,12 +508,13 @@ namespace MCRatings
             gridMovies.Columns[(int)AppField.Playlists].DefaultCellStyle.BackColor = getColor(CellColor.ColumnEdit);
             gridMovies.Columns[(int)AppField.Status].DefaultCellStyle.BackColor = Color.Gainsboro;
 
-            gridMovies.Columns[(int)AppField.Selected].Frozen = true;
             gridMovies.Columns[(int)AppField.Playlists].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
 
             // adjust column order
-            gridMovies.Columns[(int)AppField.IMDbID].DisplayIndex = 4;
-            //gridMovies.Columns[(int)AppField.Imported].DisplayIndex = 5;
+            gridMovies.Columns[(int)AppField.Title].DisplayIndex = 4;
+            gridMovies.Columns[(int)AppField.Year].DisplayIndex = 5;
+            gridMovies.Columns[(int)AppField.IMDbID].DisplayIndex = 6;
+            gridMovies.Columns[(int)AppField.Year].Frozen = true;
 
             if (gridMovies.Rows.Count > 0)
                 gridMovies.CurrentCell = gridMovies.Rows[0].Cells[1];
@@ -674,11 +677,12 @@ namespace MCRatings
                         ok |= overwriteField(movie, AppField.TMDbScore, info2.vote_average.ToString("0.0"), progress.canOverwrite);
                         ok |= overwriteField(movie, AppField.Tagline, info2.tagline, progress.canOverwrite);
                         ok |= overwriteField(movie, AppField.OriginalTitle, info2.original_title, progress.canOverwrite);
-                        string collection = info2.belongs_to_collection?.name ?? "";
-                        Match m = Regex.Match(collection, @"^(.*) collection\s*$", RegexOptions.IgnoreCase);
+                        ok |= overwriteField(movie, AppField.Trailer, info2.Get(AppField.Trailer), progress.canOverwrite);
+                        string series = info2.belongs_to_collection?.name ?? "";
+                        Match m = Regex.Match(series, @"^(.*) collection\s*$", RegexOptions.IgnoreCase);
                         if (m.Success)
-                            collection = m.Groups[1].Value;    
-                        ok |= overwriteField(movie, AppField.Collection, collection, progress.canOverwrite);
+                            series = m.Groups[1].Value;    
+                        ok |= overwriteField(movie, AppField.Series, series, progress.canOverwrite);
                     }
                     movie[AppField.Status] = ok && movie.isDirty ? "updated" : "no change";
                     movie.selected = false;
@@ -705,14 +709,14 @@ namespace MCRatings
 
             movie.setUpdate(field, value);
 
-            if (fieldEnabled && value != movie[field] && (string.IsNullOrEmpty(movie[field]) || (fieldOverwrite && masterOverwrite) || (field == AppField.Collection)))
+            if (fieldEnabled && value != movie[field] && (string.IsNullOrEmpty(movie[field]) || (fieldOverwrite && masterOverwrite)) || field == AppField.Collections)
             {
                 // special handling for Revenue - only overwrite if value is higher
                 if (field == AppField.Revenue && Util.NumberValue(value) < Util.NumberValue(movie[field]))
                     return false;
 
                 // special handling for Collection (merge with existing list)
-                if (field == AppField.Collection)
+                if (field == AppField.Collections)
                     value = mergeList(movie[field], value);
 
                 movie[field] = value;
@@ -746,6 +750,12 @@ namespace MCRatings
             if (changed.Count == 0)
             {
                 MessageBox.Show("No modified movies, nothing to save.", "Nothing changed", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (!jrAPI.CheckConnection() && !jrAPI.Connect())
+            {
+                MessageBox.Show("Can't connect to JRiver, please check!", "Connection lost", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -1254,6 +1264,13 @@ namespace MCRatings
                     if (id != null && id.ToLower().StartsWith("tt"))
                         Process.Start($"https://www.imdb.com/title/{id.ToLower()}/");
                 }
+                // handle CTRL+click on Trailer link
+                if (e.ColumnIndex == (int)AppField.Trailer && ModifierKeys.HasFlag(Keys.Control))
+                {
+                    string url = gridMovies.CurrentCell.EditedFormattedValue as string;
+                    if (url != null && url.ToLower().StartsWith("http"))
+                        Process.Start(url);
+                }
                 // handle CTRL+click on File path
                 else if (e.ColumnIndex == (int)AppField.File && ModifierKeys.HasFlag(Keys.Control))
                 {
@@ -1581,6 +1598,88 @@ namespace MCRatings
                 gridMovies.Refresh();
                 updateModifiedCount();
             }
+        }
+
+        private void MCRatingsUI_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] files = (string[])(e.Data.GetData(DataFormats.FileDrop, false));
+            if (files.Length == 0) return;
+
+            string html = File.ReadAllText(files[0]);
+            string title = null;
+            var m = Regex.Match(html, @"<title>(.+?)</title>");
+            if (m.Success)
+                title = HttpUtility.HtmlDecode(m.Groups[1].Value.Trim());
+
+            m = Regex.Match(html, @"coverViewJsonData\[ 0 \] = ({.+});\n");
+            if (m.Success)
+            {
+                string json = m.Groups[1].Value;
+                MovieCollection col = MovieCollection.Parse(json, title);
+                if (col != null)
+                {
+                    ParseCollection(col);
+                    return;
+                }
+            }
+            MessageBox.Show("Invalid collection file - could not parse JSON data");
+        }
+
+        private void MCRatingsUI_DragEnter(object sender, DragEventArgs e)
+        {
+            string[] files = (string[])(e.Data.GetData(DataFormats.FileDrop, false));
+            if (files.Length > 0 && Path.GetExtension(files[0]).ToLower().StartsWith(".htm"))
+                e.Effect = DragDropEffects.Copy;
+        }
+
+        private void ParseCollection(MovieCollection collection)
+        {
+            if (!Program.settings.Collections)
+            {
+                MessageBox.Show("Please enable 'Collections' in Settings.xml");
+                return;
+            }
+
+            DateTime start = DateTime.Now;
+
+            int count = collection.Movies.Count;
+            List<string> col = collection.Movies.Select(m => m.ImdbId).ToList();
+            List<string> loaded = new List<string>();
+
+            BindingSource bs = gridMovies.DataSource as BindingSource;
+            DataTable dt = bs?.DataSource as DataTable;
+
+            int repeated = 0;
+            int added = 0;
+            
+            if (dt != null)
+            {
+                foreach (DataRow row in dt.Rows)
+                {
+                    MovieInfo m = row[(int)AppField.Movie] as MovieInfo;
+                    string imdb = m[AppField.IMDbID]?.Replace("tt","");
+                    if (!string.IsNullOrEmpty(imdb))
+                    {
+                        if (col.Contains(imdb))
+                        {
+                            var curr = m[AppField.Collections].Split(';').Select(c => c.ToLower().Trim()).ToList();
+                            if (curr.Contains(collection.Title.ToLower()))
+                                repeated++;
+                            else
+                            {
+                                if (overwriteField(m, AppField.Collections, collection.Title, chkOverwrite.Checked))
+                                    m[AppField.Status] = "updated";
+                                added++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            UpdateDataGrid(start);
+            updateModifiedCount();
+            updateSelectedCount();
+            SetStatus($"Imported collection '{collection.Title}': {count} movies, {added + repeated} matches");
         }
     }
 }

@@ -112,9 +112,12 @@ namespace MCRatings
         {
             gridFields.Rows.Clear();
             foreach (AppField f in Enum.GetValues(typeof(AppField)))
+            {
+                if (!settings.Collections && f == AppField.Collections)
+                    continue;
                 if (Constants.ViewColumnInfo[f].isJRField)
                     addRow(settings, f);
-
+            }
             txtCleanup.Text = settings.FileCleanup;
             txtAPIKeys.Text = settings.APIKeys;
             txtTMDBkeys.Text = settings.TMDbAPIKeys;

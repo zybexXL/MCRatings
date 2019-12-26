@@ -715,6 +715,7 @@
             // 
             // MCRatingsUI
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
@@ -746,6 +747,8 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MCRatingsUI_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Shown += new System.EventHandler(this.MCRatingsUI_Shown);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.MCRatingsUI_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.MCRatingsUI_DragEnter);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MCRatingsUI_KeyDown);
             this.gridMenu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gridMovies)).EndInit();

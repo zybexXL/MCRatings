@@ -129,7 +129,7 @@ namespace MCRatings
                     // get Movie info - try with each key
                     for (int i = 0; i < apikeys.Count; i++)
                     {
-                        HttpResponseMessage response = client.GetAsync($"/3/movie/{id}?api_key={apikey}&language=en-US&append_to_response=credits").Result;
+                        HttpResponseMessage response = client.GetAsync($"/3/movie/{id}?api_key={apikey}&language=en-US&append_to_response=credits,videos,images,keywords").Result;
                         lastResponse = (int)response.StatusCode;
                         if (response.IsSuccessStatusCode)
                         {
