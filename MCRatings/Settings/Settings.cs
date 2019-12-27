@@ -19,14 +19,18 @@ namespace MCRatings
         public int version;
         public bool valid = false;
         public bool Silent = false;
-        public string APIKeys;          // omdb
-        public string TMDbAPIKeys;      // tmdb
-        public string FileCleanup;
+        public string APIKeys = "";          // omdb
+        public string TMDbAPIKeys = "";      // tmdb
+        public string FileCleanup = "";
         public List<JRFieldMap> Fields = new List<JRFieldMap>();
-        public int CacheDays;
+        public int CacheDays = Constants.MaxCacheDays;
         public uint[] CellColors;
         public bool FastStart = false;
         public bool Collections = false;
+        public bool WebmediaURLs = false;
+        public int ListItemsLimit = 5;
+        public string Language = "EN";
+        public int PreferredSource = 1;     // 1 = TMDB, 2 = OMDB
 
         [XmlIgnore]
         public Dictionary<AppField, JRFieldMap> FieldMap = new Dictionary<AppField, JRFieldMap>();
@@ -57,12 +61,17 @@ namespace MCRatings
 
         public Settings()
         {
+            FieldMap = new Dictionary<AppField, JRFieldMap>();
+            foreach (AppField f in Enum.GetValues(typeof(AppField)))
+                if (Constants.ViewColumnInfo[f].isJRField)
+                    FieldMap.Add(f, new JRFieldMap(f, Constants.ViewColumnInfo[f].JRField));
+
+            Fields = FieldMap.Values.ToList();
         }
 
         public static Settings Load()
         {
             Settings settings = new Settings();
-            settings.Reset();
             try
             {
                 XmlSerializer ser = new XmlSerializer(typeof(Settings));
@@ -78,6 +87,10 @@ namespace MCRatings
                     settings.FileCleanup = saved.FileCleanup?.Replace("\n", "\r\n");
                     settings.version = saved.version;
                     settings.Collections = saved.Collections;
+                    settings.WebmediaURLs = saved.WebmediaURLs;
+                    settings.ListItemsLimit = saved.ListItemsLimit;
+                    settings.Language = saved.Language;
+                    settings.ListItemsLimit = saved.ListItemsLimit;
 
                     if (saved.Fields != null)
                         foreach (var field in saved.Fields)
@@ -113,23 +126,6 @@ namespace MCRatings
             }
             catch { }    // errors are handled by the caller when settings is null
             return false;
-        }
-
-        public void Reset()
-        {
-            FieldMap = new Dictionary<AppField, JRFieldMap>();
-            foreach (AppField f in Enum.GetValues(typeof(AppField)))
-                if (Constants.ViewColumnInfo[f].isJRField)
-                    FieldMap.Add(f, new JRFieldMap(f, Constants.ViewColumnInfo[f].JRField));
-
-            Fields = FieldMap.Values.ToList();
-            APIKeys = "";
-            TMDbAPIKeys = "";
-            FileCleanup = "";
-            Silent = false;
-            CacheDays = Constants.MaxCacheDays;
-            FastStart = false;
-            // colors are NOT reset here
         }
     }
 

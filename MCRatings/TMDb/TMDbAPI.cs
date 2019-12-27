@@ -93,7 +93,10 @@ namespace MCRatings
         public string getByIMDB(string imdb, bool noCache = false)
         {
             lastResponse = 304;
-            string cached = noCache ? null : Cache.Get("tmdb."+imdb);
+            string language = Program.settings.Language?.ToLower();
+            if (string.IsNullOrWhiteSpace(language)) language = "en";
+
+            string cached = noCache ? null : Cache.Get($"tmdb.{language}.{imdb}");
             if (cached != null)
                 return cached;
 
@@ -109,7 +112,7 @@ namespace MCRatings
                     // find TMDBid by IMDBid - try with each key
                     for (int i = 0; i < apikeys.Count; i++)
                     {
-                        HttpResponseMessage response = client.GetAsync($"/3/find/{imdb}?api_key={apikey}&language=en-US&external_source=imdb_id").Result;
+                        HttpResponseMessage response = client.GetAsync($"/3/find/{imdb}?api_key={apikey}&language=en&external_source=imdb_id").Result;
                         lastResponse = (int)response.StatusCode;
                         if (response.IsSuccessStatusCode)
                         {
@@ -125,11 +128,11 @@ namespace MCRatings
                     Match m = Regex.Match(result, @"""id"":(\d+),");
                     if (!m.Success) return null;
                     int id = int.Parse(m.Groups[1].Value);
-
+                    
                     // get Movie info - try with each key
                     for (int i = 0; i < apikeys.Count; i++)
                     {
-                        HttpResponseMessage response = client.GetAsync($"/3/movie/{id}?api_key={apikey}&language=en-US&append_to_response=credits,videos,images,keywords").Result;
+                        HttpResponseMessage response = client.GetAsync($"/3/movie/{id}?api_key={apikey}&language={language}&append_to_response=credits,videos,images,keywords&include_image_language={language},en,null").Result;
                         lastResponse = (int)response.StatusCode;
                         if (response.IsSuccessStatusCode)
                         {
@@ -144,7 +147,7 @@ namespace MCRatings
 
                     // save to cache
                     if (result != null && !result.Contains("\"status_code\":"))
-                        Cache.Put("tmdb."+imdb, result);
+                        Cache.Put($"tmdb.{language}.{imdb}", result);
                     return result;
                 }
             }

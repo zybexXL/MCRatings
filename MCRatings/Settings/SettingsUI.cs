@@ -34,12 +34,12 @@ namespace MCRatings
 
         private void Settings_Load(object sender, EventArgs e)
         {
-            int height = gridFields.ColumnHeadersHeight + 2;
-            height += gridFields.Rows.Count * gridFields.Rows[0].Height;    // grid height
-            height = this.Height - gridFields.Height + height;       // required form heigh
-            height = Math.Min(height, Screen.FromControl(this).Bounds.Height - 100);
-            this.Height = height;
-            this.Top = (Screen.FromControl(this).Bounds.Height - height) / 2;
+            //int height = gridFields.ColumnHeadersHeight + 2;
+            //height += gridFields.Rows.Count * gridFields.Rows[0].Height;    // grid height
+            //height = this.Height - gridFields.Height + height;       // required form heigh
+            //height = Math.Min(height, Screen.FromControl(this).Bounds.Height - 100);
+            //this.Height = height;
+            //this.Top = (Screen.FromControl(this).Bounds.Height - height) / 2;
             badFields = checkFieldNames(Program.settings.valid);
         }
 
@@ -98,9 +98,13 @@ namespace MCRatings
                 }
                 Program.settings.Silent = !audio;
                 Program.settings.FastStart = chkFastStart.Checked;
+                Program.settings.WebmediaURLs = chkWebmedia.Checked;
                 Program.settings.FileCleanup = txtCleanup.Text?.Trim();
                 Program.settings.APIKeys = txtAPIKeys.Text?.Trim();
                 Program.settings.TMDbAPIKeys = txtTMDBkeys.Text?.Trim();
+                Program.settings.PreferredSource = optTMDb.Checked ? 1 : 2;
+                Program.settings.ListItemsLimit = (int)maxListLimit.Value;
+                Program.settings.Language = string.IsNullOrWhiteSpace(txtLanguage.Text) ? "EN" : txtLanguage.Text;
                 Program.settings.Save();
                 dirty = false;
             }
@@ -121,8 +125,13 @@ namespace MCRatings
             txtCleanup.Text = settings.FileCleanup;
             txtAPIKeys.Text = settings.APIKeys;
             txtTMDBkeys.Text = settings.TMDbAPIKeys;
-            audio = !settings.Silent;
             chkFastStart.Checked = settings.FastStart;
+            chkWebmedia.Checked = settings.WebmediaURLs;
+            if (settings.PreferredSource == 2) optOMDb.Checked = true;
+            else optTMDb.Checked = true;
+            maxListLimit.Value = settings.ListItemsLimit;
+            txtLanguage.Text = settings.Language ?? "EN";
+            audio = !settings.Silent;
             btnAudio.Image = audio ? Properties.Resources.speaker_on : Properties.Resources.speaker_off;
         }
 
@@ -154,16 +163,6 @@ namespace MCRatings
             dirty = true;
         }
 
-        private void txtAPIKeys_TextChanged(object sender, EventArgs e)
-        {
-            dirty = true;
-        }
-
-        private void txtCleanup_TextChanged(object sender, EventArgs e)
-        {
-            dirty = true;
-        }
-
         private void SettingsUI_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == 27)
@@ -181,7 +180,6 @@ namespace MCRatings
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 Settings settings = new Settings();
-                settings.Reset();
                 settings.APIKeys = txtAPIKeys.Text;
                 settings.TMDbAPIKeys = txtTMDBkeys.Text;
                 settings.FileCleanup = txtCleanup.Text;
@@ -205,7 +203,10 @@ namespace MCRatings
             {
                 if (DialogResult.No == MessageBox.Show("Current field mapping has errors. Are you sure you want to close without fixing it?",
                       "Invalid settings", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
+                {
                     e.Cancel = true;
+                    tabSettings.SelectedTab = tabFields;
+                }
             }
             else if (dirty && MessageBox.Show("Close without saving?", "Discard settings",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
@@ -227,6 +228,7 @@ namespace MCRatings
                     "If you don't want a field to be updated, you can disable it.\n\n" +
                     "To get OMDb information, you need to register for an API key using the provided link.", "Welcome to MCRatings!",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
+                tabSettings.SelectedTab = tabFields;
             }
         }
 
@@ -237,7 +239,7 @@ namespace MCRatings
             btnAudio.Image = audio ? Properties.Resources.speaker_on : Properties.Resources.speaker_off;
         }
 
-        private void fastStart_CheckedChanged(object sender, EventArgs e)
+        private void somethingChanged(object sender, EventArgs e)
         {
             dirty = true;
         }

@@ -4,8 +4,6 @@ Settings:
 - max num actors/directors/etc
 - create missing fields?
 - TMDB language preference
-- trailer: use webmedia:// links
-- grid: freeze title/year columns
 - startup check: single popup for multiple missing fields
 
 TMDB:
@@ -20,6 +18,6 @@ Main:
 - Get from OMDB/TMDB (override settings?)
 - get: merge omdb/tmdb sources (using Settings preference)
 - cache: clear when language changes?
-
+- locked fields (no overwrite/ignore changes - per movie)
 
 

@@ -514,7 +514,7 @@ namespace MCRatings
             gridMovies.Columns[(int)AppField.Title].DisplayIndex = 4;
             gridMovies.Columns[(int)AppField.Year].DisplayIndex = 5;
             gridMovies.Columns[(int)AppField.IMDbID].DisplayIndex = 6;
-            gridMovies.Columns[(int)AppField.Year].Frozen = true;
+            gridMovies.Columns[(int)AppField.IMDbID].Frozen = true;
 
             if (gridMovies.Rows.Count > 0)
                 gridMovies.CurrentCell = gridMovies.Rows[0].Cells[1];
@@ -641,7 +641,7 @@ namespace MCRatings
                 }
 
                 var info = OMDbMovie.Parse(omdb);
-                if (FindByName && tmdb == null)
+                if (FindByName && tmdb == null && info != null)
                     tmdb = tmdbAPI?.getByIMDB(info.imdbID, noCache: progress.noCache);
 
                 var info2 = TMDbMovie.Parse(tmdb);
@@ -1329,12 +1329,15 @@ namespace MCRatings
             e.ToolTipText = "";
             if (e.ColumnIndex > 2 && e.RowIndex >= 0)
             {
+                var field = (AppField)e.ColumnIndex;
                 MovieInfo m = gridMovies.Rows[e.RowIndex].Cells[0].Value as MovieInfo;
                 string txt = gridMovies.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
-                int eq = m.isModified((AppField)e.ColumnIndex, txt);
+                if (field == AppField.IMDbVotes || field == AppField.RottenTomatoes || field == AppField.Metascore || field == AppField.Runtime)
+                    txt = txt.Trim();
+                int eq = m.isModified(field, txt);
                 if (eq != 0)
                 {
-                    string prev = m.originalValue((AppField)e.ColumnIndex);
+                    string prev = m.originalValue(field);
                     if (!string.IsNullOrEmpty(prev))
                     {
                         //string sep = prev != null && prev.Length > 80 ? "\r\n" : "";

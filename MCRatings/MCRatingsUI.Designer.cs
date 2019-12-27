@@ -432,7 +432,7 @@
             this.btnGetMovieInfo.Name = "btnGetMovieInfo";
             this.btnGetMovieInfo.Size = new System.Drawing.Size(130, 39);
             this.btnGetMovieInfo.TabIndex = 5;
-            this.btnGetMovieInfo.Text = "&Get OMDb Info";
+            this.btnGetMovieInfo.Text = "&Get Movie Info";
             this.toolTip1.SetToolTip(this.btnGetMovieInfo, "Gets OMDB movie info for selected rows or current row.\r\nIf the movie has a valid " +
         "IMDB ID, it is used to find a match.\r\nOtherwise, the movie Title and Year are us" +
         "ed to find the most likely match.");

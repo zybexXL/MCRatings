@@ -76,6 +76,8 @@ namespace MCRatings
                     if (video == null) video = videos?.results?.FirstOrDefault(v => v.type.ToLower() == "clip");
                     if (video != null)
                     {
+                        if (Program.settings.WebmediaURLs)
+                            return $"webmedia://{video.site}/{video.key}";
                         switch (video.site.ToLower())
                         {
                             case "youtube": return $"https://www.youtube.com/watch?v={video.key}";
