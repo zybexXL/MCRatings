@@ -3,7 +3,6 @@ Settings:
 - source preference: OMDB/TMDB
 - max num actors/directors/etc
 - create missing fields?
-- TMDB language preference
 - startup check: single popup for multiple missing fields
 
 TMDB:

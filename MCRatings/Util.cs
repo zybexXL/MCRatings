@@ -13,6 +13,13 @@ namespace MCRatings
     public static class Util
     {
 
+        public static int[] IdentityArray(int size)
+        {
+            int[] ID = new int[size];
+            for (int t = 0; t < size; t++) ID[t] = t;
+            return ID;
+        }
+
         public static long NumberValue(string strvalue)
         {
             string num = Regex.Replace(strvalue, @"[^\d]", "");

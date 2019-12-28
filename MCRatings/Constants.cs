@@ -89,7 +89,7 @@ namespace MCRatings
             { AppField.Awards, new FieldInfo("Awards", "Awards", true, 100, 0) },
             { AppField.Trailer, new FieldInfo("Trailer", "Trailer", true, 100, 0) },
             { AppField.Website, new FieldInfo("Website", "Website", true, 100, 0) },
-            { AppField.File, new FieldInfo("File", true, 500, 0) },
+            { AppField.File, new FieldInfo("File", true, 600, 0) },
             { AppField.Filter, new FieldInfo("Filter", true, 50, 0) },          // hidden
         };
 

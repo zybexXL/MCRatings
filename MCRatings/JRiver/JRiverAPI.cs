@@ -132,14 +132,14 @@ namespace MCRatings
             }
         }
 
-        public IEnumerable<MovieInfo> getMovies(JRiverPlaylist playlist)
+        public IEnumerable<MovieInfo> getMovies(JRiverPlaylist playlist, int start = 0, int step = 1)
         {
             IMJPlaylistAutomation pl = jr.GetPlaylistByID(playlist.ID);
             IMJFilesAutomation files = pl.GetFiles();
             files.Filter(Constants.JRFileFilter);
             int num = files.GetNumberFiles();
             playlist.Filecount = num;
-            for (int i = 0; i < num; i++)
+            for (int i = start; i < num; i+=step)
                 yield return getMovieInfo(files.GetFile(i));
         }
 

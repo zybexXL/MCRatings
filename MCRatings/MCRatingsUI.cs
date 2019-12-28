@@ -389,29 +389,38 @@ namespace MCRatings
             progress.Update();
 
             int i = 0;
-            foreach (var movie in jrAPI.getMovies(playlist))    // iterator
+            int[] IDs = Util.IdentityArray(Environment.ProcessorCount);
+            Task.WaitAll(IDs.Select(id => Task.Run(() =>
             {
-                if (progress.cancelled)
-                    return;
-                if (progress.totalItems < 0)
-                    progress.totalItems = playlist.Filecount;
-                progress.currentItem = ++i;
-                if (movie != null)
+                foreach (var movie in jrAPI.getMovies(playlist, id, IDs.Length))    // iterator
                 {
-                    newMovies.Add(movie);
-                    progress.subtitle = movie.Title;
-                    progress.success++;
+                    if (progress.cancelled)
+                        break;
+                    if (progress.totalItems < 0)
+                        progress.totalItems = playlist.Filecount;
+                    progress.currentItem = Interlocked.Increment(ref i);
+                    if (movie != null)
+                    {
+                        lock (newMovies)
+                            newMovies.Add(movie);
+                        progress.subtitle = movie.Title;
+                        Interlocked.Increment(ref progress.success);
+                    }
+                    else
+                        Interlocked.Increment(ref progress.fail);
+
+                    progress.Update(false);
+
+                    while (progress.paused)
+                        Thread.Sleep(250);
                 }
-                else
-                    progress.fail++;
+            })).ToArray());
 
-                progress.Update(false);
-
-                while (progress.paused)
-                    Thread.Sleep(250);
+            if (!progress.cancelled)
+            {
+                movies = newMovies;
+                progress.result = true;
             }
-            movies = newMovies;
-            progress.result = true;
         }
 
         private void UpdateDataGrid(DateTime minTime)
@@ -608,92 +617,95 @@ namespace MCRatings
             if (movies == null) return;
 
             int i = 0;
-            foreach (var movie in movies)
+            int[] IDs = Util.IdentityArray(Environment.ProcessorCount);
+            Task.WaitAll(IDs.Select(id => Task.Run(() =>
             {
-                if (progress.cancelled)
-                    return;
-
-                while (progress.paused)
-                    Thread.Sleep(250);
-
-                bool FindByName = string.IsNullOrEmpty(movie[AppField.IMDbID]);
-                string title = progress.useAltTitle ? movie.Title : movie.FTitle;
-                string year = progress.useAltTitle ? movie.Year : movie.FYear;
-                progress.currentItem = ++i;
-                progress.subtitle = title;
-                progress.Update(false);
-
-                string omdb;
-                string tmdb = null;
-                if (FindByName)
-                    omdb = omdbAPI?.getByTitle(title, year);
-                else
+                for (int x = id; x < movies.Count; x += IDs.Length)
                 {
-                    omdb = omdbAPI?.getByIMDB(movie[AppField.IMDbID], noCache: progress.noCache);
-                    tmdb = tmdbAPI?.getByIMDB(movie[AppField.IMDbID], noCache: progress.noCache);
-                }
+                    if (progress.cancelled)
+                        return;
 
-                if (omdbAPI.lastResponse == 401)    // unauthorized, keys expended
-                {
-                    progress.skip = movies.Count - progress.success - progress.fail;
-                    progress.result = true;
-                    return;
-                }
+                    while (progress.paused)
+                        Thread.Sleep(250);
 
-                var info = OMDbMovie.Parse(omdb);
-                if (FindByName && tmdb == null && info != null)
-                    tmdb = tmdbAPI?.getByIMDB(info.imdbID, noCache: progress.noCache);
+                    var movie = movies[x];
+                    bool FindByName = string.IsNullOrEmpty(movie[AppField.IMDbID]);
+                    string title = progress.useAltTitle ? movie.Title : movie.FTitle;
+                    string year = progress.useAltTitle ? movie.Year : movie.FYear;
+                    progress.currentItem = Interlocked.Increment(ref i);
+                    progress.subtitle = title;
+                    progress.Update(false);
 
-                var info2 = TMDbMovie.Parse(tmdb);
-                if (info != null && info.isValid)
-                {
-                    progress.success++;
-                    movie.clearUpdates();
-                    bool ok = overwriteField(movie, AppField.IMDbID, info.imdbID, progress.canOverwrite);
-                    ok |= overwriteField(movie, AppField.IMDbRating, info.imdbRating, progress.canOverwrite);
-                    ok |= overwriteField(movie, AppField.IMDbVotes, info.imdbVotes, progress.canOverwrite);
-                    ok |= overwriteField(movie, AppField.RottenTomatoes, info.RottenScore, progress.canOverwrite);
-                    ok |= overwriteField(movie, AppField.Metascore, info.Metascore, progress.canOverwrite);
-                    ok |= overwriteField(movie, AppField.MPAARating, info.Rated, progress.canOverwrite);
-                    ok |= overwriteField(movie, AppField.Runtime, info.Runtime, progress.canOverwrite);
-                    ok |= overwriteField(movie, AppField.Genre, info.Genre, progress.canOverwrite);
-                    ok |= overwriteField(movie, AppField.Director, info.Director, progress.canOverwrite);
-                    ok |= overwriteField(movie, AppField.Writers, info.Writer, progress.canOverwrite);
-                    ok |= overwriteField(movie, AppField.Actors, info.Actors, progress.canOverwrite);
-                    ok |= overwriteField(movie, AppField.Description, info.Plot, progress.canOverwrite);
-                    ok |= overwriteField(movie, AppField.Language, info.Language, progress.canOverwrite);
-                    ok |= overwriteField(movie, AppField.Country, info.Country, progress.canOverwrite);
-                    ok |= overwriteField(movie, AppField.Awards, info.Awards, progress.canOverwrite);
-                    ok |= overwriteField(movie, AppField.Revenue, info.BoxOffice, progress.canOverwrite);
-                    ok |= overwriteField(movie, AppField.Production, info.Production, progress.canOverwrite);
-                    ok |= overwriteField(movie, AppField.Website, info.Website, progress.canOverwrite);
-                    ok |= overwriteField(movie, AppField.Release, info.Released, progress.canOverwrite);
-
-                    ok |= overwriteField(movie, AppField.Title, info.Title, progress.canOverwrite);
-                    ok |= overwriteField(movie, AppField.Year, info.Year, progress.canOverwrite);
-
-                    if (info2 != null && info2.isValid)
+                    string omdb;
+                    string tmdb = null;
+                    if (FindByName)
+                        omdb = omdbAPI?.getByTitle(title, year);
+                    else
                     {
-                        ok |= overwriteField(movie, AppField.TMDbScore, info2.vote_average.ToString("0.0"), progress.canOverwrite);
-                        ok |= overwriteField(movie, AppField.Tagline, info2.tagline, progress.canOverwrite);
-                        ok |= overwriteField(movie, AppField.OriginalTitle, info2.original_title, progress.canOverwrite);
-                        ok |= overwriteField(movie, AppField.Trailer, info2.Get(AppField.Trailer), progress.canOverwrite);
-                        string series = info2.belongs_to_collection?.name ?? "";
-                        Match m = Regex.Match(series, @"^(.*) collection\s*$", RegexOptions.IgnoreCase);
-                        if (m.Success)
-                            series = m.Groups[1].Value;    
-                        ok |= overwriteField(movie, AppField.Series, series, progress.canOverwrite);
+                        omdb = omdbAPI?.getByIMDB(movie[AppField.IMDbID], noCache: progress.noCache);
+                        tmdb = tmdbAPI?.getByIMDB(movie[AppField.IMDbID], noCache: progress.noCache);
                     }
-                    movie[AppField.Status] = ok && movie.isDirty ? "updated" : "no change";
-                    movie.selected = false;
+
+                    if (omdbAPI.lastResponse == 401)    // unauthorized, keys expended
+                        break;
+
+                    var info = OMDbMovie.Parse(omdb);
+                    if (FindByName && tmdb == null && info != null)
+                        tmdb = tmdbAPI?.getByIMDB(info.imdbID, noCache: progress.noCache);
+
+                    var info2 = TMDbMovie.Parse(tmdb);
+                    if (info != null && info.isValid)
+                    {
+                        Interlocked.Increment(ref progress.success);
+                        movie.clearUpdates();
+                        bool ok = overwriteField(movie, AppField.IMDbID, info.imdbID, progress.canOverwrite);
+                        ok |= overwriteField(movie, AppField.IMDbRating, info.imdbRating, progress.canOverwrite);
+                        ok |= overwriteField(movie, AppField.IMDbVotes, info.imdbVotes, progress.canOverwrite);
+                        ok |= overwriteField(movie, AppField.RottenTomatoes, info.RottenScore, progress.canOverwrite);
+                        ok |= overwriteField(movie, AppField.Metascore, info.Metascore, progress.canOverwrite);
+                        ok |= overwriteField(movie, AppField.MPAARating, info.Rated, progress.canOverwrite);
+                        ok |= overwriteField(movie, AppField.Runtime, info.Runtime, progress.canOverwrite);
+                        ok |= overwriteField(movie, AppField.Genre, info.Genre, progress.canOverwrite);
+                        ok |= overwriteField(movie, AppField.Director, info.Director, progress.canOverwrite);
+                        ok |= overwriteField(movie, AppField.Writers, info.Writer, progress.canOverwrite);
+                        ok |= overwriteField(movie, AppField.Actors, info.Actors, progress.canOverwrite);
+                        ok |= overwriteField(movie, AppField.Description, info.Plot, progress.canOverwrite);
+                        ok |= overwriteField(movie, AppField.Language, info.Language, progress.canOverwrite);
+                        ok |= overwriteField(movie, AppField.Country, info.Country, progress.canOverwrite);
+                        ok |= overwriteField(movie, AppField.Awards, info.Awards, progress.canOverwrite);
+                        ok |= overwriteField(movie, AppField.Revenue, info.BoxOffice, progress.canOverwrite);
+                        ok |= overwriteField(movie, AppField.Production, info.Production, progress.canOverwrite);
+                        ok |= overwriteField(movie, AppField.Website, info.Website, progress.canOverwrite);
+                        ok |= overwriteField(movie, AppField.Release, info.Released, progress.canOverwrite);
+
+                        ok |= overwriteField(movie, AppField.Title, info.Title, progress.canOverwrite);
+                        ok |= overwriteField(movie, AppField.Year, info.Year, progress.canOverwrite);
+
+                        if (info2 != null && info2.isValid)
+                        {
+                            ok |= overwriteField(movie, AppField.TMDbScore, info2.vote_average.ToString("0.0"), progress.canOverwrite);
+                            ok |= overwriteField(movie, AppField.Tagline, info2.tagline, progress.canOverwrite);
+                            ok |= overwriteField(movie, AppField.OriginalTitle, info2.original_title, progress.canOverwrite);
+                            ok |= overwriteField(movie, AppField.Trailer, info2.Get(AppField.Trailer), progress.canOverwrite);
+                            string series = info2.belongs_to_collection?.name ?? "";
+                            Match m = Regex.Match(series, @"^(.*) collection\s*$", RegexOptions.IgnoreCase);
+                            if (m.Success)
+                                series = m.Groups[1].Value;
+                            ok |= overwriteField(movie, AppField.Series, series, progress.canOverwrite);
+                        }
+                        movie[AppField.Status] = ok && movie.isDirty ? "updated" : "no change";
+                        movie.selected = false;
+                    }
+                    else
+                    {
+                        movie[AppField.Status] = "not found";
+                        Interlocked.Increment(ref progress.fail);
+                    }
                 }
-                else
-                {
-                    movie[AppField.Status] = "not found";
-                    progress.fail++;
-                }
-            }
-            progress.result = true;
+            })).ToArray());
+
+            progress.skip = movies.Count - progress.success - progress.fail;
+            progress.result = !progress.cancelled;
         }
 
         // overwrites a cell if overwrite flags are enabled for the field
