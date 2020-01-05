@@ -22,6 +22,7 @@ namespace MCRatings
 
         public static long NumberValue(string strvalue)
         {
+            if (string.IsNullOrEmpty(strvalue)) return 0;
             string num = Regex.Replace(strvalue, @"[^\d]", "");
             if (long.TryParse(num, out long value))
                 return value;

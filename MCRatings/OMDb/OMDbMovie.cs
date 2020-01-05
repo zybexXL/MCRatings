@@ -58,6 +58,8 @@ namespace MCRatings
         {
             if (json == null) return null;
             json = json.Replace("\"N/A\"", "\"\"");
+            json = HttpUtility.HtmlDecode(json);        // fix some HTLM entities
+
             try
             {
                 OMDbMovie movie = Util.JsonDeserialize<OMDbMovie>(json);
@@ -67,6 +69,36 @@ namespace MCRatings
                 return movie;
             }
             catch { }
+            return null;
+        }
+
+        public string Get(AppField field)
+        {
+            if (!isValid) return null;
+            switch (field)
+            {
+                case AppField.Title: return Title;
+                case AppField.Year: return Year;
+                case AppField.Release: return Released;
+                case AppField.IMDbID: return imdbID;
+                case AppField.IMDbRating: return imdbRating;
+                case AppField.IMDbVotes: return imdbVotes;
+                case AppField.RottenTomatoes: return RottenScore;
+                case AppField.Metascore: return Metascore;
+                case AppField.MPAARating: return Rated;
+                case AppField.Runtime: return Runtime;
+                case AppField.Genre: return Genre;
+                case AppField.Production: return Production;
+                case AppField.Director: return Director;
+                case AppField.Writers: return Writer;
+                case AppField.Actors: return Actors;
+                case AppField.Description: return Plot;
+                case AppField.Language: return Language;
+                case AppField.Country: return Country;
+                case AppField.Revenue: return BoxOffice;
+                case AppField.Awards: return Awards;
+                case AppField.Website: return Website;
+            }
             return null;
         }
 
@@ -134,7 +166,7 @@ namespace MCRatings
             list = Regex.Replace(list, @"(?<!\([^\)]+?),", ";");
 
             // re-join elements with semicolon
-            return string.Join("; ", list.Split(';').Select(a => a.Trim()).Distinct());
+            return string.Join("; ", list.Split(';').Select(a => a.Trim()).Where(a => !string.IsNullOrWhiteSpace(a)).Distinct());
         }
     }
 }

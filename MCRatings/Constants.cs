@@ -9,16 +9,20 @@ using System.Threading.Tasks;
 namespace MCRatings
 {
     // datagrid columns, default JRiver field mapping
-    public enum CellColor { Default = 0, ActiveRow, SelectedRow, ActiveSelectedRow, ColumnEdit, TitleMismatch, Year1Mismatch, NewValue, Overwrite }
+    public enum CellColor {
+        Default = 0, ActiveRow, SelectedRow, ActiveSelectedRow, ColumnEdit,
+        TitleMismatch, Year1Mismatch, NewValue, Overwrite }
 
-    public enum AppField
-    {
+    public enum AppField {
         Movie=0, Selected, Filter, Status, FTitle, FYear,       // non-JR fields
         Title, Year, Imported, Playlists, Release, IMDbID,
         IMDbRating, IMDbVotes, TMDbScore, RottenTomatoes, Metascore, MPAARating,
-        Runtime, Genre, OriginalTitle, Series, Collections, Production, Director, Writers, Actors, Tagline, Description, Language, Country,
-        Revenue, Awards, Trailer, Website, File
+        Runtime, OriginalTitle, Series, Collections, Tagline, Description, Genre, Keywords,
+        Production, Producer, Director, Writers, Actors, Language, Country, Budget, Revenue,
+        Awards, Trailer, Website, File
     }
+
+    public enum Sources { None, TMDb, OMDb }
 
     public class Constants
     {
@@ -77,14 +81,17 @@ namespace MCRatings
             { AppField.OriginalTitle, new FieldInfo("Original Title", "Original Title", true, 200, 0) },
             { AppField.Series, new FieldInfo("Series", "Series", true, 100, 0) },
             { AppField.Collections, new FieldInfo("Collections", "Collections", true, 100, 0) },
+            { AppField.Producer, new FieldInfo("Producer", "Producer", true, 100, 0) },
             { AppField.Director, new FieldInfo("Director", "Director", true, 100, 0) },
             { AppField.Actors, new FieldInfo("Actors", "Actors", true, 100, 0) },
             { AppField.Tagline, new FieldInfo("Tagline", "Tag Line", true, 200, 0) },
             { AppField.Description, new FieldInfo("Description", "Description", true, 200, 0) },
+            { AppField.Keywords, new FieldInfo("Keywords", "Keywords", true, 100, 0) },
             { AppField.Production, new FieldInfo("Studios", "Studios", true, 100, 0) },
             { AppField.Writers, new FieldInfo("Writers", "Screenwriter", true, 100, 0) },
             { AppField.Language, new FieldInfo("Language", "Language", true, 100, 0) },
             { AppField.Country, new FieldInfo("Country", "Country", true, 100, 0) },
+            { AppField.Budget, new FieldInfo("Budget", "Budget", true, 100, 2) },
             { AppField.Revenue, new FieldInfo("Revenue", "Gross Revenue", true, 100, 2) },
             { AppField.Awards, new FieldInfo("Awards", "Awards", true, 100, 0) },
             { AppField.Trailer, new FieldInfo("Trailer", "Trailer", true, 100, 0) },

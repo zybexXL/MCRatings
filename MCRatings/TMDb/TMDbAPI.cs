@@ -18,7 +18,7 @@ namespace MCRatings
         public bool hasKeys { get { return apikeys != null && apikeys.Count > 0; } }
 
 
-        List<string> apikeys;// = new List<string>() { "0e5d83fa186fb0261cf16d58dd6f5e42" };
+        List<string> apikeys;
         int keyIndex = 0;
         string apikey { get { return keyIndex >= apikeys.Count ? "" : apikeys[keyIndex]; } }
 
@@ -44,10 +44,8 @@ namespace MCRatings
                 keyIndex = 0;
         }
 
-        public string getByTitle(string title, string year, bool full = true)
+        public string getByTitle(string title, string year)
         {
-            return null;    // not implemented
-
             lastResponse = -1;
             if (!hasKeys) return null;
             try
@@ -56,14 +54,15 @@ namespace MCRatings
                 {
                     client.BaseAddress = new Uri("https://api.themoviedb.org/");
                     string tt = Uri.EscapeDataString(title);
-                    string yy = year == null ? "" : $"&y={year}";
-                    string plot = full ? "&plot=full" : "";
+                    string yy = year == null ? "" : $"&year={year}";
                     string result = null;
-                    
+                    string language = Program.settings.Language?.ToLower();
+                    if (string.IsNullOrWhiteSpace(language)) language = "en";
+
                     // try with each key
                     for (int i = 0; i < apikeys.Count; i++)
                     {
-                        HttpResponseMessage response = client.GetAsync($"?t={tt}{yy}{plot}&apikey={apikey}").Result;
+                        HttpResponseMessage response = client.GetAsync($"/3/search/movie?api_key={apikey}&language={language}&query={tt}{yy}&page=1&include_adult=true").Result;
                         lastResponse = (int)response.StatusCode;
                         if (response.IsSuccessStatusCode)
                         {
@@ -76,12 +75,33 @@ namespace MCRatings
                     if (string.IsNullOrEmpty(result))
                         return null;
 
-                    // save to cache
-                    if (result.Contains("Response\":\"True\""))
+                    TMDbSearch found = Util.JsonDeserialize<TMDbSearch>(result);
+                    if (found.results == null || found.results.Length == 0)
+                        return null;
+
+                    int id = found.results[0].id;
+                    // get Movie info - try with each key
+                    for (int i = 0; i < apikeys.Count; i++)
                     {
-                        var imdb = Regex.Match(result, "\"imdbID\":\"(.+?)\",");
+                        HttpResponseMessage response = client.GetAsync($"/3/movie/{id}?api_key={apikey}&language={language}&append_to_response=credits,videos,images,keywords,alternative_titles,release_dates&include_image_language={language},en,null").Result;
+                        lastResponse = (int)response.StatusCode;
+                        if (response.IsSuccessStatusCode)
+                        {
+                            result = response.Content.ReadAsStringAsync().Result;
+                            break;
+                        }
+                        if (response.StatusCode == HttpStatusCode.Unauthorized)
+                            rotateKey();
+                    }
+                    if (string.IsNullOrEmpty(result))
+                        return null;
+
+                    // save to cache
+                    if (result != null && !result.Contains("\"status_code\":"))
+                    {
+                        var imdb = Regex.Match(result, "\"imdb_id\":\"(.+?)\"");
                         if (imdb.Success)
-                            Cache.Put("tmdb."+imdb.Groups[1].Value, result);
+                            Cache.Put($"tmdb.{language}.{imdb.Groups[1].Value}", result);
                     }
                     return result;
                 }
@@ -94,7 +114,9 @@ namespace MCRatings
         {
             lastResponse = 304;
             string language = Program.settings.Language?.ToLower();
+            //string region = Program.settings.Country?.ToLower();
             if (string.IsNullOrWhiteSpace(language)) language = "en";
+            //if (string.IsNullOrWhiteSpace(region)) language = "us";
 
             string cached = noCache ? null : Cache.Get($"tmdb.{language}.{imdb}");
             if (cached != null)
@@ -125,14 +147,16 @@ namespace MCRatings
                     if (string.IsNullOrEmpty(result))
                         return null;
 
-                    Match m = Regex.Match(result, @"""id"":(\d+),");
-                    if (!m.Success) return null;
-                    int id = int.Parse(m.Groups[1].Value);
-                    
+                    TMDbFind found = Util.JsonDeserialize<TMDbFind>(result);
+                    if (found.movie_results == null || found.movie_results.Length == 0)
+                        return null;
+
+                    int id = found.movie_results.FirstOrDefault().id;
+
                     // get Movie info - try with each key
                     for (int i = 0; i < apikeys.Count; i++)
                     {
-                        HttpResponseMessage response = client.GetAsync($"/3/movie/{id}?api_key={apikey}&language={language}&append_to_response=credits,videos,images,keywords&include_image_language={language},en,null").Result;
+                        HttpResponseMessage response = client.GetAsync($"/3/movie/{id}?api_key={apikey}&language={language}&append_to_response=credits,videos,images,keywords,alternative_titles,release_dates&include_image_language={language},en,null").Result;
                         lastResponse = (int)response.StatusCode;
                         if (response.IsSuccessStatusCode)
                         {
@@ -142,7 +166,7 @@ namespace MCRatings
                         if (response.StatusCode == HttpStatusCode.Unauthorized)
                             rotateKey();
                     }
-                    if (string.IsNullOrEmpty(result))
+                    if (string.IsNullOrEmpty(result) || !result.Contains($"\"imdb_id\":\"{imdb.ToLower()}\""))
                         return null;
 
                     // save to cache

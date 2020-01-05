@@ -69,8 +69,40 @@ namespace MCRatings
 
         public string Get(AppField field)
         {
+            if (!isValid) return null;
+            int listItems = Program.settings.ListItemsLimit;
+            if (listItems <= 0) listItems = 1000;
+
             switch (field)
             {
+                case AppField.Title: return title;
+                case AppField.Year:
+                    string release = release_dates.getEarliestReleaseDate(release_date);
+                    if (DateTime.TryParseExact(release, "yyyy-M-d", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date))
+                        return date.Year.ToString();
+                    else
+                        return null;
+                case AppField.Release: return release_dates.getEarliestReleaseDate(release_date); // release_dates?.getReleaseDate(Program.settings.Country) ?? release_date;
+                case AppField.IMDbID: return imdb_id;
+                case AppField.TMDbScore: return vote_average.ToString("0.0").Replace(",",".");
+                case AppField.MPAARating: return release_dates?.getCertification("US"); // Program.settings.Country) ?? release_dates?.getCertification("US");
+                case AppField.Runtime: return runtime.ToString();
+                case AppField.Genre: return genres == null ? null : fixList(genres.Select(c => c.name.Replace("Science Fiction","Sci-Fi")), listItems);
+                case AppField.OriginalTitle: return original_title;
+                case AppField.Series: return Regex.Replace(belongs_to_collection?.name ?? "", @"\s*(collection)\s*$", "", RegexOptions.IgnoreCase);
+                //case AppField.Production: return production_companies == null ? null : string.Join("; ", production_companies.Select(c => c.name).Take(listItems));
+                case AppField.Director: return credits?.crew == null ? null : fixList(credits.crew.Where(c=>c.job == "Director").Select(c => c.name), listItems);
+                case AppField.Writers: return credits?.crew == null ? null : fixList(credits.crew.Where(c => c.department == "Writing").Select(c => c.name), listItems);
+                case AppField.Producer: return credits?.crew == null ? null : fixList(credits.crew.Where(c => c.job == "Producer").Select(c => c.name), listItems);
+                case AppField.Actors: return credits?.cast == null ? null : fixList(credits.cast.OrderBy(c => c.order).Select(c => c.name), listItems);
+                case AppField.Keywords: return keywords?.keywords == null ? null : fixCase(fixList(keywords?.keywords.Select(c => c.name), removeCJK: true));
+                case AppField.Tagline: return tagline;
+                case AppField.Description: return overview;
+                case AppField.Language: return spoken_languages == null ? null : fixList(spoken_languages.Select(c => c.englishName), listItems);
+                case AppField.Country: return production_countries == null ? null : fixList(production_countries.Select(c => c.name.Replace("United States of America","USA").Replace("United Kingdom", "UK")), listItems);
+                case AppField.Budget: return budget > 0 ? budget.ToString("$#,##0").Replace(".",",") : null;
+                case AppField.Revenue: return revenue > 0 ? revenue.ToString("$#,##0").Replace(".", ",") : null;
+                case AppField.Website: return homepage;
                 case AppField.Trailer:
                     var video = videos?.results?.FirstOrDefault(v => v.type.ToLower() == "trailer");
                     if (video == null) video = videos?.results?.FirstOrDefault(v => v.type.ToLower() == "clip");
@@ -142,19 +174,37 @@ namespace MCRatings
             //}
         }
 
-        // converts CSV lists from OMDb into JRiver semi-coloned lists
+        // cleanup list, remove duplicates, return semicolon-separated string
         // deals with commas and semicolons inside parenthesis substrings
-        private string fixList(string list)
+        private string fixList(IEnumerable<string> items, int limit=100, bool removeCJK = false)
         {
-            if (string.IsNullOrEmpty(list)) return list;
+            List<string> list = items.ToList();
+            if (list == null || list.Count == 0) return null;
 
-            // replace existing semicolon by comma
+            if (removeCJK)
+                list = list.Where(l => !hasCJKIdeographs(l)).ToList();
             // replace comma by semicolon; ignore commas between quotes or parenthesis
-            list = list.Replace(';', ',');
-            list = Regex.Replace(list, @"(?<!\([^\)]+?),", ";");
+            //list = Regex.Replace(list, @"(?<!\([^\)]+?),", ";");
 
             // re-join elements with semicolon
-            return string.Join("; ", list.Split(';').Select(a => a.Trim()).Distinct());
+            return string.Join("; ", list.Select(i => i.Replace(';', ',').Trim()).Where(s=>!string.IsNullOrWhiteSpace(s)).Distinct(StringComparer.CurrentCultureIgnoreCase).Take(limit));
+        }
+
+        private bool hasCJKIdeographs(string s)
+        {
+            return Regex.IsMatch(s, @"\p{IsCJKUnifiedIdeographs}");
+        }
+
+        private string fixCase(string txt)
+        {
+            if (string.IsNullOrEmpty(txt)) return null;
+            txt = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(txt);
+
+            // fix uppercase after numbers (1970S, 21St, ...)
+            txt = Regex.Replace(txt, @"\d([A-Z])", delegate (Match m) { return m.Value.ToLower(); });
+            txt = Regex.Replace(txt, @"\b(ad|bc|3d)\b", delegate (Match m) { return m.Value.ToUpper(); }, RegexOptions.IgnoreCase);
+
+            return txt;
         }
     }
 
@@ -170,21 +220,28 @@ namespace MCRatings
         public string logo_path;
         public string origin_country;
     }
+
     public class TMDbMovieCountry
     {
         public string iso_3166_1;   // country
         public string name;
     }
+
     public class TMDbMovieLanguage
     {
         public string iso_639_1;
         public string name;
+
+        public string englishName { get { 
+            return iso639.GetName(iso_639_1) ?? (string.IsNullOrEmpty(name) ? $"[{iso_639_1}]" : name.Replace("No Language","None")); } }
     }
+
     public class TMDbMovieCredits
     {
         public TMDbMovieCast[] cast;
         public TMDbMovieCrew[] crew;
     }
+
     public class TMDbMovieCast
     {
         public int cast_id;
@@ -196,6 +253,7 @@ namespace MCRatings
         public int order;
         public string profile_path;
     }
+
     public class TMDbMovieCrew
     {
         public string department;
@@ -249,6 +307,53 @@ namespace MCRatings
     public class TMDbMovieReleases
     {
         public TMDbMovieRelease[] results;
+
+        public string getReleaseDate(string country)
+        {
+            if (results == null) return null;
+            try
+            {
+                var r = results?.Where(c => c.iso_3166_1 == country.ToUpper()).Select(c => c.release_dates).FirstOrDefault();
+                string date = r?.OrderBy(c => c.type).FirstOrDefault()?.release_date.Substring(0, 10);
+                if (DateTime.TryParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out DateTime dt))
+                {
+                    if (dt.Month == 1 && dt.Day == 1) dt = new DateTime(dt.Year, 1, 2);
+                    return dt.ToString("yyyy-MM-dd");
+                }
+            }
+            catch { }
+            return null;
+        }
+
+        public string getEarliestReleaseDate(string defaultDate)
+        {
+            if (results == null) return null;
+            try
+            {
+                var r = results?.SelectMany(c => c.release_dates).Select(c => c.release_date.Substring(0, 10)).ToList();
+                if (r == null) return defaultDate;
+                r.Add(defaultDate);
+                r.Sort();
+                if (DateTime.TryParseExact(r[0], "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out DateTime dt))
+                {
+                    if (dt.Month == 1 && dt.Day == 1) dt = new DateTime(dt.Year, 1, 2);
+                    return dt.ToString("yyyy-MM-dd");
+                }
+            }
+            catch { }
+            return defaultDate;
+        }
+
+        public string getCertification(string country)
+        {
+            if (results == null) return null;
+            var countryRel = results?.Where(c => c.iso_3166_1 == country.ToUpper()).Select(c=>c.release_dates).FirstOrDefault();
+            var cert = countryRel?.Where(c => !string.IsNullOrEmpty(c.certification)).Select(c => c.certification).FirstOrDefault();
+            if (cert != null) return cert;
+
+            var first = results.SelectMany(c => c.release_dates).Where(c=> !string.IsNullOrEmpty(c.certification) && !string.IsNullOrEmpty(c.iso_639_1)).FirstOrDefault();
+            return first?.certification;
+        }
     }
 
     public class TMDbMovieRelease

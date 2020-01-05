@@ -23,6 +23,21 @@ namespace MCRatings
         public SettingsUI(JRiverAPI jrAPI, bool startDirty = false)
         {
             InitializeComponent();
+
+            SourceSelectColumn dgSource = new SourceSelectColumn();
+            dgSource.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            //dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.TopCenter;
+            //srcCol.DefaultCellStyle = dataGridViewCellStyle3;
+            dgSource.HeaderText = "Source";
+            dgSource.Name = "dgSource";
+            dgSource.ReadOnly = true;
+            dgSource.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            dgSource.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            dgSource.Width = 128;
+            gridFields.Columns.Remove(dgSourcePlaceHolder);
+            gridFields.Columns.Add(dgSource);
+            dgSource.DisplayIndex = 3;
+
             DialogResult = DialogResult.Cancel;
             jr = jrAPI;
             gridFields.DoubleBuffered(true);
@@ -40,7 +55,7 @@ namespace MCRatings
             //height = Math.Min(height, Screen.FromControl(this).Bounds.Height - 100);
             //this.Height = height;
             //this.Top = (Screen.FromControl(this).Bounds.Height - height) / 2;
-            badFields = checkFieldNames(Program.settings.valid);
+            badFields = !checkFieldNames(Program.settings.valid);
         }
 
         private void btnDiscard_Click(object sender, EventArgs e)
@@ -56,13 +71,13 @@ namespace MCRatings
             foreach (DataGridViewRow row in gridFields.Rows)
             {
                 AppField field = (AppField)row.Tag;
-                string value = row.Cells[1].Value?.ToString().Trim();
-                bool overwrite = (bool)row.Cells[2].Value;
-                bool enabled = (bool)row.Cells[3].Value;
-                row.Cells[1].Style = null;
+                string value = row.Cells["dgField"].Value?.ToString().Trim();
+                bool overwrite = (bool)row.Cells["dgOverwrite"].Value;
+                bool enabled = (bool)row.Cells["dgEnabled"].Value;
+                row.Cells["dgField"].Style = null;
                 if (enabled && string.IsNullOrEmpty(value))
                 {
-                    row.Cells[1].Style.ForeColor = Color.Red;
+                    row.Cells["dgField"].Style.ForeColor = Color.Red;
                     if (show) MessageBox.Show($"Please enter a valid field name for {Constants.ViewColumnInfo[field].JRField}",
                         "Empty field", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     ok = false;
@@ -70,7 +85,7 @@ namespace MCRatings
                 }
                 else if (enabled && !jr.Fields.ContainsKey(value.ToLower()))
                 {
-                    row.Cells[1].Style.ForeColor = Color.Red;
+                    row.Cells["dgField"].Style.ForeColor = Color.Red;
                     if (show) MessageBox.Show($"Field '{value}' doesn't exist in JRiver, please fix or disable the field.",
                         $"Invalid '{Constants.ViewColumnInfo[field].JRField}' field name", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     ok = false;
@@ -91,10 +106,11 @@ namespace MCRatings
                 foreach (DataGridViewRow row in gridFields.Rows)
                 {
                     AppField field = (AppField)row.Tag;
-                    string value = row.Cells[1].Value?.ToString().Trim();
-                    bool overwrite = (bool)row.Cells[2].Value;
-                    bool enabled = (bool)row.Cells[3].Value;
-                    Program.settings.FieldMap[field] = new JRFieldMap(field, value, enabled, overwrite);
+                    string value = row.Cells["dgField"].Value?.ToString().Trim();
+                    bool overwrite = (bool)row.Cells["dgOverwrite"].Value;
+                    bool enabled = (bool)row.Cells["dgEnabled"].Value;
+                    Sources src = ((SourceSelect)row.Cells["dgSource"].Value).Value;
+                    Program.settings.FieldMap[field] = new JRFieldMap(field, value, enabled, overwrite, src);
                 }
                 Program.settings.Silent = !audio;
                 Program.settings.FastStart = chkFastStart.Checked;
@@ -102,7 +118,6 @@ namespace MCRatings
                 Program.settings.FileCleanup = txtCleanup.Text?.Trim();
                 Program.settings.APIKeys = txtAPIKeys.Text?.Trim();
                 Program.settings.TMDbAPIKeys = txtTMDBkeys.Text?.Trim();
-                Program.settings.PreferredSource = optTMDb.Checked ? 1 : 2;
                 Program.settings.ListItemsLimit = (int)maxListLimit.Value;
                 Program.settings.Language = string.IsNullOrWhiteSpace(txtLanguage.Text) ? "EN" : txtLanguage.Text;
                 Program.settings.Save();
@@ -127,8 +142,6 @@ namespace MCRatings
             txtTMDBkeys.Text = settings.TMDbAPIKeys;
             chkFastStart.Checked = settings.FastStart;
             chkWebmedia.Checked = settings.WebmediaURLs;
-            if (settings.PreferredSource == 2) optOMDb.Checked = true;
-            else optTMDb.Checked = true;
             maxListLimit.Value = settings.ListItemsLimit;
             txtLanguage.Text = settings.Language ?? "EN";
             audio = !settings.Silent;
@@ -141,19 +154,24 @@ namespace MCRatings
             string name = Constants.ViewColumnInfo[field].JRField;
             if (settings.FieldMap.ContainsKey(field))
             {
-                string jrName = settings.FieldMap[field].JRfield;
+                JRFieldMap map = settings.FieldMap[field];
+                string jrName = map.JRfield;
                 // hack: replace tag for some fields - this should be in Constants map, not here...
                 if (field == AppField.Title) name = "Title";
                 if (field == AppField.Writers) name = "Writers";
                 if (field == AppField.Revenue) name = "Revenue";
                 if (field == AppField.Release) name = "Release Date";
-                bool enabled = settings.FieldMap[field].enabled;
-                bool overwrite = settings.FieldMap[field].overwrite;
-                row = gridFields.Rows.Add(name, jrName, overwrite, enabled);
-                
+                bool enabled = map.enabled;
+                bool overwrite = map.overwrite;
+
+                Sources source = map.source;
+                var sources = JRFieldMap.getSources(field);
+                if (!sources.Contains(source)) source = sources.FirstOrDefault();
+                SourceSelect ss = new SourceSelect(sources, source);
+                row = gridFields.Rows.Add(enabled, name, jrName, overwrite, ss);
             }
             else
-                row = gridFields.Rows.Add(name, name, false, false);
+                row = gridFields.Rows.Add(false, name, name, false, new SourceSelect(null, Sources.None));
 
             gridFields.Rows[row].Tag = field;
         }
@@ -213,10 +231,22 @@ namespace MCRatings
                 e.Cancel = true;
         }
 
-        private void gridFields_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void gridFields_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.ColumnIndex > 1)
-                dirty = true;
+            //if (e.RowIndex >=0 && e.ColumnIndex == dgSource.Index)
+            //{
+            //    AppField field = (AppField)gridFields.Rows[e.RowIndex].Tag;
+            //    List<Sources> valid = JRFieldMap.getSources(field);
+            //    if (valid.Count < 2) return;
+
+            //    // toggle source
+            //    if (Enum.TryParse((string)gridFields[e.ColumnIndex, e.RowIndex].Value, out Sources curr))
+            //        curr = curr == Sources.TMDb ? Sources.OMDb : Sources.TMDb;
+            //    else
+            //        curr = Sources.TMDb;
+            //    gridFields.Rows[e.RowIndex].Cells["dgSource"].Value = curr.ToString();
+            //    gridFields.Rows[e.RowIndex].Cells["dgSource"].Style.ForeColor = curr == Sources.OMDb ? Color.Blue : Color.Green;
+            //}
         }
 
         private void SettingsUI_Shown(object sender, EventArgs e)
@@ -254,5 +284,6 @@ namespace MCRatings
             }
             catch { }
         }
+
     }
 }

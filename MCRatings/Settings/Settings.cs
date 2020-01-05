@@ -30,7 +30,8 @@ namespace MCRatings
         public bool WebmediaURLs = false;
         public int ListItemsLimit = 5;
         public string Language = "EN";
-        public int PreferredSource = 1;     // 1 = TMDB, 2 = OMDB
+        public string VideoTemplateFile = "";
+
 
         [XmlIgnore]
         public Dictionary<AppField, JRFieldMap> FieldMap = new Dictionary<AppField, JRFieldMap>();
@@ -91,7 +92,8 @@ namespace MCRatings
                     settings.ListItemsLimit = saved.ListItemsLimit;
                     settings.Language = saved.Language;
                     settings.ListItemsLimit = saved.ListItemsLimit;
-
+                    settings.VideoTemplateFile = saved.VideoTemplateFile ?? "";
+                    
                     if (saved.Fields != null)
                         foreach (var field in saved.Fields)
                             settings.FieldMap[field.field] = field;

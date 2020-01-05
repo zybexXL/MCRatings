@@ -99,8 +99,17 @@
     </Compile>
     <Compile Include="Cache.cs" />
     <Compile Include="Collection\CollectionMovies.cs" />
+    <Compile Include="iso639.cs" />
     <Compile Include="OMDb\OMDbMovie.cs" />
     <Compile Include="OMDb\OMDbRating.cs" />
+    <Compile Include="Settings\SourceSelect.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Settings\SourceSelect.Designer.cs">
+      <DependentUpon>SourceSelect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\SourceSelectCell.cs" />
+    <Compile Include="Settings\SourceSelectColumn.cs" />
     <Compile Include="TMDb\TMDbAPI.cs" />
     <Compile Include="TMDb\TMDbSearch.cs" />
     <Compile Include="TMDb\TMDbMovie.cs" />
@@ -169,6 +178,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Settings\SettingsUI.resx">
       <DependentUpon>SettingsUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Settings\SourceSelect.resx">
+      <DependentUpon>SourceSelect.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

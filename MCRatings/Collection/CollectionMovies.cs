@@ -10,7 +10,7 @@ namespace MCRatings
     {
         public string Title;
         public List<CollectionMovie> Movies;
-
+        
         public bool isValid { get { return Movies != null && Movies.Count > 0 && !string.IsNullOrEmpty(Movies[0].Title); } }
 
         public static MovieCollection Parse(string json, string title)
@@ -40,5 +40,7 @@ namespace MCRatings
         public string YoutubeId;
         public string Synopsis;
         public string Cover;
+
+        public bool tag = false;
     }
 }

@@ -111,7 +111,7 @@ namespace MCRatings
 
             if (lblCount.Visible)
             {
-                if (progress.currentItem < 3) lblETA.Text = "--:--";
+                if (progress.currentItem < 10) lblETA.Text = "--:--";
                 else
                 {
                     double total = (DateTime.Now - progress.startTime).TotalSeconds * progress.totalItems / progress.currentItem;

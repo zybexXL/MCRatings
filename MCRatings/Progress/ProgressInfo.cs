@@ -37,11 +37,13 @@ namespace MCRatings
 
         public void Update(bool immediate = true)
         {
-            if (immediate || lastUpdate.AddMilliseconds(100) < DateTime.Now)
+            lock (this)
             {
-                RefreshHandler?.Invoke();
+                if (!immediate && lastUpdate.AddMilliseconds(100) > DateTime.Now)
+                    return;
                 if (!immediate) lastUpdate = DateTime.Now;
             }
+            RefreshHandler?.Invoke();
         }
     }
 }

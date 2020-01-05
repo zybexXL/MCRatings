@@ -16,7 +16,6 @@ PTP drop:
 Main:
 - Get from OMDB/TMDB (override settings?)
 - get: merge omdb/tmdb sources (using Settings preference)
-- cache: clear when language changes?
 - locked fields (no overwrite/ignore changes - per movie)
 
 

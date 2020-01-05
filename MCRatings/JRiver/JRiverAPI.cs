@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -23,6 +24,8 @@ namespace MCRatings
         public List<JRiverPlaylist> Playlists;
         public Dictionary<string, string> Fields;       // displayName -> FieldName
         public int APIlevel;
+
+        public Exception lastException;
 
         public JRiverAPI()
         { }
@@ -144,7 +147,8 @@ namespace MCRatings
         }
 
         public MovieInfo getMovieInfo(IMJFileAutomation movie)
-        { 
+        {
+            lastException = null;
             try
             {
                 // get playlists
@@ -175,11 +179,11 @@ namespace MCRatings
                 MovieInfo info = new MovieInfo(movie.GetKey(), JRfields, lists);
                 return info;
             }
-            catch { }
+            catch (Exception ex) { lastException = ex; }
             return null;
         }
 
-        public string getFieldValue(IMJFileAutomation file, AppField field)
+        private string getFieldValue(IMJFileAutomation file, AppField field)
         {
             try
             {
@@ -195,12 +199,34 @@ namespace MCRatings
             return "[JRiver Exception!]";
         }
 
+        public IMJFileAutomation CreateMovie(MovieInfo movie)
+        {
+            string sample = Program.settings.VideoTemplateFile;
+            if (!File.Exists(sample)) throw new Exception("VideoTemplateFile not found, please check settings.xml");
+
+            //string date = movie.DateImported.ToString("yyyyMMdd");
+            string tmp = Path.Combine(Path.GetTempPath(), $"{movie.IMDBid}{Path.GetExtension(sample)}");
+            File.Copy(sample, tmp, true);
+            IMJFileAutomation file = jr.ImportFile(tmp);
+            if (file != null)
+                movie.JRKey = file.GetKey();
+
+            try { File.Delete(tmp); } catch { }
+            return file;
+        }
+
         public bool SaveMovie(MovieInfo movie)
         {
             bool ok = true;
+            lastException = null;
             try
             {
-                IMJFileAutomation file = jr.GetFileByKey(movie.JRKey);
+                IMJFileAutomation file = null;
+                if (movie.JRKey < 0)
+                    file = CreateMovie(movie);
+                else
+                    file = jr.GetFileByKey(movie.JRKey);
+
                 if (file == null) return false;
 
                 foreach (AppField f in Enum.GetValues(typeof(AppField)))
@@ -246,7 +272,7 @@ namespace MCRatings
                     }
                 }
             }
-            catch { }
+            catch (Exception ex) { lastException = ex; }
             return ok;
         }
 

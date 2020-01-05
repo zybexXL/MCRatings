@@ -588,12 +588,13 @@ namespace MCRatings
             string msg = $"{bar.progress.success} updated";
             if (bar.progress.fail > 0) msg += $", {bar.progress.fail} failed";
             if (bar.progress.skip > 0) msg += $", {bar.progress.skip} skipped";
-
             SetStatus(msg);
+
+            this.Cursor = Cursors.WaitCursor;
             UpdateDataGrid(bar.progress.startTime);
-            
             updateModifiedCount();
             updateSelectedCount();
+            this.Cursor = Cursors.Default;
 
             if (omdbAPI.lastResponse == 401)
                 MessageBox.Show("OMDb keys are invalid or reached the daily limit!", "Unauthorized", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -615,6 +616,7 @@ namespace MCRatings
             progress.result = false;
             List<MovieInfo> movies = progress.args as List<MovieInfo>;
             if (movies == null) return;
+            bool skipOMDB = false;
 
             int i = 0;
             int[] IDs = Util.IdentityArray(Environment.ProcessorCount);
@@ -636,63 +638,49 @@ namespace MCRatings
                     progress.subtitle = title;
                     progress.Update(false);
 
-                    string omdb;
+                    string omdb = null;
                     string tmdb = null;
+                    OMDbMovie info = null;
+                    TMDbMovie info2 = null;
+                    string imdb = FindByName ? null : movie[AppField.IMDbID];
+
                     if (FindByName)
-                        omdb = omdbAPI?.getByTitle(title, year);
-                    else
                     {
-                        omdb = omdbAPI?.getByIMDB(movie[AppField.IMDbID], noCache: progress.noCache);
-                        tmdb = tmdbAPI?.getByIMDB(movie[AppField.IMDbID], noCache: progress.noCache);
+                        if (Program.settings.FieldMap[AppField.IMDbID].source == Sources.TMDb)
+                            tmdb = tmdbAPI?.getByTitle(title, year);
+                        if (Program.settings.FieldMap[AppField.IMDbID].source == Sources.OMDb || tmdb == null)
+                            omdb = skipOMDB ? null : omdbAPI?.getByTitle(title, year);
+                        
+
+                        info = OMDbMovie.Parse(omdb);
+                        info2 = TMDbMovie.Parse(tmdb);
+                        imdb = info?.imdbID ?? info2?.imdb_id;
+                    }
+
+                    if (imdb != null && omdb == null)
+                    {
+                        omdb = skipOMDB ? null : omdbAPI?.getByIMDB(imdb, noCache: progress.noCache);
+                        info = OMDbMovie.Parse(omdb);
+                    }
+
+                    if (imdb != null && tmdb == null)
+                    {
+                        tmdb = tmdbAPI?.getByIMDB(imdb, noCache: progress.noCache);
+                        info2 = TMDbMovie.Parse(tmdb);
                     }
 
                     if (omdbAPI.lastResponse == 401)    // unauthorized, keys expended
-                        break;
-
-                    var info = OMDbMovie.Parse(omdb);
-                    if (FindByName && tmdb == null && info != null)
-                        tmdb = tmdbAPI?.getByIMDB(info.imdbID, noCache: progress.noCache);
-
-                    var info2 = TMDbMovie.Parse(tmdb);
-                    if (info != null && info.isValid)
+                    skipOMDB = true;
+                    
+                    if ((info != null && info.isValid) || (info2 != null && info2.isValid))
                     {
+                        bool ok = false;
                         Interlocked.Increment(ref progress.success);
                         movie.clearUpdates();
-                        bool ok = overwriteField(movie, AppField.IMDbID, info.imdbID, progress.canOverwrite);
-                        ok |= overwriteField(movie, AppField.IMDbRating, info.imdbRating, progress.canOverwrite);
-                        ok |= overwriteField(movie, AppField.IMDbVotes, info.imdbVotes, progress.canOverwrite);
-                        ok |= overwriteField(movie, AppField.RottenTomatoes, info.RottenScore, progress.canOverwrite);
-                        ok |= overwriteField(movie, AppField.Metascore, info.Metascore, progress.canOverwrite);
-                        ok |= overwriteField(movie, AppField.MPAARating, info.Rated, progress.canOverwrite);
-                        ok |= overwriteField(movie, AppField.Runtime, info.Runtime, progress.canOverwrite);
-                        ok |= overwriteField(movie, AppField.Genre, info.Genre, progress.canOverwrite);
-                        ok |= overwriteField(movie, AppField.Director, info.Director, progress.canOverwrite);
-                        ok |= overwriteField(movie, AppField.Writers, info.Writer, progress.canOverwrite);
-                        ok |= overwriteField(movie, AppField.Actors, info.Actors, progress.canOverwrite);
-                        ok |= overwriteField(movie, AppField.Description, info.Plot, progress.canOverwrite);
-                        ok |= overwriteField(movie, AppField.Language, info.Language, progress.canOverwrite);
-                        ok |= overwriteField(movie, AppField.Country, info.Country, progress.canOverwrite);
-                        ok |= overwriteField(movie, AppField.Awards, info.Awards, progress.canOverwrite);
-                        ok |= overwriteField(movie, AppField.Revenue, info.BoxOffice, progress.canOverwrite);
-                        ok |= overwriteField(movie, AppField.Production, info.Production, progress.canOverwrite);
-                        ok |= overwriteField(movie, AppField.Website, info.Website, progress.canOverwrite);
-                        ok |= overwriteField(movie, AppField.Release, info.Released, progress.canOverwrite);
+                        foreach (AppField f in Enum.GetValues(typeof(AppField)))
+                            if (f >= AppField.Title && f != AppField.Imported && f!= AppField.Playlists && f!= AppField.File)
+                                ok |= overwriteField(movie, f, getPreferredValue(f, info, info2), progress.canOverwrite);
 
-                        ok |= overwriteField(movie, AppField.Title, info.Title, progress.canOverwrite);
-                        ok |= overwriteField(movie, AppField.Year, info.Year, progress.canOverwrite);
-
-                        if (info2 != null && info2.isValid)
-                        {
-                            ok |= overwriteField(movie, AppField.TMDbScore, info2.vote_average.ToString("0.0"), progress.canOverwrite);
-                            ok |= overwriteField(movie, AppField.Tagline, info2.tagline, progress.canOverwrite);
-                            ok |= overwriteField(movie, AppField.OriginalTitle, info2.original_title, progress.canOverwrite);
-                            ok |= overwriteField(movie, AppField.Trailer, info2.Get(AppField.Trailer), progress.canOverwrite);
-                            string series = info2.belongs_to_collection?.name ?? "";
-                            Match m = Regex.Match(series, @"^(.*) collection\s*$", RegexOptions.IgnoreCase);
-                            if (m.Success)
-                                series = m.Groups[1].Value;
-                            ok |= overwriteField(movie, AppField.Series, series, progress.canOverwrite);
-                        }
                         movie[AppField.Status] = ok && movie.isDirty ? "updated" : "no change";
                         movie.selected = false;
                     }
@@ -706,6 +694,16 @@ namespace MCRatings
 
             progress.skip = movies.Count - progress.success - progress.fail;
             progress.result = !progress.cancelled;
+        }
+
+        private string getPreferredValue(AppField field, OMDbMovie omdb, TMDbMovie tmdb)
+        {
+            string ovalue = omdb?.Get(field);
+            string tvalue = tmdb?.Get(field);
+            if (string.IsNullOrWhiteSpace(ovalue)) return tvalue;
+            if (string.IsNullOrWhiteSpace(tvalue)) return ovalue;
+
+            return Program.settings.FieldMap[field].source == Sources.OMDb ? ovalue : tvalue;
         }
 
         // overwrites a cell if overwrite flags are enabled for the field
@@ -723,8 +721,8 @@ namespace MCRatings
 
             if (fieldEnabled && value != movie[field] && (string.IsNullOrEmpty(movie[field]) || (fieldOverwrite && masterOverwrite)) || field == AppField.Collections)
             {
-                // special handling for Revenue - only overwrite if value is higher
-                if (field == AppField.Revenue && Util.NumberValue(value) < Util.NumberValue(movie[field]))
+                // special handling for Revenue and Budget - only overwrite if value is higher
+                if ((field == AppField.Revenue || field == AppField.Budget) && Util.NumberValue(value) < Util.NumberValue(movie[field]))
                     return false;
 
                 // special handling for Collection (merge with existing list)
@@ -783,7 +781,7 @@ namespace MCRatings
             UpdateDataGrid(bar.progress.startTime);
             updateModifiedCount();
             if (bar.progress.fail > 0)
-                MessageBox.Show($"Error saving changed movies to JRiver!\n{bar.progress.fail} movies still have unsaved changes.",
+                MessageBox.Show($"Error saving changed movies to JRiver!\n{bar.progress.fail} movies still have unsaved changes.\n\nException: {jrAPI.lastException?.Message}",
                     "Save failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             gridMovies.Focus();
@@ -928,7 +926,12 @@ namespace MCRatings
             if (bs == null) return;
 
             if (chkFilter.Checked && !string.IsNullOrEmpty(txtSearch.Text))
-                filter = $"[Filter] like '%{txtSearch.Text}%'";
+            {
+                // escape *%[]" - enclose in square brackets; remove single quotes
+                string text = Regex.Replace(txtSearch.Text, @"([""\*%\[\]])", @"[$1]");
+                text = text.Replace("'", "");
+                filter = $"[Filter] like '%{text}%'";
+            }
             if (chkShowSelected.Checked)
                 if (filter == "") filter = "[Selected] = True";
                 else filter += " and [Selected] = True";
@@ -1106,6 +1109,7 @@ namespace MCRatings
 
         private void menuDiscardChanges_Click(object sender, EventArgs e)
         {
+            this.Cursor = Cursors.WaitCursor;
             for (int i = 0; i < gridMovies.RowCount; i++)
             {
                 var row = gridMovies.Rows[i];
@@ -1117,6 +1121,7 @@ namespace MCRatings
             }
             gridMovies.Refresh();
             updateModifiedCount();
+            this.Cursor = Cursors.Default;
         }
 
         private void menuRevertSelectedRows_Click(object sender, EventArgs e)
@@ -1238,6 +1243,7 @@ namespace MCRatings
                 case "saved": row.Cells[(int)AppField.Status].Style.ForeColor = Color.DarkGreen; break;
                 case "save failed": row.Cells[(int)AppField.Status].Style.ForeColor = Color.Red; break;
                 case "not found": row.Cells[(int)AppField.Status].Style.ForeColor = Color.Red; break;
+                case "NEW": row.Cells[(int)AppField.Status].Style.ForeColor = Color.Blue; break;
                 default: row.Cells[(int)AppField.Status].Style.ForeColor = Color.Black; break;
             }
         }
@@ -1270,21 +1276,22 @@ namespace MCRatings
                 lastClickedRow = e.RowIndex;    // row becomes the last clicked
 
                 // handle CTRL+click on IMDB link
-                if (e.ColumnIndex == (int)AppField.IMDbID && ModifierKeys.HasFlag(Keys.Control))
+                AppField field = (AppField)e.ColumnIndex;
+                if (field == AppField.IMDbID && ModifierKeys.HasFlag(Keys.Control))
                 {
                     string id = gridMovies.CurrentCell.EditedFormattedValue as string;
                     if (id != null && id.ToLower().StartsWith("tt"))
                         Process.Start($"https://www.imdb.com/title/{id.ToLower()}/");
                 }
                 // handle CTRL+click on Trailer link
-                if (e.ColumnIndex == (int)AppField.Trailer && ModifierKeys.HasFlag(Keys.Control))
+                if ((field == AppField.Trailer || field == AppField.Website) && ModifierKeys.HasFlag(Keys.Control))
                 {
                     string url = gridMovies.CurrentCell.EditedFormattedValue as string;
                     if (url != null && url.ToLower().StartsWith("http"))
                         Process.Start(url);
                 }
                 // handle CTRL+click on File path
-                else if (e.ColumnIndex == (int)AppField.File && ModifierKeys.HasFlag(Keys.Control))
+                else if (field == AppField.File && ModifierKeys.HasFlag(Keys.Control))
                 {
                     string path = gridMovies.CurrentCell.EditedFormattedValue as string;
                     if (!string.IsNullOrEmpty(path))
@@ -1658,15 +1665,15 @@ namespace MCRatings
             DateTime start = DateTime.Now;
 
             int count = collection.Movies.Count;
-            List<string> col = collection.Movies.Select(m => m.ImdbId).ToList();
-            List<string> loaded = new List<string>();
+            var col = collection.Movies.ToDictionary(c=>c.ImdbId, c=>c);
 
             BindingSource bs = gridMovies.DataSource as BindingSource;
             DataTable dt = bs?.DataSource as DataTable;
 
             int repeated = 0;
             int added = 0;
-            
+            int created = 0;
+
             if (dt != null)
             {
                 foreach (DataRow row in dt.Rows)
@@ -1675,8 +1682,10 @@ namespace MCRatings
                     string imdb = m[AppField.IMDbID]?.Replace("tt","");
                     if (!string.IsNullOrEmpty(imdb))
                     {
-                        if (col.Contains(imdb))
+                        if (col.ContainsKey(imdb))
                         {
+                            col[imdb].tag = true;
+                            m.selected = true;
                             var curr = m[AppField.Collections].Split(';').Select(c => c.ToLower().Trim()).ToList();
                             if (curr.Contains(collection.Title.ToLower()))
                                 repeated++;
@@ -1689,12 +1698,43 @@ namespace MCRatings
                         }
                     }
                 }
+
+                DateTime dtNow = DateTime.Now;
+                string now = dtNow.ToString("yyyy-MM-dd HH:mm:ss");
+
+                var newMovies = col.Select(c => c.Value).Where(c => c.tag == false).ToList();
+                foreach (var m in newMovies)
+                {
+                    Dictionary<AppField, string> fields = new Dictionary<AppField, string>();
+                    fields[AppField.Status] = "NEW";
+                    fields[AppField.IMDbID] = $"tt{m.ImdbId}";
+                    fields[AppField.FTitle] = m.Title;
+                    fields[AppField.FYear] = m.Year;
+                    fields[AppField.Imported] = now;
+                    fields[AppField.Collections] = $"{collection.Title}; MISSING";
+
+                    MovieInfo mov = new MovieInfo(-1, fields, null);
+                    mov.selected = true;
+                    mov.DateImported = dtNow;
+                    movies.Add(mov);
+                    
+                    // add movie row
+                    object[] values = new object[dt.Columns.Count];
+                    values[(int)AppField.Movie] = mov;
+                    values[(int)AppField.Selected] = mov.selected;
+                    foreach (AppField c in Enum.GetValues(typeof(AppField)))
+                        if ((int)c > 1) values[(int)c] = mov[c];     // skip first 2
+
+                    dt.Rows.Add(values);
+                    created++;
+                }
             }
 
             UpdateDataGrid(start);
             updateModifiedCount();
             updateSelectedCount();
-            SetStatus($"Imported collection '{collection.Title}': {count} movies, {added + repeated} matches");
+            SetStatus($"Imported collection '{collection.Title}': {count} movies, {added + repeated} matches, {created} new");
         }
     }
 }
+

@@ -14,7 +14,7 @@ namespace MCRatings
 
     public class MovieInfo
     {
-        public int JRKey { get; private set; }
+        public int JRKey { get; set; }
         private string Fullpath;
         private string Filename;
         public DateTime DateImported;
@@ -58,11 +58,11 @@ namespace MCRatings
             Filename = Path.GetFileNameWithoutExtension(Fullpath);
             playlists = Playlists;
 
-            string lists = ($"{playlists.Count}\n\n" + string.Join("\n",playlists.Keys.OrderBy(k=>k).Select(k=>$"{playlists[k]} [ID: {k}]").ToList())).Trim();
+            string lists = playlists == null ? "" : ($"{playlists.Count}\n\n" + string.Join("\n",playlists.Keys.OrderBy(k=>k).Select(k=>$"{playlists[k]} [ID: {k}]").ToList())).Trim();
             if (lists == "0") lists = "";
             fields[AppField.Playlists] = lists;
 
-            if (long.TryParse(fields[AppField.Imported], out long seconds))
+            if (fields.ContainsKey(AppField.Imported) && long.TryParse(fields[AppField.Imported], out long seconds))
             {
                 DateImported = Util.EpochToDateTime(seconds).ToLocalTime();
                 fields[AppField.Imported] = DateImported.ToString("yyyy-MM-dd HH:mm:ss");
@@ -124,7 +124,7 @@ namespace MCRatings
                 }
 
                 if (field == AppField.FTitle || field == AppField.FYear || field == AppField.Title || field == AppField.Year
-                    || field == AppField.IMDbID || field == AppField.Actors || field == AppField.Director)
+                    || field == AppField.IMDbID || field == AppField.Actors || field == AppField.Director || field == AppField.Keywords)
                 {
                     SetFilterString();
                     CheckMatch();
@@ -200,7 +200,7 @@ namespace MCRatings
 
         public void SetFilterString()
         {
-            string filter = $"{this[AppField.FTitle]}|{this[AppField.FYear]}|{this[AppField.Title]}|{this[AppField.Year]}|{this[AppField.IMDbID]}|{this[AppField.Actors]}|{this[AppField.Director]}";
+            string filter = $"{this[AppField.FTitle]}|{this[AppField.FYear]}|{this[AppField.Title]}|{this[AppField.Year]}|{this[AppField.IMDbID]}|{this[AppField.Actors]}|{this[AppField.Director]}|{this[AppField.Keywords]}";
             fields[AppField.Filter] = filter.ToLower().Trim('|');
         }
 
