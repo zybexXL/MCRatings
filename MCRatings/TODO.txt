@@ -1,21 +1,14 @@
 
 Settings:
-- source preference: OMDB/TMDB
-- max num actors/directors/etc
 - create missing fields?
 - startup check: single popup for multiple missing fields
 
 TMDB:
 - get posters?
 - get actor pics?
-- keywords column
-
-PTP drop:
-- create missing movies
 
 Main:
-- Get from OMDB/TMDB (override settings?)
-- get: merge omdb/tmdb sources (using Settings preference)
+- Get all/row/column from OMDB/TMDB (override settings)
 - locked fields (no overwrite/ignore changes - per movie)
 
 

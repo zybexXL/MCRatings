@@ -209,8 +209,10 @@ namespace MCRatings
             File.Copy(sample, tmp, true);
             IMJFileAutomation file = jr.ImportFile(tmp);
             if (file != null)
+            {
+                file.Set("Media Sub Type", "Movie");
                 movie.JRKey = file.GetKey();
-
+            }
             try { File.Delete(tmp); } catch { }
             return file;
         }

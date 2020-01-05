@@ -714,7 +714,8 @@ namespace MCRatings
             bool fieldEnabled = Program.settings.FieldMap[field].enabled;
 
             if (fieldEnabled && field != AppField.IMDbID)
-                movie[field] = movie.originalValue(field);    // restore original value 
+                if (movie.JRKey >= 0 || (field != AppField.IMDbID && field != AppField.Imported && field != AppField.Collections))
+                    movie[field] = movie.originalValue(field);    // restore original value 
             if (string.IsNullOrEmpty(value)) return false;
 
             movie.setUpdate(field, value);
@@ -1706,18 +1707,19 @@ namespace MCRatings
                 foreach (var m in newMovies)
                 {
                     Dictionary<AppField, string> fields = new Dictionary<AppField, string>();
-                    fields[AppField.Status] = "NEW";
-                    fields[AppField.IMDbID] = $"tt{m.ImdbId}";
-                    fields[AppField.FTitle] = m.Title;
-                    fields[AppField.FYear] = m.Year;
-                    fields[AppField.Imported] = now;
-                    fields[AppField.Collections] = $"{collection.Title}; MISSING";
-
                     MovieInfo mov = new MovieInfo(-1, fields, null);
-                    mov.selected = true;
+                    mov[AppField.Status] = "NEW";
+                    mov[AppField.FTitle] = m.Title;
+                    mov[AppField.FYear] = m.Year;
+                    mov.TakeSnapshot();
+
+                    mov[AppField.Collections] = $"{collection.Title}; MISSING";
+                    mov[AppField.Imported] = now;
                     mov.DateImported = dtNow;
+                    mov[AppField.IMDbID] = $"tt{m.ImdbId}";
+                    mov.selected = true;
                     movies.Add(mov);
-                    
+
                     // add movie row
                     object[] values = new object[dt.Columns.Count];
                     values[(int)AppField.Movie] = mov;

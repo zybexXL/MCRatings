@@ -70,6 +70,7 @@ namespace MCRatings
 
             TakeSnapshot();
         }
+
         public string this[AppField field]
         {
             get { if (fields.TryGetValue(field, out string val)) return val; else return null; }
