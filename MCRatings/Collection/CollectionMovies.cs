@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace MCRatings
 {
@@ -24,7 +25,7 @@ namespace MCRatings
                 if (title != null && title.Contains("::"))
                     title = title.Substring(0, title.IndexOf("::"));
 
-                movies.Title = title.Trim();
+                movies.Title = title?.Trim();
                 return movies;
             }
             catch { }

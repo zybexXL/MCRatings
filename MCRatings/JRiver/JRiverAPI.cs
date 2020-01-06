@@ -26,12 +26,20 @@ namespace MCRatings
         public int APIlevel;
 
         public Exception lastException;
+        string lastFile = null;
 
         public JRiverAPI()
         { }
 
         ~JRiverAPI()
-        { Disconnect(); }
+        {   try
+            {
+                Disconnect();
+                if (lastFile != null && File.Exists(lastFile))
+                    File.Delete(lastFile);
+            }
+            catch { }
+        }
 
         public bool Connect()
         {
@@ -201,19 +209,28 @@ namespace MCRatings
 
         public IMJFileAutomation CreateMovie(MovieInfo movie)
         {
-            string sample = Program.settings.VideoTemplateFile;
-            if (!File.Exists(sample)) throw new Exception("VideoTemplateFile not found, please check settings.xml");
+            string template = Program.settings.VideoTemplateFile;
+            if (!File.Exists(template)) throw new Exception("VideoTemplateFile not found, please check settings.xml");
 
             //string date = movie.DateImported.ToString("yyyyMMdd");
-            string tmp = Path.Combine(Path.GetTempPath(), $"{movie.IMDBid}{Path.GetExtension(sample)}");
-            File.Copy(sample, tmp, true);
-            IMJFileAutomation file = jr.ImportFile(tmp);
+            string name = $"{movie.Title ?? movie.FTitle}.{movie.Year ?? movie.FYear}.{movie.IMDBid}".Trim('.');
+            name = string.Join("_", name.Split(Path.GetInvalidFileNameChars(), StringSplitOptions.RemoveEmptyEntries));
+            string sample = Path.Combine(Path.GetTempPath(), $"{name}{Path.GetExtension(template)}");
+            if (!File.Exists(sample))
+            {
+                if (lastFile != null && File.Exists(lastFile))
+                    File.Move(lastFile, sample);
+                else
+                    File.Copy(template, sample, true);
+            }
+            lastFile = sample;
+
+            IMJFileAutomation file = jr.ImportFile(sample);
             if (file != null)
             {
                 file.Set("Media Sub Type", "Movie");
                 movie.JRKey = file.GetKey();
             }
-            try { File.Delete(tmp); } catch { }
             return file;
         }
 
@@ -316,7 +333,13 @@ namespace MCRatings
             try
             {
                 if (Fields.TryGetValue(displayField.ToLower(), out string jrField))
-                    return file.Set(jrField, value);
+                {
+                    bool ok = file.Set(jrField, value);
+                    if (!ok)
+                        if (file.Get(jrField, false) == value)
+                            ok = true;
+                    return ok;
+                }
             }
             catch (Exception ex) {
                 Console.WriteLine(ex.ToString()); }

@@ -713,8 +713,8 @@ namespace MCRatings
             bool fieldOverwrite = Program.settings.FieldMap[field].overwrite;
             bool fieldEnabled = Program.settings.FieldMap[field].enabled;
 
-            if (fieldEnabled && field != AppField.IMDbID)
-                if (movie.JRKey >= 0 || (field != AppField.IMDbID && field != AppField.Imported && field != AppField.Collections))
+            if (fieldEnabled && field != AppField.IMDbID && field != AppField.Collections)
+                if (movie.JRKey >= 0 || field != AppField.Imported)
                     movie[field] = movie.originalValue(field);    // restore original value 
             if (string.IsNullOrEmpty(value)) return false;
 
@@ -740,7 +740,7 @@ namespace MCRatings
         {
             if (string.IsNullOrWhiteSpace(list1)) return list2;
             if (string.IsNullOrWhiteSpace(list2)) return list1;
-            var l1 = list1.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Select(l=>l.Trim()).Where(l=>!string.IsNullOrWhiteSpace(l)).ToList();
+            var l1 = list1.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Select(l => l.Trim()).Where(l => !string.IsNullOrWhiteSpace(l)).ToList();
             var l2 = list2.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Select(l => l.Trim()).Where(l => !string.IsNullOrWhiteSpace(l)).ToList();
             var l1lower = l1.Select(l => l.ToLower()).ToList();
 
@@ -1623,10 +1623,23 @@ namespace MCRatings
             }
         }
 
+        private void MCRatingsUI_DragEnter(object sender, DragEventArgs e)
+        {
+            string[] files = (string[])(e.Data.GetData(DataFormats.FileDrop, false));
+            if (files.Length > 0 && Path.GetExtension(files[0]).ToLower().StartsWith(".htm"))
+                e.Effect = DragDropEffects.Copy;
+        }
+
         private void MCRatingsUI_DragDrop(object sender, DragEventArgs e)
         {
             string[] files = (string[])(e.Data.GetData(DataFormats.FileDrop, false));
             if (files.Length == 0) return;
+
+            if (!Program.settings.Collections)
+            {
+                MessageBox.Show("Please enable 'Collections' in Settings.xml");
+                return;
+            }
 
             string html = File.ReadAllText(files[0]);
             string title = null;
@@ -1648,25 +1661,12 @@ namespace MCRatings
             MessageBox.Show("Invalid collection file - could not parse JSON data");
         }
 
-        private void MCRatingsUI_DragEnter(object sender, DragEventArgs e)
-        {
-            string[] files = (string[])(e.Data.GetData(DataFormats.FileDrop, false));
-            if (files.Length > 0 && Path.GetExtension(files[0]).ToLower().StartsWith(".htm"))
-                e.Effect = DragDropEffects.Copy;
-        }
-
         private void ParseCollection(MovieCollection collection)
         {
-            if (!Program.settings.Collections)
-            {
-                MessageBox.Show("Please enable 'Collections' in Settings.xml");
-                return;
-            }
-
             DateTime start = DateTime.Now;
 
             int count = collection.Movies.Count;
-            var col = collection.Movies.ToDictionary(c=>c.ImdbId, c=>c);
+            var col = collection.Movies.ToDictionary(c=>c.ImdbId ?? $"{c.Title}|{c.Year}", c=>c);
 
             BindingSource bs = gridMovies.DataSource as BindingSource;
             DataTable dt = bs?.DataSource as DataTable;
@@ -1680,24 +1680,27 @@ namespace MCRatings
                 foreach (DataRow row in dt.Rows)
                 {
                     MovieInfo m = row[(int)AppField.Movie] as MovieInfo;
-                    string imdb = m[AppField.IMDbID]?.Replace("tt","");
-                    if (!string.IsNullOrEmpty(imdb))
+                    string imdb = m[AppField.IMDbID]?.Replace("tt", "");
+                    string ftitle = string.IsNullOrEmpty(m[AppField.FTitle]) ? null : $"{m[AppField.FTitle]}|{m[AppField.FYear]}";
+                    string jrtitle = string.IsNullOrEmpty(m[AppField.Title]) ? null : $"{m[AppField.Title]}|{m[AppField.Year]}";
+
+                    if (!string.IsNullOrEmpty(imdb) && col.TryGetValue(imdb, out CollectionMovie dup)
+                        || (ftitle != null && col.TryGetValue(ftitle, out dup))
+                        || (jrtitle != null && col.TryGetValue(jrtitle, out dup)))
                     {
-                        if (col.ContainsKey(imdb))
+                        dup.tag = true;
+                        m.selected = true;
+                        var curr = m[AppField.Collections].Split(';').Select(c => c.ToLower().Trim()).ToList();
+                        if (curr.Contains(collection.Title.ToLower()))
+                            repeated++;
+                        else
                         {
-                            col[imdb].tag = true;
-                            m.selected = true;
-                            var curr = m[AppField.Collections].Split(';').Select(c => c.ToLower().Trim()).ToList();
-                            if (curr.Contains(collection.Title.ToLower()))
-                                repeated++;
-                            else
-                            {
-                                if (overwriteField(m, AppField.Collections, collection.Title, chkOverwrite.Checked))
-                                    m[AppField.Status] = "updated";
-                                added++;
-                            }
+                            if (overwriteField(m, AppField.Collections, collection.Title, chkOverwrite.Checked))
+                                m[AppField.Status] = "updated";
+                            added++;
                         }
                     }
+
                 }
 
                 DateTime dtNow = DateTime.Now;
@@ -1709,14 +1712,16 @@ namespace MCRatings
                     Dictionary<AppField, string> fields = new Dictionary<AppField, string>();
                     MovieInfo mov = new MovieInfo(-1, fields, null);
                     mov[AppField.Status] = "NEW";
-                    mov[AppField.FTitle] = m.Title;
+                    mov[AppField.FTitle] = m.Title == null ? null : HttpUtility.HtmlDecode(m.Title);
                     mov[AppField.FYear] = m.Year;
                     mov.TakeSnapshot();
 
+                    mov[AppField.Title] = mov[AppField.FTitle];
+                    mov[AppField.Year] = m.Year;
                     mov[AppField.Collections] = $"{collection.Title}; MISSING";
                     mov[AppField.Imported] = now;
                     mov.DateImported = dtNow;
-                    mov[AppField.IMDbID] = $"tt{m.ImdbId}";
+                    mov[AppField.IMDbID] = string.IsNullOrEmpty(m.ImdbId) ? null : $"tt{m.ImdbId}";
                     mov.selected = true;
                     movies.Add(mov);
 

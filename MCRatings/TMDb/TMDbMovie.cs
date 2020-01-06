@@ -202,7 +202,7 @@ namespace MCRatings
 
             // fix uppercase after numbers (1970S, 21St, ...)
             txt = Regex.Replace(txt, @"\d([A-Z])", delegate (Match m) { return m.Value.ToLower(); });
-            txt = Regex.Replace(txt, @"\b(ad|bc|3d)\b", delegate (Match m) { return m.Value.ToUpper(); }, RegexOptions.IgnoreCase);
+            txt = Regex.Replace(txt, @"\b(ad|bc|3d|usa|uk)\b", delegate (Match m) { return m.Value.ToUpper(); }, RegexOptions.IgnoreCase);
 
             return txt;
         }
