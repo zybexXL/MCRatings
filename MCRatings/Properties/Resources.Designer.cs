@@ -133,6 +133,16 @@ namespace MCRatings.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap movie_reel {
+            get {
+                object obj = ResourceManager.GetObject("movie_reel", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap paypal {
             get {
                 object obj = ResourceManager.GetObject("paypal", resourceCulture);
@@ -176,6 +186,16 @@ namespace MCRatings.Properties {
         internal static System.Drawing.Bitmap speaker_on {
             get {
                 object obj = ResourceManager.GetObject("speaker_on", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap tmdb_small_blue {
+            get {
+                object obj = ResourceManager.GetObject("tmdb_small_blue", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

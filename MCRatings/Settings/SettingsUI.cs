@@ -127,7 +127,7 @@ namespace MCRatings
             this.Close();
         }
 
-        private void ShowSettings(Settings settings)
+        private void ShowSettings(Settings settings, bool mapOnly = false)
         {
             gridFields.Rows.Clear();
             foreach (AppField f in Enum.GetValues(typeof(AppField)))
@@ -137,6 +137,8 @@ namespace MCRatings
                 if (Constants.ViewColumnInfo[f].isJRField)
                     addRow(settings, f);
             }
+            if (mapOnly) return;
+
             txtCleanup.Text = settings.FileCleanup;
             txtAPIKeys.Text = settings.APIKeys;
             txtTMDBkeys.Text = settings.TMDbAPIKeys;
@@ -197,11 +199,8 @@ namespace MCRatings
             if (MessageBox.Show("Reset field mapping to default?", "Reset mapping",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                Settings settings = new Settings();
-                settings.APIKeys = txtAPIKeys.Text;
-                settings.TMDbAPIKeys = txtTMDBkeys.Text;
-                settings.FileCleanup = txtCleanup.Text;
-                ShowSettings(settings);
+                Settings settings = Settings.DefaultSettings();
+                ShowSettings(settings, true);
                 dirty = true;
             }
         }
@@ -256,7 +255,7 @@ namespace MCRatings
                 MessageBox.Show("Please review the JRiver fields to be updated by MCRatings.\n" +
                     "Fields in red don't exist in JRiver - you need to create them (type=String), or specify an alternative field.\n" +
                     "If you don't want a field to be updated, you can disable it.\n\n" +
-                    "To get OMDb information, you need to register for an API key using the provided link.", "Welcome to MCRatings!",
+                    "To get OMDb/TMDb information, you need to register for API keys using the provided links.", "Welcome to MCRatings!",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 tabSettings.SelectedTab = tabFields;
             }

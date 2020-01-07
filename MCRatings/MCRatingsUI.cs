@@ -87,9 +87,18 @@ namespace MCRatings
 
             // show SettingsUI if there are no valid settings (first time) or if field mapping has problems
             if (!Program.settings.valid || showSettings)
+            {
                 if (new SettingsUI(jrAPI, true).ShowDialog() != DialogResult.OK)
                     if (!Program.settings.valid)
                         this.Close();
+            }
+            // show About dialog once (flag is reset during upgrade)
+            else if (Program.settings.appVersion != Program.version.ToString())
+            {
+                Program.settings.appVersion = Program.version.ToString();
+                Program.settings.Save();
+                new About().ShowDialog();
+            }
 
             comboLists.Focus();
         }

@@ -215,6 +215,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="MCRatings.ico" />
+    <None Include="Resources\movie_reel.png" />
+    <None Include="Resources\tmdb_small_blue.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="obj\" />

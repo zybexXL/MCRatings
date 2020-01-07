@@ -118,26 +118,38 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="help_414445_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\help_414445_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="speaker_on" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\speaker_on.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="search_515151" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\search_515151.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="speaker_off" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\speaker_off.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="close_win_414445" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\close_win_414445.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="paypal" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\paypal.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="BTC_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\BTC_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="help_414445_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\help_414445_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="close_red_619539" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\close_red_619539.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="close_win_414445" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\close_win_414445.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="refresh_2a2b2c" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\refresh_2a2b2c.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="search_515151" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\search_515151.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="MCRatings" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\MCRatings.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="tmdb_small_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\tmdb_small_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="movie_reel" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\movie_reel.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ETH_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ETH_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -145,13 +157,7 @@
   <data name="cog32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\cog32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="paypal" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\paypal.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="refresh_2a2b2c" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\refresh_2a2b2c.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="speaker_off" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\speaker_off.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="BTC_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BTC_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

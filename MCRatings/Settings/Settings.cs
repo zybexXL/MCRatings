@@ -31,7 +31,7 @@ namespace MCRatings
         public int ListItemsLimit = 5;
         public string Language = "EN";
         public string VideoTemplateFile = "";
-
+        public string appVersion;
 
         [XmlIgnore]
         public Dictionary<AppField, JRFieldMap> FieldMap = new Dictionary<AppField, JRFieldMap>();
@@ -62,56 +62,56 @@ namespace MCRatings
 
         public Settings()
         {
-            FieldMap = new Dictionary<AppField, JRFieldMap>();
+        }
+
+        public static Settings DefaultSettings()
+        {
+            Settings settings = new Settings();
+            settings.BuildFieldMap();
+            return settings;
+        }
+
+        private void BuildFieldMap()
+        {
+            if (FieldMap == null) FieldMap = new Dictionary<AppField, JRFieldMap>();
+            Dictionary<AppField, JRFieldMap> curr = Fields == null || Fields.Count == 0 ? null : Fields.ToDictionary(f => f.field, f => f);
+
             foreach (AppField f in Enum.GetValues(typeof(AppField)))
                 if (Constants.ViewColumnInfo[f].isJRField)
-                    FieldMap.Add(f, new JRFieldMap(f, Constants.ViewColumnInfo[f].JRField));
+                {
+                    if (curr != null && curr.TryGetValue(f, out var map))
+                        FieldMap[f] = map;
+                    else
+                        FieldMap[f] = new JRFieldMap(f, Constants.ViewColumnInfo[f].JRField);
+                }
 
             Fields = FieldMap.Values.ToList();
         }
 
         public static Settings Load()
         {
-            Settings settings = new Settings();
+            Settings settings = null;
             try
             {
                 XmlSerializer ser = new XmlSerializer(typeof(Settings));
                 using (TextReader reader = new StreamReader(Constants.SettingsFile))
-                {
-                    Settings saved = (Settings)ser.Deserialize(reader);
-                    settings.APIKeys = saved.APIKeys;
-                    settings.TMDbAPIKeys = saved.TMDbAPIKeys;
-                    settings.valid = saved.valid;
-                    settings.CacheDays = saved.CacheDays;
-                    settings.FastStart = saved.FastStart;
-                    settings.Silent = saved.Silent;
-                    settings.FileCleanup = saved.FileCleanup?.Replace("\n", "\r\n");
-                    settings.version = saved.version;
-                    settings.Collections = saved.Collections;
-                    settings.WebmediaURLs = saved.WebmediaURLs;
-                    settings.ListItemsLimit = saved.ListItemsLimit;
-                    settings.Language = saved.Language;
-                    settings.ListItemsLimit = saved.ListItemsLimit;
-                    settings.VideoTemplateFile = saved.VideoTemplateFile ?? "";
-                    
-                    if (saved.Fields != null)
-                        foreach (var field in saved.Fields)
-                            settings.FieldMap[field.field] = field;
-                    settings.Fields = settings.FieldMap.Values.ToList();
+                    settings = (Settings)ser.Deserialize(reader);
 
-                    settings.CellColors = saved.CellColors;
-                    if (settings.CellColors == null || settings.CellColors.Length != Constants.CellColors.Length)
-                        settings.CellColors = (uint[])Constants.CellColors.Clone();
-                }
+                settings.BuildFieldMap();
+
+                if (settings.CellColors == null || settings.CellColors.Length != Constants.CellColors.Length)
+                    settings.CellColors = (uint[])Constants.CellColors.Clone();
+               
                 // upgrade settings
                 if (settings.valid && settings.version < CURRVERSION)
                 {
                     settings.version = CURRVERSION;
                     settings.Save();
                 }
+                return settings;
             }
             catch { }    // errors are handled by the caller when settings is null
-            return settings;
+            return DefaultSettings();
         }
 
         public bool Save()
