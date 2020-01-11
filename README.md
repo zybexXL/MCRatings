@@ -40,7 +40,7 @@ Requirements
 - .Net Framework 4.6.2 or above (Windows 10 should have it by default)
 - JRiver MediaCenter must be installed on same PC (client or server)
 - OMDb API key (free or otherwise) - get it from [here](http://www.omdbapi.com/apikey.aspx)
-- TMDb API key (free or otherwise) - get it from [here](https://developers.themoviedb.org/3/getting-started/introduction)
+- TMDb API key (free or otherwise) - get it from [here](https://developers.themoviedb.org/3/getting-started/introduction) (you may need to register a TMDb account first)
 
 <br>
 
