@@ -29,11 +29,16 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsUI));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             this.gridFields = new System.Windows.Forms.DataGridView();
+            this.dgEnabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.dgSetting = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dgField = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dgOverwrite = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.dgSourcePlaceHolder = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label1 = new System.Windows.Forms.Label();
             this.txtCleanup = new System.Windows.Forms.TextBox();
             this.btnSave = new System.Windows.Forms.Button();
@@ -61,11 +66,6 @@
             this.label8 = new System.Windows.Forms.Label();
             this.maxListLimit = new System.Windows.Forms.NumericUpDown();
             this.tabFields = new System.Windows.Forms.TabPage();
-            this.dgEnabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.dgSetting = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgField = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgOverwrite = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.dgSourcePlaceHolder = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.gridFields)).BeginInit();
             this.tabSettings.SuspendLayout();
             this.tabAPI.SuspendLayout();
@@ -101,6 +101,51 @@
             this.gridFields.TabIndex = 1;
             this.gridFields.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridFields_CellClick);
             this.gridFields.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridFields_CellValueChanged);
+            // 
+            // dgEnabled
+            // 
+            this.dgEnabled.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.dgEnabled.HeaderText = "Enabled";
+            this.dgEnabled.Name = "dgEnabled";
+            this.dgEnabled.Width = 65;
+            // 
+            // dgSetting
+            // 
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dgSetting.DefaultCellStyle = dataGridViewCellStyle1;
+            this.dgSetting.HeaderText = "MCRatings field";
+            this.dgSetting.Name = "dgSetting";
+            this.dgSetting.ReadOnly = true;
+            this.dgSetting.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.dgSetting.Width = 125;
+            // 
+            // dgField
+            // 
+            this.dgField.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dgField.DefaultCellStyle = dataGridViewCellStyle2;
+            this.dgField.HeaderText = "JRiver field (Display)";
+            this.dgField.Name = "dgField";
+            this.dgField.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // dgOverwrite
+            // 
+            this.dgOverwrite.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.dgOverwrite.HeaderText = "Overwrite";
+            this.dgOverwrite.Name = "dgOverwrite";
+            this.dgOverwrite.Width = 70;
+            // 
+            // dgSourcePlaceHolder
+            // 
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
+            this.dgSourcePlaceHolder.DefaultCellStyle = dataGridViewCellStyle3;
+            this.dgSourcePlaceHolder.HeaderText = "Source";
+            this.dgSourcePlaceHolder.Name = "dgSourcePlaceHolder";
+            this.dgSourcePlaceHolder.ReadOnly = true;
+            this.dgSourcePlaceHolder.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgSourcePlaceHolder.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.dgSourcePlaceHolder.Width = 128;
             // 
             // label1
             // 
@@ -241,7 +286,7 @@
             this.chkFastStart.Location = new System.Drawing.Point(14, 398);
             this.chkFastStart.Name = "chkFastStart";
             this.chkFastStart.Size = new System.Drawing.Size(146, 20);
-            this.chkFastStart.TabIndex = 8;
+            this.chkFastStart.TabIndex = 9;
             this.chkFastStart.Text = "Fast playlist loading";
             this.toolTip1.SetToolTip(this.chkFastStart, resources.GetString("chkFastStart.ToolTip"));
             this.chkFastStart.UseVisualStyleBackColor = true;
@@ -367,7 +412,7 @@
             this.chkWebmedia.Location = new System.Drawing.Point(14, 372);
             this.chkWebmedia.Name = "chkWebmedia";
             this.chkWebmedia.Size = new System.Drawing.Size(236, 20);
-            this.chkWebmedia.TabIndex = 9;
+            this.chkWebmedia.TabIndex = 8;
             this.chkWebmedia.Text = "Use \"webmedia://\" for Trailer URLs";
             this.chkWebmedia.UseVisualStyleBackColor = true;
             this.chkWebmedia.CheckedChanged += new System.EventHandler(this.somethingChanged);
@@ -411,7 +456,7 @@
             this.tabAPI.Padding = new System.Windows.Forms.Padding(3);
             this.tabAPI.Size = new System.Drawing.Size(574, 438);
             this.tabAPI.TabIndex = 2;
-            this.tabAPI.Text = "Data source";
+            this.tabAPI.Text = "  API Settings   ";
             this.tabAPI.UseVisualStyleBackColor = true;
             // 
             // label9
@@ -456,53 +501,8 @@
             this.tabFields.Padding = new System.Windows.Forms.Padding(3);
             this.tabFields.Size = new System.Drawing.Size(574, 438);
             this.tabFields.TabIndex = 0;
-            this.tabFields.Text = "Field mapping";
+            this.tabFields.Text = "   Field mapping   ";
             this.tabFields.UseVisualStyleBackColor = true;
-            // 
-            // dgEnabled
-            // 
-            this.dgEnabled.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.dgEnabled.HeaderText = "Enabled";
-            this.dgEnabled.Name = "dgEnabled";
-            this.dgEnabled.Width = 65;
-            // 
-            // dgSetting
-            // 
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgSetting.DefaultCellStyle = dataGridViewCellStyle7;
-            this.dgSetting.HeaderText = "MCRatings field";
-            this.dgSetting.Name = "dgSetting";
-            this.dgSetting.ReadOnly = true;
-            this.dgSetting.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.dgSetting.Width = 125;
-            // 
-            // dgField
-            // 
-            this.dgField.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgField.DefaultCellStyle = dataGridViewCellStyle8;
-            this.dgField.HeaderText = "JRiver field (Display)";
-            this.dgField.Name = "dgField";
-            this.dgField.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // dgOverwrite
-            // 
-            this.dgOverwrite.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.dgOverwrite.HeaderText = "Overwrite";
-            this.dgOverwrite.Name = "dgOverwrite";
-            this.dgOverwrite.Width = 70;
-            // 
-            // dgSourcePlaceHolder
-            // 
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
-            this.dgSourcePlaceHolder.DefaultCellStyle = dataGridViewCellStyle9;
-            this.dgSourcePlaceHolder.HeaderText = "Source";
-            this.dgSourcePlaceHolder.Name = "dgSourcePlaceHolder";
-            this.dgSourcePlaceHolder.ReadOnly = true;
-            this.dgSourcePlaceHolder.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgSourcePlaceHolder.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.dgSourcePlaceHolder.Width = 128;
             // 
             // SettingsUI
             // 
@@ -522,7 +522,6 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Settings";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SettingsUI_FormClosing);
             this.Load += new System.EventHandler(this.Settings_Load);
             this.Shown += new System.EventHandler(this.SettingsUI_Shown);
