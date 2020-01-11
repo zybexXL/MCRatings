@@ -21,7 +21,7 @@ Features
 ------
 This is what **MCRatings** can do for you:
 
-- Gets movie metadata from OMDb and TMDb including IMDb Rating, TMDb rating, Rotten Tomatoes and Metacritic scores ...
+- Gets movie metadata from OMDb and TMDb including IMDb/TMDb/RottenTomatoes/Metacritic ratings...
 - ... Actors, Director, Writers, Tagline, Keywords, Awards, Plot, Website, Trailer... and a few more!
 - Uses IMDb ID if available (tt number), or movie Title/Year otherwise.
 - Automagically extracts movie title/year from your filenames and folders.
