@@ -143,7 +143,7 @@ namespace MCRatings
         {
             if (snapshot.TryGetValue(field, out string original))
                 return curr == original ? 0 : string.IsNullOrEmpty(original) && !string.IsNullOrEmpty(curr) ? 2 : 1;
-            return string.IsNullOrEmpty(curr) ? 0 : 1;
+            return string.IsNullOrEmpty(curr) ? 0 : 2;
         }
 
         public void UpdateSnapshot(AppField field)

@@ -37,6 +37,7 @@ namespace MCRatings
         Point LastMouseClick;
         private SoundPlayer Player = new SoundPlayer();
         string clipPlaylists = "MCRatings.Playlists";
+        MovieInfo copiedMovie = null;       // last CTRL+C
 
         public MCRatingsUI()
         {
@@ -141,6 +142,7 @@ namespace MCRatings
             if (keyData == (Keys.Control | Keys.C))
                 if (gridMovies.CurrentCell != null && (gridMovies.Focused || gridMovies.IsCurrentCellInEditMode))
                 {
+                    copiedMovie = gridMovies.Rows[gridMovies.CurrentCell.RowIndex].Cells[(int)AppField.Movie].Value as MovieInfo;
                     string value = gridMovies.CurrentCell.Value.ToString();
                     if (gridMovies.CurrentCell.IsInEditMode && gridMovies.CurrentCell.EditType == typeof(DataGridViewTextBoxEditingControl))
                     {
@@ -152,6 +154,23 @@ namespace MCRatings
                         try { Clipboard.SetText(value.Trim()); } catch { }
                     return true;
                 }
+
+            // paste movie Info
+            if (keyData == (Keys.Control | Keys.Shift | Keys.V) && copiedMovie != null)
+                if (gridMovies.CurrentCell != null && (gridMovies.Focused || gridMovies.IsCurrentCellInEditMode))
+                {
+                    int row = gridMovies.CurrentCell.RowIndex;
+                    MovieInfo movie = gridMovies.Rows[row].Cells[(int)AppField.Movie].Value as MovieInfo;
+                    foreach (AppField f in Enum.GetValues(typeof(AppField)))
+                        if (f >= AppField.Title && f != AppField.File)
+                        {
+                            movie[f] = copiedMovie[f];
+                            gridMovies.Rows[row].Cells[(int)f].Value = copiedMovie[f];
+                        }
+                    gridMovies.Refresh();
+                    updateModifiedCount();
+                }
+
             return base.ProcessCmdKey(ref msg, keyData);
         }
         
@@ -457,6 +476,7 @@ namespace MCRatings
 
         private void PopulateDataGrid(bool updateStatus = true)
         {
+            copiedMovie = null;
             gridMovies.DataSource = null;
             lastClickedRow = 0;
             txtSearch.Text = "";
@@ -698,6 +718,8 @@ namespace MCRatings
                         movie[AppField.Status] = "not found";
                         Interlocked.Increment(ref progress.fail);
                     }
+                    if (movie.JRKey < 0)
+                        movie[AppField.Status] = $"NEW, {movie[AppField.Status]}";
                 }
             })).ToArray());
 
@@ -1247,7 +1269,7 @@ namespace MCRatings
                 }
             }
 
-            switch (m[AppField.Status])
+            switch ((m[AppField.Status] ?? "").Replace("NEW, ",""))
             {
                 case "updated": row.Cells[(int)AppField.Status].Style.ForeColor = Color.DarkGreen; break;
                 case "saved": row.Cells[(int)AppField.Status].Style.ForeColor = Color.DarkGreen; break;
@@ -1488,28 +1510,6 @@ namespace MCRatings
         {
             if (dragSelect)
                 e.Cancel = true;
-
-            //DataGridView.HitTestInfo hit = gridMovies.HitTest(LastMouseClick.X, LastMouseClick.Y);
-            //bool disablePaste = (hit.ColumnIndex == 0 || hit.RowIndex >= 0);
-            //if (hit.RowIndex >= 0 && hit.ColumnIndex > 1 && hit.Type == DataGridViewHitTestType.Cell)
-            //{
-            //    AppField field = (AppField)hit.ColumnIndex;
-            //    string value = null;
-            //    try
-            //    {
-            //        if (field == AppField.Playlists && !Clipboard.ContainsData(clipPlaylists))
-
-            //        }
-            //        else if (!gridMovies.Columns[hit.ColumnIndex].ReadOnly && Clipboard.ContainsText())
-            //            value = Clipboard.GetText();
-            //    }
-            //menuPaste.Enabled = true;
-            //if (Clipboard.ContainsText())
-            //    menuPaste.Text = "Paste field";
-            //else if (Clipboard.ContainsData("MCRatings.MovieInfo"))
-            //    menuPaste.Text = "Paste row";
-            //else
-            //    menuPaste.Enabled = false;
         }
 
         #endregion
