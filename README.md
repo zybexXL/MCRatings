@@ -4,7 +4,7 @@ About MCRatings
 
 <img align="right" src="https://github.com/zybexXL/MCRatings/blob/master/Screenshots/MCRatings.png">
 
-MCRatings is a companion tool for JRiver Media Center to help tag a movie collection. It retrieves IMDb, Metacritic and Rotten Tomatoes movie ratings, along with other movie metadata such as Actors, Director, Studios, etc from Open Movie Database (OMDb). You can decide what changes to keep/skip, and which JRiver fields to update.
+MCRatings is a companion tool for JRiver Media Center to help tag a movie collection. It retrieves IMDb, TMDb, Metacritic and Rotten Tomatoes movie ratings, along with other movie metadata such as Tagline, Actors, Director, Studios, etc from Open Movie Database (OMDb) and The Movie Database (TMDb). You can decide what changes to keep/skip, and which JRiver fields to update.
 
 [Features](#Features)<br>
 [Requirements](#Requirements)<br>
@@ -21,8 +21,8 @@ Features
 ------
 This is what **MCRatings** can do for you:
 
-- Gets movie metadata from OMDb including IMDb Rating, Rotten Tomatoes and Metacritic scores ...
-- ... Actors, Director, Writers, Awards, Plot, Website... and a few more!
+- Gets movie metadata from OMDb and TMDb including IMDb/TMDb/RottenTomatoes/Metacritic ratings...
+- ... Actors, Director, Writers, Tagline, Keywords, Awards, Plot, Website, Trailer... and a few more!
 - Uses IMDb ID if available (tt number), or movie Title/Year otherwise.
 - Automagically extracts movie title/year from your filenames and folders.
 - Uses the JRiver API to load and update movie tags, so there's no need to mess with Sidecar XMLs.
@@ -39,7 +39,8 @@ Requirements
 ------
 - .Net Framework 4.6.2 or above (Windows 10 should have it by default)
 - JRiver MediaCenter must be installed on same PC (client or server)
-- OMDB API key (free or otherwise) - get it from [here](http://www.omdbapi.com/apikey.aspx)
+- OMDb API key (free or otherwise) - get it from [here](http://www.omdbapi.com/apikey.aspx)
+- TMDb API key (free or otherwise) - get it from [here](https://developers.themoviedb.org/3/getting-started/introduction) (you may need to register a TMDb account first)
 
 <br>
 
@@ -52,9 +53,10 @@ Quick Start
      * create the missing fields in JRiver (with type = string)
      * disable them if you are not interested in the information they provide.  
    * Register for an [OMDb Key](http://www.omdbapi.com/apikey.aspx) and enter it on "OMDb API Keys"
+   * Register for a [TMDb Key](https://developers.themoviedb.org/3/getting-started/introduction) and enter it on "TMDb API Keys"
    * Save Settings
 4. Select a JRiver Playlist to load
-5. Select a few movies and click "Get OMDb Info"
-6. Review the info downloaded from OMDb and save it to your JRiver DB using "Save to JRiver"
+5. Select a few movies and click "Get Movie Info"
+6. Review the info downloaded from TMDb/OMDb and save it to your JRiver DB using "Save to JRiver"
 7. Rejoice that you now have a whole lot of metadata per movie in your collection and enjoy it!
 
