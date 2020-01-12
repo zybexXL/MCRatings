@@ -53,7 +53,7 @@ Quick Start
      * create the missing fields in JRiver (with type = string)
      * disable them if you are not interested in the information they provide.  
    * Register for an [OMDb Key](http://www.omdbapi.com/apikey.aspx) and enter it on "OMDb API Keys"
-   * Register for a [TMDb Key](https://developers.themoviedb.org/3/getting-started/introduction) and enter it on "TMDb API Keys"
+   * Register for a [TMDb Key](http://www.themoviedb.org/settings/api) and enter it on "TMDb API Keys"
    * Save Settings
 4. Select a JRiver Playlist to load
 5. Select a few movies and click "Get Movie Info"
