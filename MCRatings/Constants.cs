@@ -11,7 +11,9 @@ namespace MCRatings
     // datagrid columns, default JRiver field mapping
     public enum CellColor {
         Default = 0, ActiveRow, SelectedRow, ActiveSelectedRow, ColumnEdit,
-        TitleMismatch, Year1Mismatch, NewValue, Overwrite }
+        TitleMismatch, Year1Mismatch, NewValue, Overwrite,
+        Confirmed, Unconfirmed      // foreground
+    }
 
     public enum AppField {
         Movie=0, Selected, Filter, Status, FTitle, FYear,       // non-JR fields
@@ -53,6 +55,8 @@ namespace MCRatings
                 (uint)0xFFE0D0A0,                           // year+1 mismatch
                 (uint)Color.LightGreen.ToArgb(),            // new value
                 (uint)0xFFFFC040,                           // overwrite
+                (uint)Color.Green.ToArgb(),                 // confirmed (foreground)
+                (uint)Color.Blue.ToArgb(),                  // unconfirmed (foreground)
         };
 
         // datagrid column names

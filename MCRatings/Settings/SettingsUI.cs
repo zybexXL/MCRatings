@@ -19,10 +19,14 @@ namespace MCRatings
         bool badFields = false;
 
         JRiverAPI jr;
+        List<Control> labels;
 
         public SettingsUI(JRiverAPI jrAPI, bool startDirty = false)
         {
             InitializeComponent();
+
+            labels = new List<Control> { lblColor1, lblColor2, lblColor3, lblColor4, lblColor5,
+                lblColor6, lblColor7, lblColor8, lblColor9, lblColor10, lblColor11 };
 
             SourceSelectColumn dgSource = new SourceSelectColumn();
             dgSource.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
@@ -42,9 +46,15 @@ namespace MCRatings
             jr = jrAPI;
             gridFields.DoubleBuffered(true);
             ShowSettings(Program.settings);
-            dirty = startDirty;
+            setDirty(startDirty);
             // mute icon hidden until a sound is played
             btnAudio.Visible = Directory.Exists(Constants.AudioCache) && Directory.GetFiles(Constants.AudioCache).Length > 0;  
+        }
+
+        private void setDirty(bool value = true)
+        {
+            dirty = value;
+            btnSave.Text = dirty ? "SAVE" : "OK";
         }
 
         private void Settings_Load(object sender, EventArgs e)
@@ -56,6 +66,7 @@ namespace MCRatings
             //this.Height = height;
             //this.Top = (Screen.FromControl(this).Bounds.Height - height) / 2;
             badFields = !checkFieldNames(Program.settings.valid);
+            LoadColors(Program.settings.CellColors ?? Constants.CellColors);
         }
 
         private void btnDiscard_Click(object sender, EventArgs e)
@@ -95,6 +106,7 @@ namespace MCRatings
             return ok;
         }
 
+
         private void btnSave_Click(object sender, EventArgs e)
         {
             if (dirty)
@@ -112,6 +124,7 @@ namespace MCRatings
                     Sources src = ((SourceSelect)row.Cells["dgSource"].Value).Value;
                     Program.settings.FieldMap[field] = new JRFieldMap(field, value, enabled, overwrite, src);
                 }
+                Program.settings.CellColors = GetColors();
                 Program.settings.Silent = !audio;
                 Program.settings.FastStart = chkFastStart.Checked;
                 Program.settings.WebmediaURLs = chkWebmedia.Checked;
@@ -180,7 +193,7 @@ namespace MCRatings
 
         private void gridFields_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            dirty = true;
+            setDirty();
         }
 
         private void SettingsUI_KeyPress(object sender, KeyPressEventArgs e)
@@ -201,7 +214,7 @@ namespace MCRatings
             {
                 Settings settings = Settings.DefaultSettings();
                 ShowSettings(settings, true);
-                dirty = true;
+                setDirty();
             }
         }
 
@@ -263,14 +276,14 @@ namespace MCRatings
 
         private void btnAudio_Click(object sender, EventArgs e)
         {
-            dirty = true;
+            setDirty();
             audio = !audio;
             btnAudio.Image = audio ? Properties.Resources.speaker_on : Properties.Resources.speaker_off;
         }
 
         private void somethingChanged(object sender, EventArgs e)
         {
-            dirty = true;
+            setDirty();
         }
 
         private void linkHelp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -284,5 +297,43 @@ namespace MCRatings
             catch { }
         }
 
+        void LoadColors(uint[] colors)
+        {
+            for (int i = 0; i < colors.Length; i++)
+                if (labels[i].Tag == null)
+                    labels[i].BackColor = Color.FromArgb((int)colors[i]);
+                else
+                    labels[i].ForeColor = Color.FromArgb((int)colors[i]);
+            lblColor10.BackColor = lblColor11.BackColor = label1.BackColor;
+        }
+
+        private void lnkResetColors_Clicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            LoadColors(Constants.CellColors);
+            setDirty();
+        }
+
+        private void lblColor_click(object sender, EventArgs e)
+        {
+            Label lbl = (Label)sender;
+            colorDialog1.Color = lbl.Tag == null ? lbl.BackColor : lbl.ForeColor;
+            if (colorDialog1.ShowDialog() == DialogResult.OK)
+            {
+                setDirty();
+                if (lbl.Tag == null)
+                    lbl.BackColor = colorDialog1.Color;
+                else
+                    lbl.ForeColor = colorDialog1.Color;
+            }
+            lblColor10.BackColor = lblColor11.BackColor = label1.BackColor;
+        }
+
+        uint[] GetColors()
+        {
+            uint[] colors = new uint[labels.Count];
+            for (int i = 0; i < labels.Count; i++)
+                colors[i] = labels[i].Tag == null ? (uint)labels[i].BackColor.ToArgb() : (uint)labels[i].ForeColor.ToArgb();
+            return colors;
+        }
     }
 }

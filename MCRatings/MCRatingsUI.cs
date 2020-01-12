@@ -92,6 +92,7 @@ namespace MCRatings
                 if (new SettingsUI(jrAPI, true).ShowDialog() != DialogResult.OK)
                     if (!Program.settings.valid)
                         this.Close();
+                ApplyColors();
             }
             // show About dialog once (flag is reset during upgrade)
             else if (Program.settings.appVersion != Program.version.ToString())
@@ -155,7 +156,7 @@ namespace MCRatings
                     return true;
                 }
 
-            // paste movie Info
+            // CTRL+SHIFT+V = paste movie Info
             if (keyData == (Keys.Control | Keys.Shift | Keys.V) && copiedMovie != null)
                 if (gridMovies.CurrentCell != null && (gridMovies.Focused || gridMovies.IsCurrentCellInEditMode))
                 {
@@ -166,6 +167,8 @@ namespace MCRatings
                         {
                             movie[f] = copiedMovie[f];
                             gridMovies.Rows[row].Cells[(int)f].Value = copiedMovie[f];
+                            setMovieStatus(movie, true);
+                            gridMovies.Rows[row].Cells[(int)AppField.Status].Value = movie[AppField.Status];
                         }
                     gridMovies.Refresh();
                     updateModifiedCount();
@@ -182,15 +185,10 @@ namespace MCRatings
         {
             if (new SettingsUI(jrAPI).ShowDialog() == DialogResult.OK)
             {
+                ApplyColors();
                 omdbAPI = new OMDbAPI(Program.settings.APIkeyList);
                 tmdbAPI = new TMDbAPI(Program.settings.TMDBkeyList);
             }
-        }
-
-        private void menuColorGuide_Click(object sender, EventArgs e)
-        {
-            if (new ColorEditor().ShowDialog() == DialogResult.OK)
-                ApplyColors();
         }
 
         void ApplyColors()
@@ -706,25 +704,34 @@ namespace MCRatings
                         bool ok = false;
                         Interlocked.Increment(ref progress.success);
                         movie.clearUpdates();
+                        movie.setUpdate(AppField.Imported, movie[AppField.Imported]);
+                        movie.setUpdate(AppField.Playlists, movie[AppField.Playlists]);
+
                         foreach (AppField f in Enum.GetValues(typeof(AppField)))
                             if (f >= AppField.Title && f != AppField.Imported && f!= AppField.Playlists && f!= AppField.File)
                                 ok |= overwriteField(movie, f, getPreferredValue(f, info, info2), progress.canOverwrite);
-
-                        movie[AppField.Status] = ok && movie.isDirty ? "updated" : "no change";
+                        setMovieStatus(movie, true);
                         movie.selected = false;
                     }
                     else
                     {
-                        movie[AppField.Status] = "not found";
+                        setMovieStatus(movie, false);
                         Interlocked.Increment(ref progress.fail);
                     }
-                    if (movie.JRKey < 0)
-                        movie[AppField.Status] = $"NEW, {movie[AppField.Status]}";
                 }
             })).ToArray());
 
             progress.skip = movies.Count - progress.success - progress.fail;
             progress.result = !progress.cancelled;
+        }
+
+        private void setMovieStatus(MovieInfo movie, bool updated = false)
+        {
+            string isNew = movie.JRKey < 0 ? "NEW, " : "";
+            if (updated)
+                movie[AppField.Status] = movie.isDirty ? $"{isNew}updated" : $"{isNew}no change";
+            else
+                movie[AppField.Status] = $"{isNew}not found";
         }
 
         private string getPreferredValue(AppField field, OMDbMovie omdb, TMDbMovie tmdb)
@@ -840,7 +847,7 @@ namespace MCRatings
 
                 if (jrAPI.SaveMovie(movie))
                 {
-                    movie.clearUpdates();
+                    //movie.clearUpdates();
                     movie[AppField.Status] = "saved";
                     progress.success++;
                 }
@@ -1242,7 +1249,7 @@ namespace MCRatings
                 row.Cells[(int)AppField.FTitle].Style.BackColor = getColor(CellColor.TitleMismatch);
             else row.Cells[(int)AppField.FTitle].Style = null;
 
-            if (!m.isDirty && m[AppField.Status] == "updated")
+            if (!m.isDirty && (m[AppField.Status]??"").Contains("updated"))
             {
                 m[AppField.Status] = null;
                 row.Cells[(int)AppField.Status].Value = null;
@@ -1251,7 +1258,7 @@ namespace MCRatings
             bool hasStatus = m[AppField.Status] != null;
             foreach (AppField f in Enum.GetValues(typeof(AppField)))
             {
-                if (f >= AppField.Title)
+                if (f >= AppField.Title && f != AppField.File)
                 {
                     int mod = m.isModified(f, m[f]);
                     if (mod > 0)
@@ -1259,9 +1266,9 @@ namespace MCRatings
                         row.Cells[(int)f].Style.BackColor = mod == 1 ? getColor(CellColor.Overwrite) : getColor(CellColor.NewValue);
                         row.Cells[(int)f].Style.ForeColor = Color.Empty;   // inherit
                     }
-                    else if (mod == 0 && hasStatus && m.isUpdated(f))
+                    else if (mod == 0 && hasStatus)
                     {
-                        row.Cells[(int)f].Style.ForeColor = Color.Green;
+                        row.Cells[(int)f].Style.ForeColor = m.isUpdated(f) ? getColor(CellColor.Confirmed) : getColor(CellColor.Unconfirmed);
                         row.Cells[(int)f].Style.BackColor = Color.Empty;   // inherit
                     }
                     else
@@ -1627,6 +1634,8 @@ namespace MCRatings
                 MovieInfo m = gridMovies.Rows[hit.RowIndex].Cells[0].Value as MovieInfo;
                 gridMovies.Rows[hit.RowIndex].Cells[hit.ColumnIndex].Value = value;
                 m[(AppField)hit.ColumnIndex] = value;
+                setMovieStatus(m, true);
+                gridMovies.Rows[hit.RowIndex].Cells[(int)AppField.Status].Value = m[AppField.Status];
                 gridMovies.Refresh();
                 updateModifiedCount();
             }

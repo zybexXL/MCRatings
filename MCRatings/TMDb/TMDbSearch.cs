@@ -11,7 +11,7 @@ using System.Runtime.Serialization;
 namespace MCRatings
 {
     // find movie by ImdbID
-    // https://api.themoviedb.org/3/find/tt4633694?api_key=0e5d83fa186fb0261cf16d58dd6f5e42&language=en&external_source=imdb_id
+    // https://api.themoviedb.org/3/find/tt4633694?api_key={key}&language=en&external_source=imdb_id
     public class TMDbFind
     {
         public TMDbSearchResult[] movie_results;
@@ -22,7 +22,7 @@ namespace MCRatings
     }
 
     // find movie by Title + Year
-    // https://api.themoviedb.org/3/search/movie?api_key=0e5d83fa186fb0261cf16d58dd6f5e42&language=en-US&query=The%20Matrix&page=1&include_adult=false&year=1999
+    // https://api.themoviedb.org/3/search/movie?api_key={key}&language=en-US&query=The%20Matrix&page=1&include_adult=false&year=1999
     public class TMDbSearch
     {
         public int page;

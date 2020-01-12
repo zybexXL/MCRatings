@@ -11,7 +11,7 @@ namespace MCRatings
 {
     // Get Movie info + Credits, Keywords, Trailers, Images, Alternative Titles, Release Dates
     // multiple languages supported (fallback to english)
-    // https://api.themoviedb.org/3/movie/603?api_key=0e5d83fa186fb0261cf16d58dd6f5e42&language=en&append_to_response=credits,videos,images,keywords,reviews,alternative_titles,release_dates&include_image_language=en,pt,null
+    // https://api.themoviedb.org/3/movie/603?api_key={key}&language=en&append_to_response=credits,videos,images,keywords,reviews,alternative_titles,release_dates&include_image_language=en,pt,null
     public class TMDbMovie
     {
         public int id;

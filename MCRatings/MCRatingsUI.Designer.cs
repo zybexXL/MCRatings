@@ -70,7 +70,6 @@
             this.menuShortcutFilename = new System.Windows.Forms.ToolStripMenuItem();
             this.menuShortcutTitle = new System.Windows.Forms.ToolStripMenuItem();
             this.menuShortcutID = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuColorGuide = new System.Windows.Forms.ToolStripMenuItem();
             this.btnLoad = new System.Windows.Forms.Button();
             this.btnGetMovieInfo = new System.Windows.Forms.Button();
             this.txtSearch = new System.Windows.Forms.TextBox();
@@ -108,8 +107,7 @@
             this.menuCopyField,
             this.menuPaste,
             this.toolStripSeparator2,
-            this.menuCreateShortcuts,
-            this.menuColorGuide});
+            this.menuCreateShortcuts});
             this.gridMenu.Name = "contextMenuStrip1";
             this.gridMenu.ShowImageMargin = false;
             this.gridMenu.Size = new System.Drawing.Size(168, 198);
@@ -386,30 +384,23 @@
             // menuShortcutFilename
             // 
             this.menuShortcutFilename.Name = "menuShortcutFilename";
-            this.menuShortcutFilename.Size = new System.Drawing.Size(169, 22);
+            this.menuShortcutFilename.Size = new System.Drawing.Size(180, 22);
             this.menuShortcutFilename.Text = "Filename.url";
             this.menuShortcutFilename.Click += new System.EventHandler(this.menuShortcutFilename_Click);
             // 
             // menuShortcutTitle
             // 
             this.menuShortcutTitle.Name = "menuShortcutTitle";
-            this.menuShortcutTitle.Size = new System.Drawing.Size(169, 22);
+            this.menuShortcutTitle.Size = new System.Drawing.Size(180, 22);
             this.menuShortcutTitle.Text = "Title [Year].url";
             this.menuShortcutTitle.Click += new System.EventHandler(this.menuShortcutTitle_Click);
             // 
             // menuShortcutID
             // 
             this.menuShortcutID.Name = "menuShortcutID";
-            this.menuShortcutID.Size = new System.Drawing.Size(169, 22);
+            this.menuShortcutID.Size = new System.Drawing.Size(180, 22);
             this.menuShortcutID.Text = "IMDB_tt000000.url";
             this.menuShortcutID.Click += new System.EventHandler(this.menuShortcutID_Click);
-            // 
-            // menuColorGuide
-            // 
-            this.menuColorGuide.Name = "menuColorGuide";
-            this.menuColorGuide.Size = new System.Drawing.Size(167, 22);
-            this.menuColorGuide.Text = "Change colors";
-            this.menuColorGuide.Click += new System.EventHandler(this.menuColorGuide_Click);
             // 
             // btnLoad
             // 
@@ -808,7 +799,6 @@
         private System.Windows.Forms.Button btnReconnect;
         private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
-        private System.Windows.Forms.ToolStripMenuItem menuColorGuide;
         private System.Windows.Forms.ToolStripMenuItem menuCreateShortcuts;
         private System.Windows.Forms.ToolStripMenuItem menuShortcutTitle;
         private System.Windows.Forms.ToolStripMenuItem menuShortcutFilename;

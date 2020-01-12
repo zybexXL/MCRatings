@@ -115,12 +115,6 @@
     <Compile Include="TMDb\TMDbMovie.cs" />
     <Compile Include="Settings\JRFieldMap.cs" />
     <Compile Include="Upgrade\AutoUpgrade.cs" />
-    <Compile Include="Settings\ColorEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Settings\ColorEditor.Designer.cs">
-      <DependentUpon>ColorEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -161,9 +155,6 @@
     <Compile Include="Util\Util.cs" />
     <EmbeddedResource Include="About.resx">
       <DependentUpon>About.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Settings\ColorEditor.resx">
-      <DependentUpon>ColorEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MCRatingsUI.resx">
       <DependentUpon>MCRatingsUI.cs</DependentUpon>

@@ -99,9 +99,17 @@ namespace MCRatings
 
                 settings.BuildFieldMap();
 
-                if (settings.CellColors == null || settings.CellColors.Length != Constants.CellColors.Length)
+                if (settings.CellColors == null)
                     settings.CellColors = (uint[])Constants.CellColors.Clone();
                
+                if (settings.CellColors.Length < Constants.CellColors.Length)
+                {
+                    uint[] currColors = settings.CellColors;
+                    settings.CellColors = (uint[])Constants.CellColors.Clone();
+                    for (int i = 0; i < currColors.Length; i++)
+                        settings.CellColors[i] = currColors[i];
+                }
+
                 // upgrade settings
                 if (settings.valid && settings.version < CURRVERSION)
                 {

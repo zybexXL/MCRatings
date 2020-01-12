@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsUI));
             this.gridFields = new System.Windows.Forms.DataGridView();
             this.dgEnabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
@@ -49,7 +49,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.btnDiscard = new System.Windows.Forms.Button();
-            this.lblReset = new System.Windows.Forms.LinkLabel();
+            this.lblResetMap = new System.Windows.Forms.LinkLabel();
             this.chkFastStart = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.linkHelp = new System.Windows.Forms.LinkLabel();
@@ -66,11 +66,27 @@
             this.label8 = new System.Windows.Forms.Label();
             this.maxListLimit = new System.Windows.Forms.NumericUpDown();
             this.tabFields = new System.Windows.Forms.TabPage();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.lnkResetColors = new System.Windows.Forms.LinkLabel();
+            this.lblTitle = new System.Windows.Forms.Label();
+            this.lblColor9 = new System.Windows.Forms.Label();
+            this.lblColor8 = new System.Windows.Forms.Label();
+            this.lblColor7 = new System.Windows.Forms.Label();
+            this.lblColor4 = new System.Windows.Forms.Label();
+            this.lblColor6 = new System.Windows.Forms.Label();
+            this.lblColor3 = new System.Windows.Forms.Label();
+            this.lblColor5 = new System.Windows.Forms.Label();
+            this.lblColor2 = new System.Windows.Forms.Label();
+            this.lblColor11 = new System.Windows.Forms.Label();
+            this.lblColor10 = new System.Windows.Forms.Label();
+            this.lblColor1 = new System.Windows.Forms.Label();
+            this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             ((System.ComponentModel.ISupportInitialize)(this.gridFields)).BeginInit();
             this.tabSettings.SuspendLayout();
             this.tabAPI.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maxListLimit)).BeginInit();
             this.tabFields.SuspendLayout();
+            this.tabPage1.SuspendLayout();
             this.SuspendLayout();
             // 
             // gridFields
@@ -90,14 +106,14 @@
             this.dgOverwrite,
             this.dgSourcePlaceHolder});
             this.gridFields.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
-            this.gridFields.Location = new System.Drawing.Point(9, 32);
+            this.gridFields.Location = new System.Drawing.Point(9, 37);
             this.gridFields.Margin = new System.Windows.Forms.Padding(2);
             this.gridFields.MultiSelect = false;
             this.gridFields.Name = "gridFields";
             this.gridFields.RowHeadersVisible = false;
             this.gridFields.RowTemplate.Height = 24;
             this.gridFields.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.gridFields.Size = new System.Drawing.Size(556, 401);
+            this.gridFields.Size = new System.Drawing.Size(560, 395);
             this.gridFields.TabIndex = 1;
             this.gridFields.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridFields_CellClick);
             this.gridFields.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridFields_CellValueChanged);
@@ -111,8 +127,8 @@
             // 
             // dgSetting
             // 
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgSetting.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle10.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dgSetting.DefaultCellStyle = dataGridViewCellStyle10;
             this.dgSetting.HeaderText = "MCRatings field";
             this.dgSetting.Name = "dgSetting";
             this.dgSetting.ReadOnly = true;
@@ -122,9 +138,9 @@
             // dgField
             // 
             this.dgField.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgField.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            dataGridViewCellStyle11.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dgField.DefaultCellStyle = dataGridViewCellStyle11;
             this.dgField.HeaderText = "JRiver field (Display)";
             this.dgField.Name = "dgField";
             this.dgField.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
@@ -138,8 +154,8 @@
             // 
             // dgSourcePlaceHolder
             // 
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
-            this.dgSourcePlaceHolder.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
+            this.dgSourcePlaceHolder.DefaultCellStyle = dataGridViewCellStyle12;
             this.dgSourcePlaceHolder.HeaderText = "Source";
             this.dgSourcePlaceHolder.Name = "dgSourcePlaceHolder";
             this.dgSourcePlaceHolder.ReadOnly = true;
@@ -173,7 +189,7 @@
             // btnSave
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.Location = new System.Drawing.Point(487, 473);
+            this.btnSave.Location = new System.Drawing.Point(491, 472);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 21;
@@ -246,17 +262,17 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(6, 15);
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(8, 15);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(233, 15);
+            this.label5.Size = new System.Drawing.Size(251, 16);
             this.label5.TabIndex = 8;
             this.label5.Text = "MCRatings to JRiver field mapping:";
             // 
             // btnDiscard
             // 
             this.btnDiscard.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDiscard.Location = new System.Drawing.Point(401, 473);
+            this.btnDiscard.Location = new System.Drawing.Point(405, 472);
             this.btnDiscard.Name = "btnDiscard";
             this.btnDiscard.Size = new System.Drawing.Size(75, 23);
             this.btnDiscard.TabIndex = 20;
@@ -264,20 +280,20 @@
             this.btnDiscard.UseVisualStyleBackColor = true;
             this.btnDiscard.Click += new System.EventHandler(this.btnDiscard_Click);
             // 
-            // lblReset
+            // lblResetMap
             // 
-            this.lblReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblReset.AutoSize = true;
-            this.lblReset.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblReset.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.lblReset.LinkColor = System.Drawing.Color.Navy;
-            this.lblReset.Location = new System.Drawing.Point(529, 17);
-            this.lblReset.Name = "lblReset";
-            this.lblReset.Size = new System.Drawing.Size(35, 13);
-            this.lblReset.TabIndex = 2;
-            this.lblReset.TabStop = true;
-            this.lblReset.Text = "Reset";
-            this.lblReset.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lblReset_LinkClicked);
+            this.lblResetMap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblResetMap.AutoSize = true;
+            this.lblResetMap.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblResetMap.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.lblResetMap.LinkColor = System.Drawing.Color.Blue;
+            this.lblResetMap.Location = new System.Drawing.Point(472, 15);
+            this.lblResetMap.Name = "lblResetMap";
+            this.lblResetMap.Size = new System.Drawing.Size(97, 15);
+            this.lblResetMap.TabIndex = 2;
+            this.lblResetMap.TabStop = true;
+            this.lblResetMap.Text = "Reset mappings";
+            this.lblResetMap.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lblReset_LinkClicked);
             // 
             // chkFastStart
             // 
@@ -304,7 +320,7 @@
             this.linkHelp.AutoSize = true;
             this.linkHelp.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkHelp.LinkColor = System.Drawing.Color.Teal;
-            this.linkHelp.Location = new System.Drawing.Point(9, 477);
+            this.linkHelp.Location = new System.Drawing.Point(9, 476);
             this.linkHelp.Margin = new System.Windows.Forms.Padding(3);
             this.linkHelp.Name = "linkHelp";
             this.linkHelp.Size = new System.Drawing.Size(75, 15);
@@ -424,11 +440,12 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabSettings.Controls.Add(this.tabAPI);
             this.tabSettings.Controls.Add(this.tabFields);
+            this.tabSettings.Controls.Add(this.tabPage1);
             this.tabSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabSettings.Location = new System.Drawing.Point(0, 0);
             this.tabSettings.Name = "tabSettings";
             this.tabSettings.SelectedIndex = 0;
-            this.tabSettings.Size = new System.Drawing.Size(582, 467);
+            this.tabSettings.Size = new System.Drawing.Size(586, 466);
             this.tabSettings.TabIndex = 0;
             // 
             // tabAPI
@@ -495,20 +512,260 @@
             // 
             this.tabFields.Controls.Add(this.label5);
             this.tabFields.Controls.Add(this.gridFields);
-            this.tabFields.Controls.Add(this.lblReset);
+            this.tabFields.Controls.Add(this.lblResetMap);
             this.tabFields.Location = new System.Drawing.Point(4, 25);
             this.tabFields.Name = "tabFields";
             this.tabFields.Padding = new System.Windows.Forms.Padding(3);
-            this.tabFields.Size = new System.Drawing.Size(574, 438);
+            this.tabFields.Size = new System.Drawing.Size(578, 437);
             this.tabFields.TabIndex = 0;
             this.tabFields.Text = "   Field mapping   ";
             this.tabFields.UseVisualStyleBackColor = true;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.lnkResetColors);
+            this.tabPage1.Controls.Add(this.lblTitle);
+            this.tabPage1.Controls.Add(this.lblColor9);
+            this.tabPage1.Controls.Add(this.lblColor8);
+            this.tabPage1.Controls.Add(this.lblColor7);
+            this.tabPage1.Controls.Add(this.lblColor4);
+            this.tabPage1.Controls.Add(this.lblColor6);
+            this.tabPage1.Controls.Add(this.lblColor3);
+            this.tabPage1.Controls.Add(this.lblColor5);
+            this.tabPage1.Controls.Add(this.lblColor2);
+            this.tabPage1.Controls.Add(this.lblColor11);
+            this.tabPage1.Controls.Add(this.lblColor10);
+            this.tabPage1.Controls.Add(this.lblColor1);
+            this.tabPage1.Location = new System.Drawing.Point(4, 25);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(574, 437);
+            this.tabPage1.TabIndex = 3;
+            this.tabPage1.Text = "   Colors   ";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // lnkResetColors
+            // 
+            this.lnkResetColors.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lnkResetColors.AutoSize = true;
+            this.lnkResetColors.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lnkResetColors.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
+            this.lnkResetColors.Location = new System.Drawing.Point(493, 20);
+            this.lnkResetColors.Name = "lnkResetColors";
+            this.lnkResetColors.Size = new System.Drawing.Size(70, 15);
+            this.lnkResetColors.TabIndex = 17;
+            this.lnkResetColors.TabStop = true;
+            this.lnkResetColors.Text = "reset colors";
+            this.lnkResetColors.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkResetColors_Clicked);
+            // 
+            // lblTitle
+            // 
+            this.lblTitle.AutoSize = true;
+            this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTitle.Location = new System.Drawing.Point(8, 15);
+            this.lblTitle.Name = "lblTitle";
+            this.lblTitle.Size = new System.Drawing.Size(113, 16);
+            this.lblTitle.TabIndex = 16;
+            this.lblTitle.Text = "Grid cell colors";
+            // 
+            // lblColor9
+            // 
+            this.lblColor9.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblColor9.BackColor = System.Drawing.Color.Gold;
+            this.lblColor9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblColor9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblColor9.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblColor9.Location = new System.Drawing.Point(11, 285);
+            this.lblColor9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblColor9.Name = "lblColor9";
+            this.lblColor9.Size = new System.Drawing.Size(552, 25);
+            this.lblColor9.TabIndex = 5;
+            this.lblColor9.Text = "Changed value, previous value overwritten";
+            this.lblColor9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblColor9.Click += new System.EventHandler(this.lblColor_click);
+            // 
+            // lblColor8
+            // 
+            this.lblColor8.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblColor8.BackColor = System.Drawing.Color.LightGreen;
+            this.lblColor8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblColor8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblColor8.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblColor8.Location = new System.Drawing.Point(11, 261);
+            this.lblColor8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblColor8.Name = "lblColor8";
+            this.lblColor8.Size = new System.Drawing.Size(552, 25);
+            this.lblColor8.TabIndex = 6;
+            this.lblColor8.Text = "New value, was blank before";
+            this.lblColor8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblColor8.Click += new System.EventHandler(this.lblColor_click);
+            // 
+            // lblColor7
+            // 
+            this.lblColor7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblColor7.BackColor = System.Drawing.Color.Wheat;
+            this.lblColor7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblColor7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblColor7.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblColor7.Location = new System.Drawing.Point(11, 237);
+            this.lblColor7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblColor7.Name = "lblColor7";
+            this.lblColor7.Size = new System.Drawing.Size(552, 25);
+            this.lblColor7.TabIndex = 7;
+            this.lblColor7.Text = "File and JRiver Year mismatch by 1";
+            this.lblColor7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblColor7.Click += new System.EventHandler(this.lblColor_click);
+            // 
+            // lblColor4
+            // 
+            this.lblColor4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblColor4.BackColor = System.Drawing.Color.DarkCyan;
+            this.lblColor4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblColor4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblColor4.ForeColor = System.Drawing.Color.White;
+            this.lblColor4.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblColor4.Location = new System.Drawing.Point(11, 165);
+            this.lblColor4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblColor4.Name = "lblColor4";
+            this.lblColor4.Size = new System.Drawing.Size(552, 25);
+            this.lblColor4.TabIndex = 8;
+            this.lblColor4.Text = "Selected + current row";
+            this.lblColor4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblColor4.Click += new System.EventHandler(this.lblColor_click);
+            // 
+            // lblColor6
+            // 
+            this.lblColor6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblColor6.BackColor = System.Drawing.Color.MistyRose;
+            this.lblColor6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblColor6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblColor6.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblColor6.Location = new System.Drawing.Point(11, 213);
+            this.lblColor6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblColor6.Name = "lblColor6";
+            this.lblColor6.Size = new System.Drawing.Size(552, 25);
+            this.lblColor6.TabIndex = 9;
+            this.lblColor6.Text = "File and JRiver Title/Year mismatch";
+            this.lblColor6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblColor6.Click += new System.EventHandler(this.lblColor_click);
+            // 
+            // lblColor3
+            // 
+            this.lblColor3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblColor3.BackColor = System.Drawing.Color.Cyan;
+            this.lblColor3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblColor3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblColor3.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblColor3.Location = new System.Drawing.Point(11, 141);
+            this.lblColor3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblColor3.Name = "lblColor3";
+            this.lblColor3.Size = new System.Drawing.Size(552, 25);
+            this.lblColor3.TabIndex = 10;
+            this.lblColor3.Text = "Selected row";
+            this.lblColor3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblColor3.Click += new System.EventHandler(this.lblColor_click);
+            // 
+            // lblColor5
+            // 
+            this.lblColor5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblColor5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.lblColor5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblColor5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblColor5.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblColor5.Location = new System.Drawing.Point(11, 189);
+            this.lblColor5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblColor5.Name = "lblColor5";
+            this.lblColor5.Size = new System.Drawing.Size(552, 25);
+            this.lblColor5.TabIndex = 11;
+            this.lblColor5.Text = "Editable columns";
+            this.lblColor5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblColor5.Click += new System.EventHandler(this.lblColor_click);
+            // 
+            // lblColor2
+            // 
+            this.lblColor2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblColor2.BackColor = System.Drawing.SystemColors.Highlight;
+            this.lblColor2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblColor2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblColor2.ForeColor = System.Drawing.Color.White;
+            this.lblColor2.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblColor2.Location = new System.Drawing.Point(11, 117);
+            this.lblColor2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblColor2.Name = "lblColor2";
+            this.lblColor2.Size = new System.Drawing.Size(552, 25);
+            this.lblColor2.TabIndex = 12;
+            this.lblColor2.Text = "Current row";
+            this.lblColor2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblColor2.Click += new System.EventHandler(this.lblColor_click);
+            // 
+            // lblColor11
+            // 
+            this.lblColor11.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblColor11.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.lblColor11.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblColor11.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblColor11.ForeColor = System.Drawing.Color.Purple;
+            this.lblColor11.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblColor11.Location = new System.Drawing.Point(11, 93);
+            this.lblColor11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblColor11.Name = "lblColor11";
+            this.lblColor11.Size = new System.Drawing.Size(552, 25);
+            this.lblColor11.TabIndex = 13;
+            this.lblColor11.Tag = "fg";
+            this.lblColor11.Text = "Unconfirmed value";
+            this.lblColor11.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblColor11.Click += new System.EventHandler(this.lblColor_click);
+            // 
+            // lblColor10
+            // 
+            this.lblColor10.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblColor10.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.lblColor10.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblColor10.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblColor10.ForeColor = System.Drawing.Color.Green;
+            this.lblColor10.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblColor10.Location = new System.Drawing.Point(11, 69);
+            this.lblColor10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblColor10.Name = "lblColor10";
+            this.lblColor10.Size = new System.Drawing.Size(552, 25);
+            this.lblColor10.TabIndex = 14;
+            this.lblColor10.Tag = "fg";
+            this.lblColor10.Text = "Confirmed value";
+            this.lblColor10.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblColor10.Click += new System.EventHandler(this.lblColor_click);
+            // 
+            // lblColor1
+            // 
+            this.lblColor1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblColor1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.lblColor1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblColor1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblColor1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblColor1.Location = new System.Drawing.Point(11, 45);
+            this.lblColor1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblColor1.Name = "lblColor1";
+            this.lblColor1.Size = new System.Drawing.Size(552, 25);
+            this.lblColor1.TabIndex = 15;
+            this.lblColor1.Text = "Regular row";
+            this.lblColor1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblColor1.Click += new System.EventHandler(this.lblColor_click);
             // 
             // SettingsUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(580, 502);
+            this.ClientSize = new System.Drawing.Size(584, 501);
             this.Controls.Add(this.tabSettings);
             this.Controls.Add(this.linkHelp);
             this.Controls.Add(this.btnDiscard);
@@ -517,7 +774,7 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(300, 400);
+            this.MinimumSize = new System.Drawing.Size(590, 530);
             this.Name = "SettingsUI";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
@@ -533,6 +790,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.maxListLimit)).EndInit();
             this.tabFields.ResumeLayout(false);
             this.tabFields.PerformLayout();
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -550,7 +809,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button btnDiscard;
-        private System.Windows.Forms.LinkLabel lblReset;
+        private System.Windows.Forms.LinkLabel lblResetMap;
         private System.Windows.Forms.Button btnAudio;
         private System.Windows.Forms.CheckBox chkFastStart;
         private System.Windows.Forms.ToolTip toolTip1;
@@ -572,5 +831,20 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dgField;
         private System.Windows.Forms.DataGridViewCheckBoxColumn dgOverwrite;
         private System.Windows.Forms.DataGridViewTextBoxColumn dgSourcePlaceHolder;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.LinkLabel lnkResetColors;
+        private System.Windows.Forms.Label lblTitle;
+        private System.Windows.Forms.Label lblColor9;
+        private System.Windows.Forms.Label lblColor8;
+        private System.Windows.Forms.Label lblColor7;
+        private System.Windows.Forms.Label lblColor4;
+        private System.Windows.Forms.Label lblColor6;
+        private System.Windows.Forms.Label lblColor3;
+        private System.Windows.Forms.Label lblColor5;
+        private System.Windows.Forms.Label lblColor2;
+        private System.Windows.Forms.Label lblColor11;
+        private System.Windows.Forms.Label lblColor10;
+        private System.Windows.Forms.Label lblColor1;
+        private System.Windows.Forms.ColorDialog colorDialog1;
     }
 }
