@@ -26,8 +26,8 @@ namespace MCRatings
         public double? vote_average;
         public int? vote_count;
         public double? popularity;
-        public long budget;
-        public long revenue;
+        public long? budget;
+        public long? revenue;
         public string homepage;
         public string status;
         public bool video;
@@ -84,9 +84,9 @@ namespace MCRatings
                         return null;
                 case AppField.Release: return release_dates.getEarliestReleaseDate(release_date); // release_dates?.getReleaseDate(Program.settings.Country) ?? release_date;
                 case AppField.IMDbID: return imdb_id;
-                case AppField.TMDbScore: return vote_average == null ? null : vote_average.Value.ToString("0.0").Replace(",",".");
+                case AppField.TMDbScore: return vote_average.HasValue && vote_average > 0 ? vote_average.Value.ToString("0.0").Replace(",", ".") : null;
                 case AppField.MPAARating: return release_dates?.getCertification("US"); // Program.settings.Country) ?? release_dates?.getCertification("US");
-                case AppField.Runtime: return runtime == null ? null : runtime.Value.ToString();
+                case AppField.Runtime: return runtime.HasValue && runtime.Value > 0 ? runtime.Value.ToString() : null;
                 case AppField.Genre: return genres == null ? null : fixList(genres.Select(c => c.name.Replace("Science Fiction","Sci-Fi")), listItems);
                 case AppField.OriginalTitle: return original_title;
                 case AppField.Series: return Regex.Replace(belongs_to_collection?.name ?? "", @"\s*(collection)\s*$", "", RegexOptions.IgnoreCase);
@@ -100,8 +100,8 @@ namespace MCRatings
                 case AppField.Description: return overview;
                 case AppField.Language: return spoken_languages == null ? null : fixList(spoken_languages.Select(c => c.englishName), listItems);
                 case AppField.Country: return production_countries == null ? null : fixList(production_countries.Select(c => c.name.Replace("United States of America","USA").Replace("United Kingdom", "UK")), listItems);
-                case AppField.Budget: return budget > 0 ? budget.ToString("$#,##0").Replace(".",",") : null;
-                case AppField.Revenue: return revenue > 0 ? revenue.ToString("$#,##0").Replace(".", ",") : null;
+                case AppField.Budget: return budget.HasValue && budget.Value > 0 ? budget.Value.ToString("$#,##0").Replace(".",",") : null;
+                case AppField.Revenue: return revenue.HasValue && revenue.Value > 0 ? revenue.Value.ToString("$#,##0").Replace(".", ",") : null;
                 case AppField.Website: return homepage;
                 case AppField.Trailer:
                     var video = videos?.results?.FirstOrDefault(v => v.type.ToLower() == "trailer");
