@@ -125,7 +125,8 @@ namespace MCRatings
                 }
 
                 if (field == AppField.FTitle || field == AppField.FYear || field == AppField.Title || field == AppField.Year
-                    || field == AppField.IMDbID || field == AppField.Actors || field == AppField.Director || field == AppField.Keywords)
+                    || field == AppField.IMDbID || field == AppField.Actors || field == AppField.Director
+                    || field == AppField.Keywords || field == AppField.OriginalTitle)
                 {
                     SetFilterString();
                     CheckMatch();
@@ -201,7 +202,7 @@ namespace MCRatings
 
         public void SetFilterString()
         {
-            string filter = $"{this[AppField.FTitle]}|{this[AppField.FYear]}|{this[AppField.Title]}|{this[AppField.Year]}|{this[AppField.IMDbID]}|{this[AppField.Actors]}|{this[AppField.Director]}|{this[AppField.Keywords]}";
+            string filter = $"{this[AppField.FTitle]}|{this[AppField.FYear]}|{this[AppField.Title]}|{this[AppField.Year]}|{this[AppField.IMDbID]}|{this[AppField.Actors]}|{this[AppField.Director]}|{this[AppField.Keywords]}|{this[AppField.OriginalTitle]}";
             fields[AppField.Filter] = filter.ToLower().Trim('|');
         }
 
