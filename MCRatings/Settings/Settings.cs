@@ -32,6 +32,9 @@ namespace MCRatings
         public string Language = "EN";
         public string VideoTemplateFile = "";
         public string appVersion;
+        public bool OMDbDisabled = false;
+        public bool TMDbDisabled = false;
+
 
         [XmlIgnore]
         public Dictionary<AppField, JRFieldMap> FieldMap = new Dictionary<AppField, JRFieldMap>();

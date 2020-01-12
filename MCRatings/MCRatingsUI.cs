@@ -670,34 +670,39 @@ namespace MCRatings
                     OMDbMovie info = null;
                     TMDbMovie info2 = null;
                     string imdb = FindByName ? null : movie[AppField.IMDbID];
+                    bool doOMDb = !Program.settings.OMDbDisabled;
+                    bool doTMDb = !Program.settings.TMDbDisabled;
 
                     if (FindByName)
                     {
-                        if (Program.settings.FieldMap[AppField.IMDbID].source == Sources.TMDb)
+                        Sources preference = Program.settings.FieldMap[AppField.IMDbID].source;
+                        if (doTMDb && preference == Sources.TMDb)
                             tmdb = tmdbAPI?.getByTitle(title, year);
-                        if (Program.settings.FieldMap[AppField.IMDbID].source == Sources.OMDb || tmdb == null)
+                        if (doOMDb && (preference == Sources.OMDb || tmdb == null))
                             omdb = skipOMDB ? null : omdbAPI?.getByTitle(title, year);
-                        
+                        // get TMDB if preference was OMDB but it returned null
+                        if (doTMDb && preference == Sources.OMDb && omdb == null && tmdb == null)
+                            tmdb = tmdbAPI?.getByTitle(title, year);
 
                         info = OMDbMovie.Parse(omdb);
                         info2 = TMDbMovie.Parse(tmdb);
                         imdb = info?.imdbID ?? info2?.imdb_id;
                     }
 
-                    if (imdb != null && omdb == null)
+                    if (doOMDb && imdb != null && omdb == null)
                     {
                         omdb = skipOMDB ? null : omdbAPI?.getByIMDB(imdb, noCache: progress.noCache);
                         info = OMDbMovie.Parse(omdb);
                     }
 
-                    if (imdb != null && tmdb == null)
+                    if (doTMDb && imdb != null && tmdb == null)
                     {
                         tmdb = tmdbAPI?.getByIMDB(imdb, noCache: progress.noCache);
                         info2 = TMDbMovie.Parse(tmdb);
                     }
 
                     if (omdbAPI.lastResponse == 401)    // unauthorized, keys expended
-                    skipOMDB = true;
+                        skipOMDB = true;
                     
                     if ((info != null && info.isValid) || (info2 != null && info2.isValid))
                     {

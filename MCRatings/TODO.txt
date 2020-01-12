@@ -11,5 +11,7 @@ Main:
 - Get all/row/column from OMDB/TMDB (override settings)
 - locked fields (no overwrite/ignore changes - per movie)
 - drop multiple collection files
-- GET after drop
+- GET after collection drop
 - use obsolete cache files when keys expired
+- execution log (status messages log)
+- stats: cache hit/miss, API calls ok/failed, etc
