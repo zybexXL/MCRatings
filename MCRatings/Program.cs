@@ -10,7 +10,7 @@ namespace MCRatings
 {
     static class Program
     {
-        public static Version version = new Version(2, 0, 1);                    // major, minor, revision
+        public static Version version = new Version(2, 0, 2);                    // major, minor, revision
         public static string tagline = "Why So Serious?";     // changes on every major or minor release
         public static Settings settings;
 

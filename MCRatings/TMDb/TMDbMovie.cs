@@ -21,11 +21,11 @@ namespace MCRatings
         public string tagline;
         public string release_date;
         public string original_language;
-        public int runtime;
+        public int? runtime;
         public string overview;
-        public double vote_average;
-        public int vote_count;
-        public double popularity;
+        public double? vote_average;
+        public int? vote_count;
+        public double? popularity;
         public long budget;
         public long revenue;
         public string homepage;
@@ -84,9 +84,9 @@ namespace MCRatings
                         return null;
                 case AppField.Release: return release_dates.getEarliestReleaseDate(release_date); // release_dates?.getReleaseDate(Program.settings.Country) ?? release_date;
                 case AppField.IMDbID: return imdb_id;
-                case AppField.TMDbScore: return vote_average.ToString("0.0").Replace(",",".");
+                case AppField.TMDbScore: return vote_average == null ? null : vote_average.Value.ToString("0.0").Replace(",",".");
                 case AppField.MPAARating: return release_dates?.getCertification("US"); // Program.settings.Country) ?? release_dates?.getCertification("US");
-                case AppField.Runtime: return runtime.ToString();
+                case AppField.Runtime: return runtime == null ? null : runtime.Value.ToString();
                 case AppField.Genre: return genres == null ? null : fixList(genres.Select(c => c.name.Replace("Science Fiction","Sci-Fi")), listItems);
                 case AppField.OriginalTitle: return original_title;
                 case AppField.Series: return Regex.Replace(belongs_to_collection?.name ?? "", @"\s*(collection)\s*$", "", RegexOptions.IgnoreCase);
