@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,6 +21,9 @@ namespace MCRatings
         [STAThread]
         static void Main()
         {
+            Logger.Log($"MCRatings v{version}{(Environment.Is64BitProcess? " x64":"")} started");
+            Logger.Log($"NetFramework version {SysVersions.NetVersion()} on {SysVersions.OSVersion()}");
+
             AutoUpgrade.MigrateSettings();      // project renamed - migrate JRatings settings
             settings = Settings.Load();
 
@@ -36,6 +40,8 @@ namespace MCRatings
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MCRatingsUI());
+
+            Logger.Log($"MCRatings closed.\n\n");
         }
     }
 }

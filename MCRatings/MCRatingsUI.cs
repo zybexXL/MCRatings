@@ -1649,6 +1649,8 @@ namespace MCRatings
             }
         }
 
+        #region Collections
+
         private void MCRatingsUI_DragEnter(object sender, DragEventArgs e)
         {
             string[] files = (string[])(e.Data.GetData(DataFormats.FileDrop, false));
@@ -1768,6 +1770,8 @@ namespace MCRatings
             updateSelectedCount();
             SetStatus($"Imported collection '{collection.Title}': {count} movies, {added + repeated} matches, {created} new");
         }
+
+        #endregion
     }
 }
 

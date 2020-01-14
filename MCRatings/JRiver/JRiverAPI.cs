@@ -44,23 +44,29 @@ namespace MCRatings
 
         public bool Connect()
         {
+            Logger.Log("Connecting to JRiver");
             Connected = CheckConnection();
             if (Connected) return true;
 
             try
             {
+                Logger.Log("Connect: getting COM object instance");
                 jr = (IMJAutomation)Marshal.GetActiveObject("MediaJukebox Application");
                 Connected = CheckConnection();
                 if (Connected) return true;
+                else Logger.Log("Connect via COM instance failed!");
             }
-            catch { }
+            catch (Exception ex) { Logger.Log(ex, "JRiverAPI.Connect()"); }
 
             try
             {
+                Logger.Log("Connect: getting MCAutomation object instance");
                 jr = new MCAutomation();
                 Connected = CheckConnection();
+                if (!Connected)
+                    Logger.Log("Connect via MCAutomation object failed!");
             }
-            catch { }
+            catch (Exception ex) { Logger.Log(ex, "JRiverAPI.Connect()"); }
             return Connected;
         }
 
@@ -75,14 +81,17 @@ namespace MCRatings
         {
             try
             {
+                Logger.Log("Checking connection");
                 if (jr == null) return false;
                 Version = jr.GetVersion().Version;
                 APIlevel = jr.IVersion;
+                Logger.Log($"JRiver version {Version}, APILevel={APIlevel}");
                 string path=null;
                 jr.GetLibrary(ref Library, ref path);
+                Logger.Log($"JRiver library is '{Library}', path={path}");
                 return true;
             }
-            catch { }
+            catch (Exception ex) { Logger.Log(ex, "JRiverAPI.CheckConnection()"); }
             return false;
         }
 
@@ -101,7 +110,7 @@ namespace MCRatings
                     Fields.Add(display.ToLower(), name);
                 }
             }
-            catch { }
+            catch (Exception ex) { Logger.Log(ex, "JRiverAPI.getFields()"); }
             return Fields;
         }
 
@@ -190,6 +199,7 @@ namespace MCRatings
             }
             catch (Exception ex)
             {
+                Logger.Log(ex, "JRiverAPI.getMovieInfo()");
                 Interlocked.Increment(ref Stats.Session.JRError);
                 lastException = ex;
             }
@@ -208,7 +218,7 @@ namespace MCRatings
                 }
                 return "[invalid field name]";
             }
-            catch { }
+            catch (Exception ex) { Logger.Log(ex, "JRiverAPI.getFieldValue()"); }
             return "[JRiver Exception!]";
         }
 
@@ -243,6 +253,7 @@ namespace MCRatings
             }
             catch (Exception ex)
             {
+                Logger.Log(ex, "JRiverAPI.CreateMovie()");
                 Interlocked.Increment(ref Stats.Session.JRError);
                 lastException = ex;
             }
@@ -316,6 +327,7 @@ namespace MCRatings
                 }
             }
             catch (Exception ex) {
+                Logger.Log(ex, "JRiverAPI.SaveMovie()");
                 Interlocked.Increment(ref Stats.Session.JRError);
                 lastException = ex; }
             return ok;
@@ -350,7 +362,11 @@ namespace MCRatings
                     ok &= list.AddFile(fname, -1);
                 }
             }
-            catch { ok = false; }
+            catch (Exception ex)
+            {
+                Logger.Log(ex, "JRiverAPI.setPlaylistMembership()");
+                ok = false;
+            }
             return ok;
         }
 

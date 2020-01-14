@@ -30,7 +30,9 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>3</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>MCRatings.ico</ApplicationIcon>
@@ -159,6 +161,8 @@
       <DependentUpon>SettingsUI.cs</DependentUpon>
     </Compile>
     <Compile Include="Sound\SoundBite.cs" />
+    <Compile Include="Util\Logger.cs" />
+    <Compile Include="Util\NetVersion.cs" />
     <Compile Include="Util\Util.cs" />
     <EmbeddedResource Include="About.resx">
       <DependentUpon>About.cs</DependentUpon>
