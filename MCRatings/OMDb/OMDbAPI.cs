@@ -17,7 +17,7 @@ namespace MCRatings
     {
         public int lastResponse = 0;
         public bool hasKeys { get { return apikeys != null && apikeys.Count > 0; } }
-
+        HttpClient client;
 
         List<string> apikeys;
         int keyIndex = 0;
@@ -27,6 +27,16 @@ namespace MCRatings
         public OMDbAPI(List<string> keys)
         {
             setKeys(keys);
+
+            var handler = new HttpClientHandler() {
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate };
+            client = new HttpClient(handler);
+            client.BaseAddress = new Uri("http://www.omdbapi.com/");
+        }
+
+        ~OMDbAPI()
+        {
+            client.Dispose();
         }
 
         public void setKeys(List<string> keys)
@@ -41,52 +51,65 @@ namespace MCRatings
                 keyIndex = 0;
         }
 
+        private string GetRequest(string url)
+        {
+            string result = null;
+            int code = -1;
+            for (int i = 0; i < apikeys.Count; i++)
+            {
+                // check if another thread got Unauthorized
+                if (lastResponse == (int)HttpStatusCode.Unauthorized) return null;
+                string key = apikey;
+
+                Interlocked.Increment(ref Stats.Session.OMDbAPICall);
+                HttpResponseMessage response = client.GetAsync($"{url}&apikey={key}").Result;
+                code = (int)response.StatusCode;
+                if (response.IsSuccessStatusCode)
+                {
+                    result = response.Content.ReadAsStringAsync().Result;
+                    lastResponse = code;
+                    return result;
+                }
+                else
+                    Interlocked.Increment(ref Stats.Session.OMDbAPIError);
+
+                lock (this)
+                {
+                    if (lastResponse == (int)HttpStatusCode.Unauthorized)
+                        break;
+                    if (response.StatusCode == HttpStatusCode.Unauthorized && apikeys.Count > 1 && key == apikey) // check if another thread rotated it already
+                        rotateKey();
+                }
+            }
+            lock(this)
+                if (lastResponse != (int)HttpStatusCode.Unauthorized)
+                    lastResponse = code;
+            return result;
+        }
+
         public string getByTitle(string title, string year, bool full = true)
         {
             Interlocked.Increment(ref Stats.Session.OMDbSearch);
             if (!hasKeys || lastResponse == (int)HttpStatusCode.Unauthorized) return null;
             try
             {
-                using (var client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }))
+                // try with each key
+                string tt = Uri.EscapeDataString(title);
+                string result = GetRequest($"?t={tt}{(year == null ? "" : $"&y={year}")}{(full ? "&plot=full" : "")}");
+
+                bool found = false;
+                if (result != null && result.Contains("Response\":\"True\""))
                 {
-                    client.BaseAddress = new Uri("http://www.omdbapi.com/");
-                    string tt = Uri.EscapeDataString(title);
-                    string yy = year == null ? "" : $"&y={year}";
-                    string plot = full ? "&plot=full" : "";
-                    string result = null;
-                    
-                    // try with each key
-                    for (int i = 0; i < apikeys.Count; i++)
-                    {
-                        Interlocked.Increment(ref Stats.Session.OMDbAPICall);
-                        HttpResponseMessage response = client.GetAsync($"?t={tt}{yy}{plot}&apikey={apikey}").Result;
-                        lastResponse = (int)response.StatusCode;
-                        if (response.IsSuccessStatusCode)
-                        {
-                            result = response.Content.ReadAsStringAsync().Result;
-                            break;
-                        }
-                        else
-                            Interlocked.Increment(ref Stats.Session.OMDbAPIError);
-
-                        if (response.StatusCode == HttpStatusCode.Unauthorized)
-                            rotateKey(); 
-                    }
-
-                    bool found = false;
-                    if (result != null && result.Contains("Response\":\"True\""))
-                    {
-                        var imdb = Regex.Match(result, "\"imdbID\":\"(.+?)\",");
-                        found = imdb.Success;
-                        // save to cache
-                        if (found)
-                            Cache.Put(imdb.Groups[1].Value, result);
-                    }
-                    if (!found)
-                        Interlocked.Increment(ref Stats.Session.OMDbAPINotFound);
-
-                    return result;
+                    var imdb = Regex.Match(result, "\"imdbID\":\"(.+?)\",");
+                    found = imdb.Success;
+                    // save to cache
+                    if (found)
+                        Cache.Put(imdb.Groups[1].Value, result);
                 }
+                if (!found)
+                    Interlocked.Increment(ref Stats.Session.OMDbAPINotFound);
+
+                return result;
             }
             catch { Interlocked.Increment(ref Stats.Session.AppException); }
             return null;
@@ -102,37 +125,15 @@ namespace MCRatings
             if (!hasKeys || lastResponse == (int)HttpStatusCode.Unauthorized) return null;
             try
             {
-                using (var client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }))
-                {
-                    client.BaseAddress = new Uri("http://www.omdbapi.com/");
-                    string plot = full ? "&plot=full" : "";
-                    string result = null;
+                // try with each key
+                string result = GetRequest($"?i={imdb}{(full ? "&plot=full" : "")}");
 
-                    // try with each key
-                    for (int i = 0; i < apikeys.Count; i++)
-                    {
-                        Interlocked.Increment(ref Stats.Session.OMDbAPICall);
-                        HttpResponseMessage response = client.GetAsync($"?i={imdb}{plot}&apikey={apikey}").Result;
-                        lastResponse = (int)response.StatusCode;
-                        if (response.IsSuccessStatusCode)
-                        {
-                            result = response.Content.ReadAsStringAsync().Result;
-                            break;
-                        }
-                        else
-                            Interlocked.Increment(ref Stats.Session.OMDbAPIError);
-
-                        if (response.StatusCode == HttpStatusCode.Unauthorized)
-                            rotateKey();
-                    }
-
-                    // save to cache
-                    if (result != null && result.Contains("Response\":\"True\""))
-                        Cache.Put(imdb, result);
-                    else
-                        Interlocked.Increment(ref Stats.Session.OMDbAPINotFound);
-                    return result;
-                }
+                // save to cache
+                if (result != null && result.Contains("Response\":\"True\""))
+                    Cache.Put(imdb, result);
+                else
+                    Interlocked.Increment(ref Stats.Session.OMDbAPINotFound);
+                return result;
             }
             catch { Interlocked.Increment(ref Stats.Session.AppException); }
             return null;

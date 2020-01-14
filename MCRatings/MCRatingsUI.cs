@@ -84,11 +84,15 @@ namespace MCRatings
             bool showSettings = !Program.settings.valid;
             if (!showSettings)
                 foreach (var map in Program.settings.FieldMap.Values)
+                {
+                    if (map.field == AppField.Collections && !Program.settings.Collections)
+                        continue;
                     if (map.enabled && (string.IsNullOrWhiteSpace(map.JRfield) || !jrAPI.Fields.ContainsKey(map.JRfield.ToLower())))
                         showSettings = true;
+                }
 
             // show SettingsUI if there are no valid settings (first time) or if field mapping has problems
-            if (!Program.settings.valid || showSettings)
+            if (showSettings)
             {
                 if (new SettingsUI(jrAPI, true).ShowDialog() != DialogResult.OK)
                     if (!Program.settings.valid)
@@ -117,7 +121,7 @@ namespace MCRatings
 
         private void btnAbout_MouseDown(object sender, MouseEventArgs e)
         {
-            if (ModifierKeys.HasFlag(Keys.Shift) || e.Button == MouseButtons.Right)
+            if (e.Button == MouseButtons.Right)
                 new StatsUI().ShowDialog();
             else
                 new About().ShowDialog();
@@ -138,7 +142,7 @@ namespace MCRatings
                 txtSearch.Focus();
             else if (e.KeyCode == Keys.F && e.Control)      // CTRL+F - find
                 txtSearch.Focus();
-            else if (e.KeyCode == Keys.J && e.Control)      // CTRL+J - stats
+            else if (e.KeyCode == Keys.I && e.Control)      // CTRL+I - stats
                 new StatsUI().ShowDialog();
             else
                 e.Handled = false;

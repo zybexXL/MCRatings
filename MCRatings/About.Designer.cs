@@ -584,6 +584,7 @@
             this.btnStats.TabIndex = 1;
             this.btnStats.Text = "∑";
             this.btnStats.UseVisualStyleBackColor = true;
+            this.btnStats.Visible = false;
             this.btnStats.Click += new System.EventHandler(this.btnStats_Click);
             // 
             // About

@@ -272,6 +272,8 @@ namespace MCRatings
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 tabSettings.SelectedTab = tabFields;
             }
+            if (badFields)
+                tabSettings.SelectedTab = tabFields;
         }
 
         private void btnAudio_Click(object sender, EventArgs e)

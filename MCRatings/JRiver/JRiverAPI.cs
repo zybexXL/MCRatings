@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Permissions;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -50,23 +51,24 @@ namespace MCRatings
 
             try
             {
-                Logger.Log("Connect: getting COM object instance");
+                // connect to existing instance
+                Logger.Log("Connect: getting existing JRiver instance");
                 jr = (IMJAutomation)Marshal.GetActiveObject("MediaJukebox Application");
                 Connected = CheckConnection();
                 if (Connected) return true;
-                else Logger.Log("Connect via COM instance failed!");
+                else Logger.Log("Connect to existing instance failed!");
             }
-            catch (Exception ex) { Logger.Log(ex, "JRiverAPI.Connect()"); }
+            catch (Exception ex) { Logger.Log(ex, "JRiverAPI.Connect() - JRiver probably not running"); }
 
             try
             {
-                Logger.Log("Connect: getting MCAutomation object instance");
+                Logger.Log("Connect: creating new JRiver instance");
                 jr = new MCAutomation();
                 Connected = CheckConnection();
                 if (!Connected)
                     Logger.Log("Connect via MCAutomation object failed!");
             }
-            catch (Exception ex) { Logger.Log(ex, "JRiverAPI.Connect()"); }
+            catch (Exception ex) { Logger.Log(ex, "JRiverAPI.Connect() - failed to create new instance"); }
             return Connected;
         }
 

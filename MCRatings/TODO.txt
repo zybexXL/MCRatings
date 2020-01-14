@@ -15,3 +15,4 @@ Main:
 - use obsolete cache files when keys expired
 - execution log (status messages log)
 - stats: cache hit/miss, API calls ok/failed, etc
+- toolbar (context menu options as buttons)
