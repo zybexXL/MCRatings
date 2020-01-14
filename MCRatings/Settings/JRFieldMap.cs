@@ -33,7 +33,6 @@ namespace MCRatings
         {
             switch (field)
             {
-                case AppField.IMDbID:       // add support for TMDB Find
                 case AppField.IMDbRating:
                 case AppField.IMDbVotes:
                 case AppField.RottenTomatoes:
@@ -52,6 +51,7 @@ namespace MCRatings
                 case AppField.Trailer:
                     return new List<Sources>() { Sources.TMDb };
 
+                case AppField.IMDbID:
                 case AppField.Title:
                 case AppField.Year:
                 case AppField.Release:

@@ -51,10 +51,11 @@ namespace MCRatings
                 keyIndex = 0;
         }
 
-        private string GetRequest(string url)
+        private string HttpGetRequest(string url)
         {
             string result = null;
             int code = -1;
+            // try with each key
             for (int i = 0; i < apikeys.Count; i++)
             {
                 // check if another thread got Unauthorized
@@ -93,9 +94,8 @@ namespace MCRatings
             if (!hasKeys || lastResponse == (int)HttpStatusCode.Unauthorized) return null;
             try
             {
-                // try with each key
                 string tt = Uri.EscapeDataString(title);
-                string result = GetRequest($"?t={tt}{(year == null ? "" : $"&y={year}")}{(full ? "&plot=full" : "")}");
+                string result = HttpGetRequest($"?t={tt}{(year == null ? "" : $"&y={year}")}{(full ? "&plot=full" : "")}");
 
                 bool found = false;
                 if (result != null && result.Contains("Response\":\"True\""))
@@ -125,8 +125,7 @@ namespace MCRatings
             if (!hasKeys || lastResponse == (int)HttpStatusCode.Unauthorized) return null;
             try
             {
-                // try with each key
-                string result = GetRequest($"?i={imdb}{(full ? "&plot=full" : "")}");
+                string result = HttpGetRequest($"?i={imdb}{(full ? "&plot=full" : "")}");
 
                 // save to cache
                 if (result != null && result.Contains("Response\":\"True\""))

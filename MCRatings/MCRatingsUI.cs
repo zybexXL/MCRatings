@@ -656,6 +656,7 @@ namespace MCRatings
             List<MovieInfo> movies = progress.args as List<MovieInfo>;
             if (movies == null) return;
             if (omdbAPI != null) omdbAPI.lastResponse = -1;  // reset
+            if (tmdbAPI != null) tmdbAPI.lastResponse = -1;  // reset
 
             int i = 0;
             int[] IDs = Util.IdentityArray(Environment.ProcessorCount);

@@ -17,7 +17,7 @@ namespace MCRatings
     {
         public int lastResponse = 0;
         public bool hasKeys { get { return apikeys != null && apikeys.Count > 0; } }
-
+        HttpClient client;
 
         List<string> apikeys;
         int keyIndex = 0;
@@ -31,6 +31,16 @@ namespace MCRatings
         public TMDbAPI(List<string> keys)
         {
             setKeys(keys);
+
+            var handler = new HttpClientHandler() {
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate };
+            client = new HttpClient(handler);
+            client.BaseAddress = new Uri("https://api.themoviedb.org/");
+        }
+
+        ~TMDbAPI()
+        {
+            client.Dispose();
         }
 
         public void setKeys(List<string> keys)
@@ -45,77 +55,66 @@ namespace MCRatings
                 keyIndex = 0;
         }
 
+        private string HttpGetRequest(string url)
+        {
+            string result = null;
+            //int code = -1;
+            
+            // try with each key
+            for (int i = 0; i < apikeys.Count; i++)
+            {
+                Interlocked.Increment(ref Stats.Session.TMDbAPICall);
+                HttpResponseMessage response = client.GetAsync($"{url}&api_key={apikey}").Result;
+                lastResponse = (int)response.StatusCode;
+                if (response.IsSuccessStatusCode)
+                {
+                    result = response.Content.ReadAsStringAsync().Result;
+                    break;
+                }
+                else
+                    Interlocked.Increment(ref Stats.Session.TMDbAPIError);
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                    rotateKey();
+            }
+            return result;
+        }
+
         public string getByTitle(string title, string year)
         {
             Interlocked.Increment(ref Stats.Session.TMDbSearch);
-            lastResponse = -1;
-            if (!hasKeys) return null;
+            if (!hasKeys || lastResponse == (int)HttpStatusCode.Unauthorized) return null;
             try
             {
-                using (var client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }))
+                string tt = Uri.EscapeDataString(title);
+                string yy = year == null ? "" : $"&year={year}";
+                string language = Program.settings.Language?.ToLower();
+                if (string.IsNullOrWhiteSpace(language)) language = "en";
+
+                // get movie ID
+                string result = HttpGetRequest($"/3/search/movie?query={tt}{yy}&page=1&language={language}&include_adult=true");
+
+                TMDbSearch found = string.IsNullOrEmpty(result) ? null : Util.JsonDeserialize<TMDbSearch>(result);
+                if (found?.results == null || found.results.Length == 0)
                 {
-                    client.BaseAddress = new Uri("https://api.themoviedb.org/");
-                    string tt = Uri.EscapeDataString(title);
-                    string yy = year == null ? "" : $"&year={year}";
-                    string result = null;
-                    string language = Program.settings.Language?.ToLower();
-                    if (string.IsNullOrWhiteSpace(language)) language = "en";
-
-                    // try with each key
-                    for (int i = 0; i < apikeys.Count; i++)
-                    {
-                        Interlocked.Increment(ref Stats.Session.TMDbAPICall);
-                        HttpResponseMessage response = client.GetAsync($"/3/search/movie?api_key={apikey}&language={language}&query={tt}{yy}&page=1&include_adult=true").Result;
-                        lastResponse = (int)response.StatusCode;
-                        if (response.IsSuccessStatusCode)
-                        {
-                            result = response.Content.ReadAsStringAsync().Result;
-                            break;
-                        }
-                        else
-                            Interlocked.Increment(ref Stats.Session.TMDbAPIError);
-
-                        if (response.StatusCode == HttpStatusCode.Unauthorized)
-                            rotateKey(); 
-                    }
-
-                    TMDbSearch found = string.IsNullOrEmpty(result) ? null : Util.JsonDeserialize<TMDbSearch>(result);
-                    if (found?.results == null || found.results.Length == 0)
-                    {
-                        Interlocked.Increment(ref Stats.Session.TMDbAPINotFound);
-                        return null;
-                    }
-
-                    int id = found.results[0].id;
-                    // get Movie info - try with each key
-                    for (int i = 0; i < apikeys.Count; i++)
-                    {
-                        Interlocked.Increment(ref Stats.Session.TMDbAPICall);
-                        HttpResponseMessage response = client.GetAsync($"/3/movie/{id}?api_key={apikey}&language={language}&append_to_response=credits,videos,images,keywords,alternative_titles,release_dates&include_image_language={language},en,null").Result;
-                        lastResponse = (int)response.StatusCode;
-                        if (response.IsSuccessStatusCode)
-                        {
-                            result = response.Content.ReadAsStringAsync().Result;
-                            break;
-                        }
-                        else
-                            Interlocked.Increment(ref Stats.Session.TMDbAPIError);
-
-                        if (response.StatusCode == HttpStatusCode.Unauthorized)
-                            rotateKey();
-                    }
-
-                    if (result != null && !result.Contains("\"status_code\":"))
-                    {
-                        var imdb = Regex.Match(result, "\"imdb_id\":\"(.+?)\"");
-                        if (imdb.Success)
-                        {
-                            Cache.Put($"tmdb.{language}.{imdb.Groups[1].Value}", result);
-                            return result;
-                        }
-                    }
                     Interlocked.Increment(ref Stats.Session.TMDbAPINotFound);
+                    return null;
                 }
+                int id = found.results[0].id;
+
+                // get movie Info
+                result = HttpGetRequest($"/3/movie/{id}?language={language}&append_to_response=credits,videos,images,keywords,alternative_titles,release_dates&include_image_language={language},en,null");
+
+                if (result != null && !result.Contains("\"status_code\":"))
+                {
+                    var imdb = Regex.Match(result, "\"imdb_id\":\"(.+?)\"");
+                    if (imdb.Success)
+                    {
+                        Cache.Put($"tmdb.{language}.{imdb.Groups[1].Value}", result);
+                        return result;
+                    }
+                }
+                Interlocked.Increment(ref Stats.Session.TMDbAPINotFound);
             }
             catch { Interlocked.Increment(ref Stats.Session.AppException); }
             return null;
@@ -124,7 +123,6 @@ namespace MCRatings
         public string getByIMDB(string imdb, bool noCache = false)
         {
             Interlocked.Increment(ref Stats.Session.TMDbGet);
-            lastResponse = 304;
             string language = Program.settings.Language?.ToLower();
             //string region = Program.settings.Country?.ToLower();
             if (string.IsNullOrWhiteSpace(language)) language = "en";
@@ -134,69 +132,30 @@ namespace MCRatings
             if (cached != null)
                 return cached;
 
-            lastResponse = -1;
-            if (!hasKeys) return null;
+            if (!hasKeys || lastResponse == (int)HttpStatusCode.Unauthorized) return null;
             try
             {
-                using (var client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }))
+                // find TMDBid by IMDBid
+                string result = HttpGetRequest($"/3/find/{imdb}?language=en&external_source=imdb_id");
+
+                TMDbFind found = string.IsNullOrEmpty(result) ? null : Util.JsonDeserialize<TMDbFind>(result);
+                if (found?.movie_results == null || found.movie_results.Length == 0)
                 {
-                    client.BaseAddress = new Uri("https://api.themoviedb.org/");
-                    string result = null;
-
-                    // find TMDBid by IMDBid - try with each key
-                    for (int i = 0; i < apikeys.Count; i++)
-                    {
-                        Interlocked.Increment(ref Stats.Session.TMDbAPICall);
-                        HttpResponseMessage response = client.GetAsync($"/3/find/{imdb}?api_key={apikey}&language=en&external_source=imdb_id").Result;
-                        lastResponse = (int)response.StatusCode;
-                        if (response.IsSuccessStatusCode)
-                        {
-                            result = response.Content.ReadAsStringAsync().Result;
-                            break;
-                        }
-                        else
-                            Interlocked.Increment(ref Stats.Session.TMDbAPIError);
-
-                        if (response.StatusCode == HttpStatusCode.Unauthorized)
-                            rotateKey();
-                    }
-
-                    TMDbFind found = string.IsNullOrEmpty(result) ? null : Util.JsonDeserialize<TMDbFind>(result);
-                    if (found?.movie_results == null || found.movie_results.Length == 0)
-                    {
-                        Interlocked.Increment(ref Stats.Session.TMDbAPINotFound);
-                        return null;
-                    }
-
-                    int id = found.movie_results.FirstOrDefault().id;
-
-                    // get Movie info - try with each key
-                    for (int i = 0; i < apikeys.Count; i++)
-                    {
-                        Interlocked.Increment(ref Stats.Session.TMDbAPICall);
-                        HttpResponseMessage response = client.GetAsync($"/3/movie/{id}?api_key={apikey}&language={language}&append_to_response=credits,videos,images,keywords,alternative_titles,release_dates&include_image_language={language},en,null").Result;
-                        lastResponse = (int)response.StatusCode;
-                        if (response.IsSuccessStatusCode)
-                        {
-                            result = response.Content.ReadAsStringAsync().Result;
-                            break;
-                        }
-                        else
-                            Interlocked.Increment(ref Stats.Session.TMDbAPIError);
-
-                        if (response.StatusCode == HttpStatusCode.Unauthorized)
-                            rotateKey();
-                    }
-
-                    if (!string.IsNullOrEmpty(result) && result.Contains($"\"imdb_id\":\"{imdb.ToLower()}\"") && !result.Contains("\"status_code\":"))
-                    {
-                        // save to cache
-                        Cache.Put($"tmdb.{language}.{imdb}", result);
-                        return result;
-                    }
-
                     Interlocked.Increment(ref Stats.Session.TMDbAPINotFound);
+                    return null;
                 }
+                int id = found.movie_results.FirstOrDefault().id;
+
+                // get Movie info
+                result = HttpGetRequest($"/3/movie/{id}?language={language}&append_to_response=credits,videos,images,keywords,alternative_titles,release_dates&include_image_language={language},en,null");
+
+                if (!string.IsNullOrEmpty(result) && result.Contains($"\"imdb_id\":\"{imdb.ToLower()}\"") && !result.Contains("\"status_code\":"))
+                {
+                    // save to cache
+                    Cache.Put($"tmdb.{language}.{imdb}", result);
+                    return result;
+                }
+                Interlocked.Increment(ref Stats.Session.TMDbAPINotFound);
             }
             catch { Interlocked.Increment(ref Stats.Session.AppException); }
             return null;
