@@ -97,6 +97,13 @@
     <Compile Include="About.Designer.cs">
       <DependentUpon>About.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\Stats.cs" />
+    <Compile Include="Settings\StatsUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Settings\StatsUI.Designer.cs">
+      <DependentUpon>StatsUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="Util\Cache.cs" />
     <Compile Include="Collection\CollectionMovies.cs" />
     <Compile Include="Util\iso639.cs" />
@@ -172,6 +179,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Settings\SourceSelect.resx">
       <DependentUpon>SourceSelect.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Settings\StatsUI.resx">
+      <DependentUpon>StatsUI.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

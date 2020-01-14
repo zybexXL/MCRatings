@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MCRatings
@@ -13,6 +14,8 @@ namespace MCRatings
         {
             if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(data))
                 return;
+
+            Interlocked.Increment(ref Stats.Session.CacheAdd);
             try
             {
                 string path = Path.Combine(Constants.OMDBCache, key.Substring(key.Length - 1));
@@ -33,13 +36,22 @@ namespace MCRatings
             {
                 string path = Path.Combine(Constants.OMDBCache, key.Substring(key.Length - 1), $"{key}.json");
                 FileInfo fi = new FileInfo(path);
-                if (!fi.Exists) return null;
-                if (maxAge < 0 || (DateTime.Now - fi.LastWriteTime).TotalDays > maxAge)
-                    File.Delete(path);
-                else
-                    return File.ReadAllText(path);
+                if (fi.Exists)
+                {
+                    if (maxAge < 0 || (DateTime.Now - fi.LastWriteTime).TotalDays > maxAge)
+                    {
+                        Interlocked.Increment(ref Stats.Session.CacheExpired);
+                        File.Delete(path);
+                    }
+                    else
+                    {
+                        Interlocked.Increment(ref Stats.Session.CacheHit);
+                        return File.ReadAllText(path);
+                    }
+                }
             }
             catch { }
+            Interlocked.Increment(ref Stats.Session.CacheMiss);
             return null;
         }
     }

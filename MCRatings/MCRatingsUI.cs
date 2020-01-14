@@ -49,6 +49,7 @@ namespace MCRatings
             comboLists.DisplayMember = "Name";
 
             this.Text = $"MCRatings v{Program.version} - {Program.tagline}";
+            Stats.Init();
         }
 
         #region Form and Button events
@@ -110,11 +111,16 @@ namespace MCRatings
             if (btnSave.Enabled)
                 if (DialogResult.Cancel == MessageBox.Show("You have unsaved changes.\nAre you sure you want to exit?", "Discard changes", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning))
                     e.Cancel = true;
+
+            Stats.Save();
         }
 
-        private void btnAbout_Click(object sender, EventArgs e)
+        private void btnAbout_MouseDown(object sender, MouseEventArgs e)
         {
-            new About().ShowDialog();
+            if (ModifierKeys.HasFlag(Keys.Shift) || e.Button == MouseButtons.Right)
+                new StatsUI().ShowDialog();
+            else
+                new About().ShowDialog();
         }
 
         // handle some special keys - F3, Tab, ctrl+F, Alt-P

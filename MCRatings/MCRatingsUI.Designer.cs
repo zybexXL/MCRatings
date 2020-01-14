@@ -110,7 +110,7 @@
             this.menuCreateShortcuts});
             this.gridMenu.Name = "contextMenuStrip1";
             this.gridMenu.ShowImageMargin = false;
-            this.gridMenu.Size = new System.Drawing.Size(168, 198);
+            this.gridMenu.Size = new System.Drawing.Size(168, 176);
             this.gridMenu.Opening += new System.ComponentModel.CancelEventHandler(this.gridMenu_Opening);
             // 
             // menuTitle
@@ -384,21 +384,21 @@
             // menuShortcutFilename
             // 
             this.menuShortcutFilename.Name = "menuShortcutFilename";
-            this.menuShortcutFilename.Size = new System.Drawing.Size(180, 22);
+            this.menuShortcutFilename.Size = new System.Drawing.Size(169, 22);
             this.menuShortcutFilename.Text = "Filename.url";
             this.menuShortcutFilename.Click += new System.EventHandler(this.menuShortcutFilename_Click);
             // 
             // menuShortcutTitle
             // 
             this.menuShortcutTitle.Name = "menuShortcutTitle";
-            this.menuShortcutTitle.Size = new System.Drawing.Size(180, 22);
+            this.menuShortcutTitle.Size = new System.Drawing.Size(169, 22);
             this.menuShortcutTitle.Text = "Title [Year].url";
             this.menuShortcutTitle.Click += new System.EventHandler(this.menuShortcutTitle_Click);
             // 
             // menuShortcutID
             // 
             this.menuShortcutID.Name = "menuShortcutID";
-            this.menuShortcutID.Size = new System.Drawing.Size(180, 22);
+            this.menuShortcutID.Size = new System.Drawing.Size(169, 22);
             this.menuShortcutID.Text = "IMDB_tt000000.url";
             this.menuShortcutID.Click += new System.EventHandler(this.menuShortcutID_Click);
             // 
@@ -544,9 +544,9 @@
             this.btnAbout.Size = new System.Drawing.Size(34, 34);
             this.btnAbout.TabIndex = 7;
             this.btnAbout.TabStop = false;
-            this.toolTip1.SetToolTip(this.btnAbout, "HELP!");
+            this.toolTip1.SetToolTip(this.btnAbout, "left-click to open About dialog;\r\nright-click to open Statistics");
             this.btnAbout.UseVisualStyleBackColor = true;
-            this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
+            this.btnAbout.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btnAbout_MouseDown);
             // 
             // btnSettings
             // 
@@ -700,7 +700,7 @@
             this.lblStatus.ForeColor = System.Drawing.Color.DarkGreen;
             this.lblStatus.Location = new System.Drawing.Point(499, 448);
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(416, 18);
+            this.lblStatus.Size = new System.Drawing.Size(433, 18);
             this.lblStatus.TabIndex = 16;
             this.lblStatus.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 

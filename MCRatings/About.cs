@@ -38,6 +38,9 @@ namespace MCRatings
         private void About_Load(object sender, EventArgs e)
         {
             lblVersion.Text = $"Version {Program.version}";
+#if DEBUG
+            lblDebug.Visible = true;
+#endif
             SetUpgradeLabel();
         }
 
@@ -122,9 +125,9 @@ namespace MCRatings
             SetUpgradeLabel();
         }
 
-        private void label8_Click(object sender, EventArgs e)
+        private void btnStats_Click(object sender, EventArgs e)
         {
-
+            new StatsUI().ShowDialog();
         }
     }
 }

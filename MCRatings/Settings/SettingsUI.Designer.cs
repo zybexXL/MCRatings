@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsUI));
             this.gridFields = new System.Windows.Forms.DataGridView();
             this.dgEnabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
@@ -127,8 +127,8 @@
             // 
             // dgSetting
             // 
-            dataGridViewCellStyle10.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgSetting.DefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dgSetting.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgSetting.HeaderText = "MCRatings field";
             this.dgSetting.Name = "dgSetting";
             this.dgSetting.ReadOnly = true;
@@ -138,9 +138,9 @@
             // dgField
             // 
             this.dgField.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            dataGridViewCellStyle11.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgField.DefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dgField.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgField.HeaderText = "JRiver field (Display)";
             this.dgField.Name = "dgField";
             this.dgField.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
@@ -154,8 +154,8 @@
             // 
             // dgSourcePlaceHolder
             // 
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
-            this.dgSourcePlaceHolder.DefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
+            this.dgSourcePlaceHolder.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgSourcePlaceHolder.HeaderText = "Source";
             this.dgSourcePlaceHolder.Name = "dgSourcePlaceHolder";
             this.dgSourcePlaceHolder.ReadOnly = true;
@@ -471,7 +471,7 @@
             this.tabAPI.Location = new System.Drawing.Point(4, 25);
             this.tabAPI.Name = "tabAPI";
             this.tabAPI.Padding = new System.Windows.Forms.Padding(3);
-            this.tabAPI.Size = new System.Drawing.Size(574, 438);
+            this.tabAPI.Size = new System.Drawing.Size(578, 437);
             this.tabAPI.TabIndex = 2;
             this.tabAPI.Text = "  API Settings   ";
             this.tabAPI.UseVisualStyleBackColor = true;
@@ -539,7 +539,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(574, 437);
+            this.tabPage1.Size = new System.Drawing.Size(578, 437);
             this.tabPage1.TabIndex = 3;
             this.tabPage1.Text = "   Colors   ";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -549,7 +549,7 @@
             this.lnkResetColors.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lnkResetColors.AutoSize = true;
             this.lnkResetColors.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lnkResetColors.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
+            this.lnkResetColors.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.lnkResetColors.Location = new System.Drawing.Point(493, 20);
             this.lnkResetColors.Name = "lnkResetColors";
             this.lnkResetColors.Size = new System.Drawing.Size(70, 15);

@@ -40,6 +40,7 @@ namespace MCRatings
             "JRatings");
 
         public static string SettingsFile = Path.Combine(DataFolder, "settings.xml");
+        public static string StatsFile = Path.Combine(DataFolder, "stats.json");
         public static string OMDBCache = Path.Combine(DataFolder, "cache");
         public static string AudioCache = Path.Combine(DataFolder, "audio");
         public static int MaxCacheDays = 7;      // 1 week

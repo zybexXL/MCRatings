@@ -56,7 +56,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
+            this.lblDebug = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
             this.linkLabel9 = new System.Windows.Forms.LinkLabel();
             this.linkLabel10 = new System.Windows.Forms.LinkLabel();
@@ -68,6 +68,7 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.picPaypal = new System.Windows.Forms.PictureBox();
             this.label15 = new System.Windows.Forms.Label();
+            this.btnStats = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
@@ -284,7 +285,6 @@
             this.label8.TabIndex = 0;
             this.label8.Text = "Please consider supporting OMDb by becoming a Patron or using the donation links " +
     "provided on OMDb\'s website.";
-            this.label8.Click += new System.EventHandler(this.label8_Click);
             // 
             // label9
             // 
@@ -415,18 +415,18 @@
             this.label14.TabIndex = 0;
             this.label14.Text = "Thanks!";
             // 
-            // label16
+            // lblDebug
             // 
-            this.label16.AutoSize = true;
-            this.label16.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label16.ForeColor = System.Drawing.Color.Red;
-            this.label16.Location = new System.Drawing.Point(260, 94);
-            this.label16.Margin = new System.Windows.Forms.Padding(3);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(67, 15);
-            this.label16.TabIndex = 0;
-            this.label16.Text = "test version";
-            this.label16.Visible = false;
+            this.lblDebug.AutoSize = true;
+            this.lblDebug.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDebug.ForeColor = System.Drawing.Color.Red;
+            this.lblDebug.Location = new System.Drawing.Point(260, 93);
+            this.lblDebug.Margin = new System.Windows.Forms.Padding(3);
+            this.lblDebug.Name = "lblDebug";
+            this.lblDebug.Size = new System.Drawing.Size(82, 15);
+            this.lblDebug.TabIndex = 0;
+            this.lblDebug.Text = "debug version";
+            this.lblDebug.Visible = false;
             // 
             // label18
             // 
@@ -570,6 +570,22 @@
             this.label15.Size = new System.Drawing.Size(509, 2);
             this.label15.TabIndex = 0;
             // 
+            // btnStats
+            // 
+            this.btnStats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnStats.FlatAppearance.BorderSize = 0;
+            this.btnStats.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnStats.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnStats.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.btnStats.Location = new System.Drawing.Point(480, -1);
+            this.btnStats.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnStats.Name = "btnStats";
+            this.btnStats.Size = new System.Drawing.Size(26, 26);
+            this.btnStats.TabIndex = 1;
+            this.btnStats.Text = "∑";
+            this.btnStats.UseVisualStyleBackColor = true;
+            this.btnStats.Click += new System.EventHandler(this.btnStats_Click);
+            // 
             // About
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -595,10 +611,11 @@
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.picPaypal);
             this.Controls.Add(this.btnClose);
+            this.Controls.Add(this.btnStats);
             this.Controls.Add(this.btnUpdate);
             this.Controls.Add(this.label15);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.label16);
+            this.Controls.Add(this.lblDebug);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.label11);
@@ -666,7 +683,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label lblDebug;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.LinkLabel linkLabel9;
         private System.Windows.Forms.LinkLabel linkLabel10;
@@ -674,5 +691,6 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Button btnStats;
     }
 }

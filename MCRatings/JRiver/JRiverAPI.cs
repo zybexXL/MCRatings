@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MCRatings
@@ -187,7 +188,11 @@ namespace MCRatings
                 MovieInfo info = new MovieInfo(movie.GetKey(), JRfields, lists);
                 return info;
             }
-            catch (Exception ex) { lastException = ex; }
+            catch (Exception ex)
+            {
+                Interlocked.Increment(ref Stats.Session.JRError);
+                lastException = ex;
+            }
             return null;
         }
 
@@ -225,13 +230,23 @@ namespace MCRatings
             }
             lastFile = sample;
 
-            IMJFileAutomation file = jr.ImportFile(sample);
-            if (file != null)
+            try
             {
-                file.Set("Media Sub Type", "Movie");
-                movie.JRKey = file.GetKey();
+                IMJFileAutomation file = jr.ImportFile(sample);
+                if (file != null)
+                {
+                    file.Set("Media Sub Type", "Movie");
+                    movie.JRKey = file.GetKey();
+                    Interlocked.Increment(ref Stats.Session.JRMovieCreate);
+                }
+                return file;
             }
-            return file;
+            catch (Exception ex)
+            {
+                Interlocked.Increment(ref Stats.Session.JRError);
+                lastException = ex;
+            }
+            return null;
         }
 
         public bool SaveMovie(MovieInfo movie)
@@ -247,6 +262,9 @@ namespace MCRatings
                     file = jr.GetFileByKey(movie.JRKey);
 
                 if (file == null) return false;
+
+                if (movie.isDirty)
+                    Interlocked.Increment(ref Stats.Session.JRMovieUpdate);
 
                 foreach (AppField f in Enum.GetValues(typeof(AppField)))
                 {
@@ -284,14 +302,22 @@ namespace MCRatings
 
                         bool saved = (f == AppField.Playlists) ? setPlaylistMembership(file, value) : setFieldValue(file, jrfield, value);
                         if (saved)
+                        {
+                            Interlocked.Increment(ref Stats.Session.JRFieldUpdate);
                             movie.UpdateSnapshot(f);
+                        }
                         else
+                        {
+                            Interlocked.Increment(ref Stats.Session.JRError);
                             ok = false;
+                        }
 
                     }
                 }
             }
-            catch (Exception ex) { lastException = ex; }
+            catch (Exception ex) {
+                Interlocked.Increment(ref Stats.Session.JRError);
+                lastException = ex; }
             return ok;
         }
 
@@ -341,8 +367,7 @@ namespace MCRatings
                     return ok;
                 }
             }
-            catch (Exception ex) {
-                Console.WriteLine(ex.ToString()); }
+            catch { }
             return false;
         }
 

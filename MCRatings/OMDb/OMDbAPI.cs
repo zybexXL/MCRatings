@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MCRatings
@@ -42,6 +43,7 @@ namespace MCRatings
 
         public string getByTitle(string title, string year, bool full = true)
         {
+            Interlocked.Increment(ref Stats.Session.OMDbSearch);
             lastResponse = -1;
             if (!hasKeys) return null;
             try
@@ -57,6 +59,7 @@ namespace MCRatings
                     // try with each key
                     for (int i = 0; i < apikeys.Count; i++)
                     {
+                        Interlocked.Increment(ref Stats.Session.OMDbAPICall);
                         HttpResponseMessage response = client.GetAsync($"?t={tt}{yy}{plot}&apikey={apikey}").Result;
                         lastResponse = (int)response.StatusCode;
                         if (response.IsSuccessStatusCode)
@@ -64,28 +67,35 @@ namespace MCRatings
                             result = response.Content.ReadAsStringAsync().Result;
                             break;
                         }
+                        else
+                            Interlocked.Increment(ref Stats.Session.OMDbAPIError);
+
                         if (response.StatusCode == HttpStatusCode.Unauthorized)
                             rotateKey(); 
                     }
-                    if (string.IsNullOrEmpty(result))
-                        return null;
 
-                    // save to cache
-                    if (result.Contains("Response\":\"True\""))
+                    bool found = false;
+                    if (result != null && result.Contains("Response\":\"True\""))
                     {
                         var imdb = Regex.Match(result, "\"imdbID\":\"(.+?)\",");
-                        if (imdb.Success)
+                        found = imdb.Success;
+                        // save to cache
+                        if (found)
                             Cache.Put(imdb.Groups[1].Value, result);
                     }
+                    if (!found)
+                        Interlocked.Increment(ref Stats.Session.OMDbAPINotFound);
+
                     return result;
                 }
             }
-            catch { }
+            catch { Interlocked.Increment(ref Stats.Session.AppException); }
             return null;
         }
 
         public string getByIMDB(string imdb, bool full = true, bool noCache = false)
         {
+            Interlocked.Increment(ref Stats.Session.OMDbGet);
             lastResponse = 304;
             string cached = noCache ? null : Cache.Get(imdb);
             if (cached != null)
@@ -104,6 +114,7 @@ namespace MCRatings
                     // try with each key
                     for (int i = 0; i < apikeys.Count; i++)
                     {
+                        Interlocked.Increment(ref Stats.Session.OMDbAPICall);
                         HttpResponseMessage response = client.GetAsync($"?i={imdb}{plot}&apikey={apikey}").Result;
                         lastResponse = (int)response.StatusCode;
                         if (response.IsSuccessStatusCode)
@@ -111,19 +122,22 @@ namespace MCRatings
                             result = response.Content.ReadAsStringAsync().Result;
                             break;
                         }
+                        else
+                            Interlocked.Increment(ref Stats.Session.OMDbAPIError);
+
                         if (response.StatusCode == HttpStatusCode.Unauthorized)
                             rotateKey();
                     }
-                    if (string.IsNullOrEmpty(result))
-                        return null;
 
                     // save to cache
                     if (result != null && result.Contains("Response\":\"True\""))
                         Cache.Put(imdb, result);
+                    else
+                        Interlocked.Increment(ref Stats.Session.OMDbAPINotFound);
                     return result;
                 }
             }
-            catch { }
+            catch { Interlocked.Increment(ref Stats.Session.AppException); }
             return null;
         }
     }
