@@ -138,6 +138,8 @@ namespace MCRatings
                 txtSearch.Focus();
             else if (e.KeyCode == Keys.F && e.Control)      // CTRL+F - find
                 txtSearch.Focus();
+            else if (e.KeyCode == Keys.J && e.Control)      // CTRL+J - stats
+                new StatsUI().ShowDialog();
             else
                 e.Handled = false;
         }
