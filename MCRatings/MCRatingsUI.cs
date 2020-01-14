@@ -649,7 +649,7 @@ namespace MCRatings
             progress.result = false;
             List<MovieInfo> movies = progress.args as List<MovieInfo>;
             if (movies == null) return;
-            bool skipOMDB = false;
+            if (omdbAPI != null) omdbAPI.lastResponse = -1;  // reset
 
             int i = 0;
             int[] IDs = Util.IdentityArray(Environment.ProcessorCount);
@@ -685,7 +685,7 @@ namespace MCRatings
                         if (doTMDb && preference == Sources.TMDb)
                             tmdb = tmdbAPI?.getByTitle(title, year);
                         if (doOMDb && (preference == Sources.OMDb || tmdb == null))
-                            omdb = skipOMDB ? null : omdbAPI?.getByTitle(title, year);
+                            omdb = omdbAPI?.getByTitle(title, year);
                         // get TMDB if preference was OMDB but it returned null
                         if (doTMDb && preference == Sources.OMDb && omdb == null && tmdb == null)
                             tmdb = tmdbAPI?.getByTitle(title, year);
@@ -697,7 +697,7 @@ namespace MCRatings
 
                     if (doOMDb && imdb != null && omdb == null)
                     {
-                        omdb = skipOMDB ? null : omdbAPI?.getByIMDB(imdb, noCache: progress.noCache);
+                        omdb = omdbAPI?.getByIMDB(imdb, noCache: progress.noCache);
                         info = OMDbMovie.Parse(omdb);
                     }
 
@@ -707,9 +707,6 @@ namespace MCRatings
                         info2 = TMDbMovie.Parse(tmdb);
                     }
 
-                    if (omdbAPI.lastResponse == 401)    // unauthorized, keys expended
-                        skipOMDB = true;
-                    
                     if ((info != null && info.isValid) || (info2 != null && info2.isValid))
                     {
                         bool ok = false;

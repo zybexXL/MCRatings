@@ -44,8 +44,7 @@ namespace MCRatings
         public string getByTitle(string title, string year, bool full = true)
         {
             Interlocked.Increment(ref Stats.Session.OMDbSearch);
-            lastResponse = -1;
-            if (!hasKeys) return null;
+            if (!hasKeys || lastResponse == (int)HttpStatusCode.Unauthorized) return null;
             try
             {
                 using (var client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }))
@@ -96,13 +95,11 @@ namespace MCRatings
         public string getByIMDB(string imdb, bool full = true, bool noCache = false)
         {
             Interlocked.Increment(ref Stats.Session.OMDbGet);
-            lastResponse = 304;
             string cached = noCache ? null : Cache.Get(imdb);
             if (cached != null)
                 return cached;
 
-            lastResponse = -1;
-            if (!hasKeys) return null;
+            if (!hasKeys || lastResponse == (int)HttpStatusCode.Unauthorized) return null;
             try
             {
                 using (var client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }))
