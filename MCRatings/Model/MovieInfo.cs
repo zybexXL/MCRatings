@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,6 @@ namespace MCRatings
         public int JRKey { get; set; }
         private string Fullpath;
         private string Filename;
-        public DateTime DateImported;
 
         public bool selected { get; set; } = false;
         public string FTitle { get { return this[AppField.FTitle]; } }
@@ -30,13 +30,23 @@ namespace MCRatings
         public string Title { get { return this[AppField.Title]; } }
         public string Year { get { return this[AppField.Year]; } }
         public string IMDBid { get { return this[AppField.IMDbID]; } }
+        public DateTime DateImported {
+            get {
+                if (DateTime.TryParseExact(this[AppField.Imported], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture,
+                    DateTimeStyles.None, out DateTime date))
+                    return date;
+                return DateTime.MinValue;
+            } }
 
         public bool hasRatings
         {
             get
             {
-                return !string.IsNullOrEmpty(this[AppField.IMDbRating]) || !string.IsNullOrEmpty(this[AppField.Metascore])
-                    || !string.IsNullOrEmpty(this[AppField.RottenTomatoes]) || !string.IsNullOrEmpty(this[AppField.MPAARating]);
+                return !string.IsNullOrEmpty(this[AppField.IMDbRating])
+                    || !string.IsNullOrEmpty(this[AppField.TMDbScore])
+                    || !string.IsNullOrEmpty(this[AppField.Metascore])
+                    || !string.IsNullOrEmpty(this[AppField.RottenTomatoes])
+                    || !string.IsNullOrEmpty(this[AppField.MPAARating]);
             }
         }
 
@@ -64,8 +74,8 @@ namespace MCRatings
 
             if (fields.ContainsKey(AppField.Imported) && long.TryParse(fields[AppField.Imported], out long seconds))
             {
-                DateImported = Util.EpochToDateTime(seconds).ToLocalTime();
-                fields[AppField.Imported] = DateImported.ToString("yyyy-MM-dd HH:mm:ss");
+                DateTime imported = Util.EpochToDateTime(seconds).ToLocalTime();
+                fields[AppField.Imported] = imported.ToString("yyyy-MM-dd HH:mm:ss");
             }
 
             TakeSnapshot();

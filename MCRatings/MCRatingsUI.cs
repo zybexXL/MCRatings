@@ -893,7 +893,7 @@ namespace MCRatings
             if (!btnSave.Enabled) return;
 
             txtSearch.Text = "";
-            SelectRows(new Predicate<MovieInfo>(m => m.isDirty));
+            SelectRows(new Predicate<MovieInfo>(m => m.isDirty), true);
             chkShowSelected.Checked = true;
         }
 
@@ -1018,7 +1018,7 @@ namespace MCRatings
         #region Context Menu
         
         // selects/unselects rows based on predicate
-        private void SelectRows(Predicate<MovieInfo> predicate)
+        private void SelectRows(Predicate<MovieInfo> predicate, bool fullList = false)
         {
             gridMovies.ClearSelection();
             List<DataRowView> changed = new List<DataRowView>();
@@ -1026,6 +1026,10 @@ namespace MCRatings
             if (bs == null) return;
 
             bs.SuspendBinding();
+
+            if (fullList)
+                bs.RemoveFilter();
+
             for (int i = 0; i < bs.Count; i++)
                 changed.Add((DataRowView)bs[i]);
             foreach (DataRowView row in changed)
@@ -1046,17 +1050,18 @@ namespace MCRatings
 
         private void menuSelectAll_Click(object sender, EventArgs e)
         {
-            SelectRows(new Predicate<MovieInfo>(m => true));
+            SelectRows(new Predicate<MovieInfo>(m => true), chkShowSelected.Checked);
         }
 
         private void menuClearSelection_Click(object sender, EventArgs e)
         {
             SelectRows(new Predicate<MovieInfo>(m => false));
+            chkShowSelected.Checked = false;
         }
 
         private void menuToggleSelection_Click(object sender, EventArgs e)
         {
-            SelectRows(new Predicate<MovieInfo>(m => !m.selected));
+            SelectRows(new Predicate<MovieInfo>(m => !m.selected), chkShowSelected.Checked);
         }
 
         private void menuSelectValidID_Click(object sender, EventArgs e)
@@ -1764,7 +1769,6 @@ namespace MCRatings
                     mov[AppField.Year] = m.Year;
                     mov[AppField.Collections] = $"{collection.Title}; MISSING";
                     mov[AppField.Imported] = now;
-                    mov.DateImported = dtNow;
                     mov[AppField.IMDbID] = string.IsNullOrEmpty(m.ImdbId) ? null : $"tt{m.ImdbId}";
                     mov.selected = true;
                     movies.Add(mov);

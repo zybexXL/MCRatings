@@ -155,7 +155,7 @@
             this.menuSelectAdded7,
             this.menuSelectAdded30});
             this.menuSelectCriteria.Name = "menuSelectCriteria";
-            this.menuSelectCriteria.Size = new System.Drawing.Size(168, 22);
+            this.menuSelectCriteria.Size = new System.Drawing.Size(180, 22);
             this.menuSelectCriteria.Text = "Select criteria...";
             // 
             // menuSelectValidID
@@ -256,7 +256,7 @@
             this.menuSelectAll.ShortcutKeyDisplayString = "";
             this.menuSelectAll.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
             this.menuSelectAll.ShowShortcutKeys = false;
-            this.menuSelectAll.Size = new System.Drawing.Size(168, 22);
+            this.menuSelectAll.Size = new System.Drawing.Size(180, 22);
             this.menuSelectAll.Text = "Select all";
             this.menuSelectAll.Click += new System.EventHandler(this.menuSelectAll_Click);
             // 
@@ -266,33 +266,33 @@
             this.menuClearSelection.ShortcutKeyDisplayString = "";
             this.menuClearSelection.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
             this.menuClearSelection.ShowShortcutKeys = false;
-            this.menuClearSelection.Size = new System.Drawing.Size(168, 22);
-            this.menuClearSelection.Text = "Clear selection";
+            this.menuClearSelection.Size = new System.Drawing.Size(180, 22);
+            this.menuClearSelection.Text = "Select none";
             this.menuClearSelection.Click += new System.EventHandler(this.menuClearSelection_Click);
             // 
             // menuToggleSelection
             // 
             this.menuToggleSelection.Name = "menuToggleSelection";
-            this.menuToggleSelection.Size = new System.Drawing.Size(168, 22);
+            this.menuToggleSelection.Size = new System.Drawing.Size(180, 22);
             this.menuToggleSelection.Text = "Toggle selection";
             this.menuToggleSelection.Click += new System.EventHandler(this.menuToggleSelection_Click);
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(165, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(177, 6);
             // 
             // menuSelectChanged
             // 
             this.menuSelectChanged.Name = "menuSelectChanged";
-            this.menuSelectChanged.Size = new System.Drawing.Size(168, 22);
+            this.menuSelectChanged.Size = new System.Drawing.Size(180, 22);
             this.menuSelectChanged.Text = "Select changed";
             this.menuSelectChanged.Click += new System.EventHandler(this.menuSelectChanged_Click);
             // 
             // menuSelectUnchanged
             // 
             this.menuSelectUnchanged.Name = "menuSelectUnchanged";
-            this.menuSelectUnchanged.Size = new System.Drawing.Size(168, 22);
+            this.menuSelectUnchanged.Size = new System.Drawing.Size(180, 22);
             this.menuSelectUnchanged.Text = "Select unchanged";
             this.menuSelectUnchanged.Click += new System.EventHandler(this.menuSelectUnchanged_Click);
             // 
