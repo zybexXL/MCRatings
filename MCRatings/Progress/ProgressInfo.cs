@@ -13,6 +13,7 @@ namespace MCRatings
         public bool cancelled;
         public bool paused;
         public bool noCache;
+        public bool blanks;
         public int success;
         public int fail;
         public int skip;

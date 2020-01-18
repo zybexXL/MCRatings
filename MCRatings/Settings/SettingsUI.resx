@@ -147,6 +147,12 @@ If data is not available for the selected country, EN values are selected.
 
 Please use a 2-letter language code (ISO-639-1)</value>
   </data>
+  <data name="maxListLimit.ToolTip" xml:space="preserve">
+    <value>Lists with many items are trimmed to keep only this number of items.
+
+This assumes that lists are ordered by Importance (for instance, top-billed Actors show
+up first on the Actors list). This is true for most lists coming from TMDb, but not necessarily on the OMDb ones.</value>
+  </data>
   <metadata name="colorDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>114, 17</value>
   </metadata>

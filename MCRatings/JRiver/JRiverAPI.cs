@@ -109,7 +109,10 @@ namespace MCRatings
                     IMJFieldAutomation field = iFields.GetField(i);
                     string display = field.GetName(true);
                     string name = field.GetName(false);
-                    Fields.Add(display.ToLower(), name);
+                    if (!string.IsNullOrEmpty(name))
+                        Fields[name.ToLower()] = name;
+                    if (!string.IsNullOrEmpty(display))
+                        Fields[display.ToLower()] = name;
                 }
             }
             catch (Exception ex) { Logger.Log(ex, "JRiverAPI.getFields()"); }

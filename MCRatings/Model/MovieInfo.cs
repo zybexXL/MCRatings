@@ -115,7 +115,7 @@ namespace MCRatings
                     bool changed = false;
                     if (snapshot.TryGetValue(field, out string original))
                     {
-                        if (original != value) changed = true;
+                        if ((original ?? "") != (value ?? "")) changed = true;
                     }
                     else if (!string.IsNullOrEmpty(value))
                         changed = true;
@@ -143,7 +143,7 @@ namespace MCRatings
         public int isModified(AppField field, string curr)
         {
             if (snapshot.TryGetValue(field, out string original))
-                return curr == original ? 0 : string.IsNullOrEmpty(original) && !string.IsNullOrEmpty(curr) ? 2 : 1;
+                return (curr ?? "") == (original ?? "") ? 0 : string.IsNullOrEmpty(original) && !string.IsNullOrEmpty(curr) ? 2 : 1;
             return string.IsNullOrEmpty(curr) ? 0 : 2;
         }
 

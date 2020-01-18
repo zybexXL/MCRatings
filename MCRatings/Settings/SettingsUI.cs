@@ -86,23 +86,16 @@ namespace MCRatings
                 bool overwrite = (bool)row.Cells["dgOverwrite"].Value;
                 bool enabled = (bool)row.Cells["dgEnabled"].Value;
                 row.Cells["dgField"].Style = null;
-                if (enabled && string.IsNullOrEmpty(value))
+                if (enabled && (string.IsNullOrEmpty(value) || !jr.Fields.ContainsKey(value.ToLower())))
                 {
                     row.Cells["dgField"].Style.ForeColor = Color.Red;
-                    if (show) MessageBox.Show($"Please enter a valid field name for {Constants.ViewColumnInfo[field].JRField}",
-                        "Empty field", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     ok = false;
-                    //show = false;
-                }
-                else if (enabled && !jr.Fields.ContainsKey(value.ToLower()))
-                {
-                    row.Cells["dgField"].Style.ForeColor = Color.Red;
-                    if (show) MessageBox.Show($"Field '{value}' doesn't exist in JRiver, please fix or disable the field.",
-                        $"Invalid '{Constants.ViewColumnInfo[field].JRField}' field name", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    ok = false;
-                    //show = false;
                 }
             }
+            if (!ok && show)
+                MessageBox.Show($"One or more fields are undefined or do not exist in JRiver.\nPlease fix or disable the red fields.",
+                    "Invalid fields", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
             return ok;
         }
 
@@ -128,6 +121,7 @@ namespace MCRatings
                 Program.settings.Silent = !audio;
                 Program.settings.FastStart = chkFastStart.Checked;
                 Program.settings.WebmediaURLs = chkWebmedia.Checked;
+                Program.settings.StartMaximized = chkMaximized.Checked;
                 Program.settings.FileCleanup = txtCleanup.Text?.Trim();
                 Program.settings.APIKeys = txtAPIKeys.Text?.Trim();
                 Program.settings.TMDbAPIKeys = txtTMDBkeys.Text?.Trim();
@@ -156,6 +150,7 @@ namespace MCRatings
             txtAPIKeys.Text = settings.APIKeys;
             txtTMDBkeys.Text = settings.TMDbAPIKeys;
             chkFastStart.Checked = settings.FastStart;
+            chkMaximized.Checked = settings.StartMaximized;
             chkWebmedia.Checked = settings.WebmediaURLs;
             maxListLimit.Value = settings.ListItemsLimit;
             txtLanguage.Text = settings.Language ?? "EN";

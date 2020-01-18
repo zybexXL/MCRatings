@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MCRatingsUI));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.gridMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.menuTitle = new System.Windows.Forms.ToolStripMenuItem();
             this.menuSelect = new System.Windows.Forms.ToolStripMenuItem();
@@ -411,7 +411,7 @@
             this.btnLoad.Size = new System.Drawing.Size(48, 22);
             this.btnLoad.TabIndex = 2;
             this.btnLoad.Text = "&Load";
-            this.toolTip1.SetToolTip(this.btnLoad, "Load or reload selected playlist");
+            this.toolTip1.SetToolTip(this.btnLoad, "[ALT-L]\r\nLoad or reload selected playlist");
             this.btnLoad.UseVisualStyleBackColor = true;
             this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
             // 
@@ -424,9 +424,7 @@
             this.btnGetMovieInfo.Size = new System.Drawing.Size(130, 39);
             this.btnGetMovieInfo.TabIndex = 5;
             this.btnGetMovieInfo.Text = "&Get Movie Info";
-            this.toolTip1.SetToolTip(this.btnGetMovieInfo, "Gets OMDB movie info for selected rows or current row.\r\nIf the movie has a valid " +
-        "IMDB ID, it is used to find a match.\r\nOtherwise, the movie Title and Year are us" +
-        "ed to find the most likely match.");
+            this.toolTip1.SetToolTip(this.btnGetMovieInfo, resources.GetString("btnGetMovieInfo.ToolTip"));
             this.btnGetMovieInfo.UseVisualStyleBackColor = true;
             this.btnGetMovieInfo.Click += new System.EventHandler(this.btnGetMovieInfo_Click);
             // 
@@ -438,7 +436,7 @@
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(167, 21);
             this.txtSearch.TabIndex = 9;
-            this.toolTip1.SetToolTip(this.txtSearch, "Search Title, Year, IMDb ID, Actors and Director");
+            this.toolTip1.SetToolTip(this.txtSearch, "Search Titles, Year, IMDb ID, Actors, Director, Keywords");
             this.txtSearch.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSearch_KeyPress);
             // 
             // btnSave
@@ -452,7 +450,7 @@
             this.btnSave.Size = new System.Drawing.Size(150, 25);
             this.btnSave.TabIndex = 6;
             this.btnSave.Text = "&Save to JRiver";
-            this.toolTip1.SetToolTip(this.btnSave, "Save changes back to JRiver database");
+            this.toolTip1.SetToolTip(this.btnSave, "[ALT-S]\r\nSave changes back to JRiver database");
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
@@ -512,8 +510,8 @@
             this.chkOverwrite.TabIndex = 4;
             this.chkOverwrite.Text = "Allow &overwrite";
             this.chkOverwrite.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.toolTip1.SetToolTip(this.chkOverwrite, "Allow overwriting existing values with the data from OMDb. \r\nIf this is unchecked" +
-        ", only blank cells will be set when getting OMDb info.");
+            this.toolTip1.SetToolTip(this.chkOverwrite, "Allow overwriting existing values with the data from OMDb/TMDb. \r\nIf this is unch" +
+        "ecked, only blank cells will be set when getting movie info.");
             this.chkOverwrite.UseVisualStyleBackColor = false;
             this.chkOverwrite.CheckedChanged += new System.EventHandler(this.chkOverwrite_CheckedChanged);
             // 
@@ -544,7 +542,7 @@
             this.btnAbout.Size = new System.Drawing.Size(34, 34);
             this.btnAbout.TabIndex = 7;
             this.btnAbout.TabStop = false;
-            this.toolTip1.SetToolTip(this.btnAbout, "left-click to open About dialog;\r\nright-click to open Statistics");
+            this.toolTip1.SetToolTip(this.btnAbout, "left-click to open About dialog\r\nright-click to open Statistics [ALT-I]");
             this.btnAbout.UseVisualStyleBackColor = true;
             this.btnAbout.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btnAbout_MouseDown);
             // 

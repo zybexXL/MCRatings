@@ -34,7 +34,7 @@ namespace MCRatings
         public string appVersion;
         public bool OMDbDisabled = false;
         public bool TMDbDisabled = false;
-
+        public bool StartMaximized = false;
 
         [XmlIgnore]
         public Dictionary<AppField, JRFieldMap> FieldMap = new Dictionary<AppField, JRFieldMap>();

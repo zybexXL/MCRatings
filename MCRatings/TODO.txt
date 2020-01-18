@@ -1,7 +1,6 @@
 
 Settings:
 - create missing fields?
-- startup check: single popup for multiple missing fields
 
 TMDB:
 - get posters?
@@ -12,7 +11,5 @@ Main:
 - locked fields (no overwrite/ignore changes - per movie)
 - drop multiple collection files
 - GET after collection drop
-- use obsolete cache files when keys expired
-- execution log (status messages log)
-- stats: cache hit/miss, API calls ok/failed, etc
 - toolbar (context menu options as buttons)
+- auto-update: request elevation

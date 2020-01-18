@@ -59,7 +59,6 @@ namespace MCRatings
             // fill current monitor (with border)
             this.Width = Screen.FromControl(this).Bounds.Width - 200;
             this.Height = Screen.FromControl(this).Bounds.Height - 100;
-
             this.Left = 100;
             this.Top = 50;
 
@@ -80,6 +79,9 @@ namespace MCRatings
 
         private void MCRatingsUI_Shown(object sender, EventArgs e)
         {
+            if (Program.settings.StartMaximized)
+                this.WindowState = FormWindowState.Maximized;
+
             // check field map, show SettingsUI if needed
             bool showSettings = !Program.settings.valid;
             if (!showSettings)
@@ -142,10 +144,14 @@ namespace MCRatings
                 txtSearch.Focus();
             else if (e.KeyCode == Keys.F && e.Control)      // CTRL+F - find
                 txtSearch.Focus();
-            else if (e.KeyCode == Keys.I && e.Control)      // CTRL+I - stats
-                new StatsUI().ShowDialog();
+            else if (e.KeyCode == Keys.X && e.Alt)          // ALT+X = Exit
+                this.Close();
+            else if (e.KeyCode == Keys.I && e.Control)          // CTRL+I - stats
+                this.BeginInvoke((MethodInvoker)delegate { new StatsUI().ShowDialog(); });
             else
                 e.Handled = false;
+
+            e.SuppressKeyPress = e.Handled;
         }
 
         // capture CTRL+C on a datagridView cell in normal or Edit mode
@@ -184,6 +190,7 @@ namespace MCRatings
                         }
                     gridMovies.Refresh();
                     updateModifiedCount();
+                    return true;
                 }
 
             return base.ProcessCmdKey(ref msg, keyData);
@@ -590,6 +597,7 @@ namespace MCRatings
         private void btnGetMovieInfo_Click(object sender, EventArgs e)
         {
             bool noCache = ModifierKeys.HasFlag(Keys.Shift);
+            bool forceBlanks = ModifierKeys.HasFlag(Keys.Control);
             var selected = GetSelectedMovies(true); 
 
             if (selected.Count == 0)
@@ -621,6 +629,7 @@ namespace MCRatings
             bar.progress.canOverwrite = chkOverwrite.Checked;
             bar.progress.useAltTitle = chkUseJRTitle.Checked;
             bar.progress.noCache = noCache;
+            bar.progress.blanks = forceBlanks;
 
             bar.ShowDialog();   // ignore result - even if cancelled, the already updated movies are kept
             
@@ -724,7 +733,7 @@ namespace MCRatings
 
                         foreach (AppField f in Enum.GetValues(typeof(AppField)))
                             if (f >= AppField.Title && f != AppField.Imported && f!= AppField.Playlists && f!= AppField.File)
-                                ok |= overwriteField(movie, f, getPreferredValue(f, info, info2), progress.canOverwrite);
+                                ok |= overwriteField(movie, f, getPreferredValue(f, info, info2), progress.canOverwrite, progress.blanks);
                         setMovieStatus(movie, true);
                         movie.selected = false;
                     }
@@ -761,7 +770,7 @@ namespace MCRatings
 
         // overwrites a cell if overwrite flags are enabled for the field
         // first restores original cell value to prevent stale info from previous GET operations to remain behind
-        private bool overwriteField(MovieInfo movie, AppField field, string value, bool masterOverwrite)
+        private bool overwriteField(MovieInfo movie, AppField field, string value, bool masterOverwrite, bool acceptBlanks = false)
         {
             bool fieldOverwrite = Program.settings.FieldMap[field].overwrite;
             bool fieldEnabled = Program.settings.FieldMap[field].enabled;
@@ -769,11 +778,11 @@ namespace MCRatings
             if (fieldEnabled && field != AppField.IMDbID && field != AppField.Collections)
                 if (movie.JRKey >= 0 || field != AppField.Imported)
                     movie[field] = movie.originalValue(field);    // restore original value 
-            if (string.IsNullOrEmpty(value)) return false;
+            if (!acceptBlanks && string.IsNullOrEmpty(value)) return false;
 
             movie.setUpdate(field, value);
 
-            if (fieldEnabled && value != movie[field] && (string.IsNullOrEmpty(movie[field]) || (fieldOverwrite && masterOverwrite)) || field == AppField.Collections)
+            if (fieldEnabled && (value ?? "") != (movie[field] ?? "") && (string.IsNullOrEmpty(movie[field]) || (fieldOverwrite && masterOverwrite)) || field == AppField.Collections)
             {
                 // special handling for Revenue and Budget - only overwrite if value is higher
                 if ((field == AppField.Revenue || field == AppField.Budget) && Util.NumberValue(value) < Util.NumberValue(movie[field]))
@@ -1211,6 +1220,59 @@ namespace MCRatings
             createShortcuts(3);
         }
 
+        private void menuCopyField_Click(object sender, EventArgs e)
+        {
+            DataGridView.HitTestInfo hit = gridMovies.HitTest(LastMouseClick.X, LastMouseClick.Y);
+            if (hit.RowIndex >= 0 && hit.ColumnIndex > 1 && hit.Type == DataGridViewHitTestType.Cell)
+            {
+                try
+                {
+                    string text = gridMovies[hit.ColumnIndex, hit.RowIndex].Value?.ToString();
+                    if (string.IsNullOrEmpty(text)) return;
+
+                    AppField field = (AppField)hit.ColumnIndex;
+                    if (field == AppField.Playlists)
+                        Clipboard.SetData(clipPlaylists, text);
+                    else
+                        Clipboard.SetText(text);
+                }
+                catch { }
+            }
+        }
+
+        private void menuPaste_Click(object sender, EventArgs e)
+        {
+            DataGridView.HitTestInfo hit = gridMovies.HitTest(LastMouseClick.X, LastMouseClick.Y);
+            if (hit.RowIndex >= 0 && hit.ColumnIndex > 1 && hit.Type == DataGridViewHitTestType.Cell)
+            {
+                AppField field = (AppField)hit.ColumnIndex;
+                string value = null;
+                try
+                {
+                    if (field == AppField.Playlists)
+                    {
+                        if (!Clipboard.ContainsData(clipPlaylists))
+                            return;
+                        else
+                            value = (string)Clipboard.GetData(clipPlaylists);
+                    }
+                    else if (!gridMovies.Columns[hit.ColumnIndex].ReadOnly && Clipboard.ContainsText())
+                        value = Clipboard.GetText();
+                    else return;
+                }
+                catch { }
+                if (value == null) return;
+
+                MovieInfo m = gridMovies.Rows[hit.RowIndex].Cells[0].Value as MovieInfo;
+                gridMovies.Rows[hit.RowIndex].Cells[hit.ColumnIndex].Value = value;
+                m[(AppField)hit.ColumnIndex] = value;
+                setMovieStatus(m, true);
+                gridMovies.Rows[hit.RowIndex].Cells[(int)AppField.Status].Value = m[AppField.Status];
+                gridMovies.Refresh();
+                updateModifiedCount();
+            }
+        }
+
         #endregion
 
         #region datagrid events
@@ -1602,59 +1664,6 @@ namespace MCRatings
         }
 
         #endregion
-
-        private void menuCopyField_Click(object sender, EventArgs e)
-        {
-            DataGridView.HitTestInfo hit = gridMovies.HitTest(LastMouseClick.X, LastMouseClick.Y);
-            if (hit.RowIndex >= 0 && hit.ColumnIndex > 1 && hit.Type == DataGridViewHitTestType.Cell)
-            {
-                try
-                {
-                    string text = gridMovies[hit.ColumnIndex, hit.RowIndex].Value?.ToString();
-                    if (string.IsNullOrEmpty(text)) return;
-
-                    AppField field = (AppField)hit.ColumnIndex;
-                    if (field == AppField.Playlists)
-                        Clipboard.SetData(clipPlaylists, text);
-                    else
-                        Clipboard.SetText(text);
-                }
-                catch { }
-            }
-        }
-
-        private void menuPaste_Click(object sender, EventArgs e)
-        {
-            DataGridView.HitTestInfo hit = gridMovies.HitTest(LastMouseClick.X, LastMouseClick.Y);
-            if (hit.RowIndex >= 0 && hit.ColumnIndex > 1 && hit.Type == DataGridViewHitTestType.Cell)
-            {  
-                AppField field = (AppField)hit.ColumnIndex;
-                string value = null;
-                try
-                {
-                    if (field == AppField.Playlists)
-                    {
-                        if (!Clipboard.ContainsData(clipPlaylists))
-                            return;
-                        else
-                            value = (string)Clipboard.GetData(clipPlaylists);
-                    }
-                    else if (!gridMovies.Columns[hit.ColumnIndex].ReadOnly && Clipboard.ContainsText())
-                        value = Clipboard.GetText();
-                    else return;
-                }
-                catch { }
-                if (value == null) return;
-
-                MovieInfo m = gridMovies.Rows[hit.RowIndex].Cells[0].Value as MovieInfo;
-                gridMovies.Rows[hit.RowIndex].Cells[hit.ColumnIndex].Value = value;
-                m[(AppField)hit.ColumnIndex] = value;
-                setMovieStatus(m, true);
-                gridMovies.Rows[hit.RowIndex].Cells[(int)AppField.Status].Value = m[AppField.Status];
-                gridMovies.Refresh();
-                updateModifiedCount();
-            }
-        }
 
         #region Collections
 
