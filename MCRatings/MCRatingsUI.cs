@@ -529,6 +529,7 @@ namespace MCRatings
             BindingSource bs = new BindingSource();
             bs.DataSource = dt;
             gridMovies.DataSource = bs;
+            bs.Sort = (Program.settings.SortByImportedDate ? "Imported DESC, " : "") + "Title, Year";
 
             // fix column headers, set read only, hide disabled columns
             gridMovies.Columns[(int)AppField.Selected].HeaderText = "";

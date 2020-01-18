@@ -35,6 +35,7 @@ namespace MCRatings
         public bool OMDbDisabled = false;
         public bool TMDbDisabled = false;
         public bool StartMaximized = false;
+        public bool SortByImportedDate = false;
 
         [XmlIgnore]
         public Dictionary<AppField, JRFieldMap> FieldMap = new Dictionary<AppField, JRFieldMap>();
