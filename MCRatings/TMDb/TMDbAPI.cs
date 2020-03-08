@@ -80,7 +80,7 @@ namespace MCRatings
             return result;
         }
 
-        public string getByTitle(string title, string year)
+        public TMDbMovie getByTitle(string title, string year)
         {
             Interlocked.Increment(ref Stats.Session.TMDbSearch);
             if (!hasKeys || lastResponse == (int)HttpStatusCode.Unauthorized) return null;
@@ -92,7 +92,7 @@ namespace MCRatings
                 if (string.IsNullOrWhiteSpace(language)) language = "en";
 
                 // get movie ID
-                string result = HttpGetRequest($"/3/search/movie?query={tt}{yy}&page=1&language={language}&include_adult=true");
+                string result = HttpGetRequest($"/3/search/movie?query={tt}{yy}&page=1&include_adult=true");
 
                 TMDbSearch found = string.IsNullOrEmpty(result) ? null : Util.JsonDeserialize<TMDbSearch>(result);
                 if (found?.results == null || found.results.Length == 0)
@@ -100,43 +100,33 @@ namespace MCRatings
                     Interlocked.Increment(ref Stats.Session.TMDbAPINotFound);
                     return null;
                 }
-                int id = found.results[0].id;
-
                 // get movie Info
-                result = HttpGetRequest($"/3/movie/{id}?language={language}&append_to_response=credits,videos,images,keywords,alternative_titles,release_dates&include_image_language={language},en,null");
-
-                if (result != null && !result.Contains("\"status_code\":"))
-                {
-                    var imdb = Regex.Match(result, "\"imdb_id\":\"(.+?)\"");
-                    if (imdb.Success)
-                    {
-                        Cache.Put($"tmdb.{language}.{imdb.Groups[1].Value}", result);
-                        return result;
-                    }
-                }
-                Interlocked.Increment(ref Stats.Session.TMDbAPINotFound);
+                return getByID(found.results[0].id, language);              
             }
             catch { Interlocked.Increment(ref Stats.Session.AppException); }
             return null;
         }
 
-        public string getByIMDB(string imdb, bool noCache = false)
+        public TMDbMovie getByIMDB(string imdb, bool noCache = false)
         {
             Interlocked.Increment(ref Stats.Session.TMDbGet);
             string language = Program.settings.Language?.ToLower();
-            //string region = Program.settings.Country?.ToLower();
             if (string.IsNullOrWhiteSpace(language)) language = "en";
-            //if (string.IsNullOrWhiteSpace(region)) language = "us";
 
             string cached = noCache ? null : Cache.Get($"tmdb.{language}.{imdb}");
             if (cached != null)
-                return cached;
+            {
+                var movie = TMDbMovie.Parse(cached);
+                movie.cached = true;
+                if (movie.images != null && movie.images.id == movie.id)    // ignore old cached items which don't have full image lists
+                    return movie;
+            }
 
             if (!hasKeys || lastResponse == (int)HttpStatusCode.Unauthorized) return null;
             try
             {
                 // find TMDBid by IMDBid
-                string result = HttpGetRequest($"/3/find/{imdb}?language=en&external_source=imdb_id");
+                string result = HttpGetRequest($"/3/find/{imdb}?external_source=imdb_id");
 
                 TMDbFind found = string.IsNullOrEmpty(result) ? null : Util.JsonDeserialize<TMDbFind>(result);
                 if (found?.movie_results == null || found.movie_results.Length == 0)
@@ -144,21 +134,60 @@ namespace MCRatings
                     Interlocked.Increment(ref Stats.Session.TMDbAPINotFound);
                     return null;
                 }
+
+                // get movie Info
                 int id = found.movie_results.FirstOrDefault().id;
-
-                // get Movie info
-                result = HttpGetRequest($"/3/movie/{id}?language={language}&append_to_response=credits,videos,images,keywords,alternative_titles,release_dates&include_image_language={language},en,null");
-
-                if (!string.IsNullOrEmpty(result) && result.Contains($"\"imdb_id\":\"{imdb.ToLower()}\"") && !result.Contains("\"status_code\":"))
-                {
-                    // save to cache
-                    Cache.Put($"tmdb.{language}.{imdb}", result);
-                    return result;
-                }
-                Interlocked.Increment(ref Stats.Session.TMDbAPINotFound);
+                return getByID(id, language, imdb);
             }
             catch { Interlocked.Increment(ref Stats.Session.AppException); }
             return null;
+        }
+
+        public TMDbMovie getByID(int id, string language = "en", string imdb = null)
+        {
+            // get movie Info
+            var result = HttpGetRequest($"/3/movie/{id}?language={language}&append_to_response=credits,videos,keywords,alternative_titles,release_dates");//,images&include_image_language={language},en,null");
+            var Movie = TMDbMovie.Parse(result);
+            if (Movie != null && Movie.status_code <= 1 && !string.IsNullOrEmpty(Movie.imdb_id) && (imdb == null || imdb.ToLower() == Movie.imdb_id.ToLower()))
+            {
+                // get posters
+                result = HttpGetRequest($"/3/movie/{id}/images?");
+                TMDbMovieImages images = Util.JsonDeserialize<TMDbMovieImages>(result);
+                if (images != null && images.id == id)
+                    Movie.images = images;
+
+                Cache.Put($"tmdb.{language}.{Movie.imdb_id}", Util.JsonSerialize(Movie));
+                return Movie;
+            }
+            Interlocked.Increment(ref Stats.Session.TMDbAPINotFound);
+            return null;
+        }
+
+        public static Tuple<int, int> GetThumbnailSize(PosterSize size, int width, int height)
+        {
+            int w = (size == PosterSize.Original ? width : size == PosterSize.Large ? 342 : size == PosterSize.Medium ? 185 : 92);
+            int h = size == PosterSize.Original ? height : height * w / width;
+            return new Tuple<int, int>(w, h);
+        }
+
+        public static string GetPosterUrl(string uri, PosterSize size, out string cachePath)
+        {
+            cachePath = null;
+            uri = uri?.Trim(new char[] { '/', '\\' });
+            if (string.IsNullOrEmpty(uri)) return null;
+            string res = size == PosterSize.Large ? "w342" : size == PosterSize.Medium ? "w185" : size == PosterSize.Small ? "w92" : "original";
+
+            cachePath = Path.Combine(Constants.PosterCache, res, uri);
+            return $"http://image.tmdb.org/t/p/{res}/{uri}";
+        }
+
+        public static string GetCastUrl(string uri, PosterSize size)
+        {
+            uri = uri?.Trim(new char[] { '/', '\\' });
+            if (string.IsNullOrEmpty(uri)) return null;
+            string res = size == PosterSize.Large ? "h632" : size == PosterSize.Medium ? "w185" : size == PosterSize.Small ? "w92" : "original";
+
+            return $"http://image.tmdb.org/t/p/{res}/{uri}";
         }
     }
 }

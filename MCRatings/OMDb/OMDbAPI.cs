@@ -88,7 +88,7 @@ namespace MCRatings
             return result;
         }
 
-        public string getByTitle(string title, string year, bool full = true)
+        public OMDbMovie getByTitle(string title, string year, bool full = true)
         {
             Interlocked.Increment(ref Stats.Session.OMDbSearch);
             if (!hasKeys || lastResponse == (int)HttpStatusCode.Unauthorized) return null;
@@ -109,18 +109,22 @@ namespace MCRatings
                 if (!found)
                     Interlocked.Increment(ref Stats.Session.OMDbAPINotFound);
 
-                return result;
+                return OMDbMovie.Parse(result);
             }
             catch { Interlocked.Increment(ref Stats.Session.AppException); }
             return null;
         }
 
-        public string getByIMDB(string imdb, bool full = true, bool noCache = false)
+        public OMDbMovie getByIMDB(string imdb, bool full = true, bool noCache = false)
         {
             Interlocked.Increment(ref Stats.Session.OMDbGet);
             string cached = noCache ? null : Cache.Get(imdb);
             if (cached != null)
-                return cached;
+            {
+                var movie = OMDbMovie.Parse(cached);
+                movie.cached = true;
+                return movie;
+            }
 
             if (!hasKeys || lastResponse == (int)HttpStatusCode.Unauthorized) return null;
             try
@@ -132,7 +136,7 @@ namespace MCRatings
                     Cache.Put(imdb, result);
                 else
                     Interlocked.Increment(ref Stats.Session.OMDbAPINotFound);
-                return result;
+                return OMDbMovie.Parse(result);
             }
             catch { Interlocked.Increment(ref Stats.Session.AppException); }
             return null;

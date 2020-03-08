@@ -52,6 +52,9 @@ namespace MCRatings
         public string RottenScore { get; private set; }
         public DateTime ReleaseDate { get; private set; }
 
+        public bool cached = false;
+
+
         public bool isValid { get { return Response == "True"; } }
 
         public static OMDbMovie Parse(string json)

@@ -160,16 +160,16 @@ namespace MCRatings
                 .Select(c => c.name).ToList();  
         }
 
-        internal List<TMDbMoviePerson> getCast(int max, bool withPicOnly = false)
+        internal List<TMDbMovieCast> getCast(int max, bool withPicOnly = false)
         {
             var cast = credits?.cast?.OrderBy(c => c.order).Take(max);
             if (withPicOnly) cast = cast?.Where(c => !string.IsNullOrEmpty(c.profile_path) && c.profile_path != "/");
-            return cast?.ToList() ?? new List<TMDbMoviePerson>();
+            return cast?.ToList();
         }
 
-        internal List<TMDbMoviePerson> getCrew(int max, bool withPicOnly = false)
+        internal List<TMDbMovieCrew> getCrew(int max, bool withPicOnly = false)
         {
-            if (credits.crew == null) return new List<TMDbMoviePerson>();
+            if (credits.crew == null) return null;
             var crew = credits.crew.Where(c => c.job?.ToLower() == "director").Take(max);
             crew = crew.Concat(credits.crew.Where(c => c.job?.ToLower() == "producer").Take(max));
             crew = crew.Concat(credits.crew.Where(c => c.job?.ToLower() == "executive producer").Take(max));
@@ -177,7 +177,7 @@ namespace MCRatings
             crew = crew.Concat(credits.crew.Where(c => c.job?.ToLower() == "original music composer").Take(max));
 
             if (withPicOnly) crew = crew.Where(c => !string.IsNullOrEmpty(c.profile_path) && c.profile_path != "/");
-            return crew.ToList();
+            return crew?.ToList();
         }
 
         public TMDbMovieImage SelectBestPoster()
@@ -251,27 +251,31 @@ namespace MCRatings
 
     public class TMDbMovieCredits
     {
-        public TMDbMoviePerson[] cast;
-        public TMDbMoviePerson[] crew;
+        public TMDbMovieCast[] cast;
+        public TMDbMovieCrew[] crew;
     }
 
-    public class TMDbMoviePerson
+    public class TMDbMovieCast
     {
-        // common for Cast and Crew
+        public int cast_id;
+        public string character;
         public string credit_id;
         public int gender;
         public int id;
         public string name;
-        public string profile_path;
-
-        // crew only
-        public int cast_id;
-        public string character;
         public int order;
+        public string profile_path;
+    }
 
-        // cast only
+    public class TMDbMovieCrew
+    {
         public string department;
+        public string credit_id;
+        public int gender;
+        public int id;
         public string job;
+        public string name;
+        public string profile_path;
     }
 
     public class TMDbMovieVideos

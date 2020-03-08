@@ -49,6 +49,11 @@
             this.menuSelectAdded5 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuSelectAdded7 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuSelectAdded30 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuSelectLocked = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuSelectNoPoster = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuSelectCommonPoster = new System.Windows.Forms.ToolStripMenuItem();
             this.menuSelectAll = new System.Windows.Forms.ToolStripMenuItem();
             this.menuClearSelection = new System.Windows.Forms.ToolStripMenuItem();
             this.menuToggleSelection = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,6 +68,7 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuDiscardChanges = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuLockField = new System.Windows.Forms.ToolStripMenuItem();
             this.menuCopyField = new System.Windows.Forms.ToolStripMenuItem();
             this.menuPaste = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -70,6 +76,13 @@
             this.menuShortcutFilename = new System.Windows.Forms.ToolStripMenuItem();
             this.menuShortcutTitle = new System.Windows.Forms.ToolStripMenuItem();
             this.menuShortcutID = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuPosters = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuPosterTransferIn = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuPosterTransferOut = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuPosterSync = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuRebuildThumbs = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuRemovePoster = new System.Windows.Forms.ToolStripMenuItem();
             this.btnLoad = new System.Windows.Forms.Button();
             this.btnGetMovieInfo = new System.Windows.Forms.Button();
             this.txtSearch = new System.Windows.Forms.TextBox();
@@ -79,19 +92,22 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.chkOverwrite = new System.Windows.Forms.CheckBox();
             this.chkUseJRTitle = new System.Windows.Forms.CheckBox();
-            this.btnAbout = new System.Windows.Forms.Button();
-            this.btnSettings = new System.Windows.Forms.Button();
-            this.btnReconnect = new System.Windows.Forms.Button();
-            this.btnClear = new System.Windows.Forms.Button();
-            this.btnFindNext = new System.Windows.Forms.Button();
             this.comboLists = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.gridMovies = new System.Windows.Forms.DataGridView();
             this.lblChanges = new System.Windows.Forms.Label();
             this.lblSelected = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
+            this.imgSpinner = new System.Windows.Forms.PictureBox();
+            this.btnAbout = new System.Windows.Forms.Button();
+            this.btnSettings = new System.Windows.Forms.Button();
+            this.btnReconnect = new System.Windows.Forms.Button();
+            this.btnClear = new System.Windows.Forms.Button();
+            this.btnFindNext = new System.Windows.Forms.Button();
+            this.lblTaskCount = new System.Windows.Forms.Label();
             this.gridMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridMovies)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imgSpinner)).BeginInit();
             this.SuspendLayout();
             // 
             // gridMenu
@@ -104,13 +120,15 @@
             this.toolStripSeparator1,
             this.menuDiscardChanges,
             this.toolStripSeparator7,
+            this.menuLockField,
             this.menuCopyField,
             this.menuPaste,
             this.toolStripSeparator2,
-            this.menuCreateShortcuts});
+            this.menuCreateShortcuts,
+            this.menuPosters});
             this.gridMenu.Name = "contextMenuStrip1";
             this.gridMenu.ShowImageMargin = false;
-            this.gridMenu.Size = new System.Drawing.Size(168, 176);
+            this.gridMenu.Size = new System.Drawing.Size(168, 220);
             this.gridMenu.Opening += new System.ComponentModel.CancelEventHandler(this.gridMenu_Opening);
             // 
             // menuTitle
@@ -153,102 +171,138 @@
             this.menuSelectAdded3,
             this.menuSelectAdded5,
             this.menuSelectAdded7,
-            this.menuSelectAdded30});
+            this.menuSelectAdded30,
+            this.toolStripSeparator8,
+            this.menuSelectLocked,
+            this.toolStripSeparator9,
+            this.menuSelectNoPoster,
+            this.menuSelectCommonPoster});
             this.menuSelectCriteria.Name = "menuSelectCriteria";
-            this.menuSelectCriteria.Size = new System.Drawing.Size(180, 22);
+            this.menuSelectCriteria.Size = new System.Drawing.Size(168, 22);
             this.menuSelectCriteria.Text = "Select criteria...";
             // 
             // menuSelectValidID
             // 
             this.menuSelectValidID.Name = "menuSelectValidID";
-            this.menuSelectValidID.Size = new System.Drawing.Size(219, 22);
+            this.menuSelectValidID.Size = new System.Drawing.Size(234, 22);
             this.menuSelectValidID.Text = "Valid IMDB ID";
             this.menuSelectValidID.Click += new System.EventHandler(this.menuSelectValidID_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(216, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(231, 6);
             // 
             // menuSelectMissingID
             // 
             this.menuSelectMissingID.Name = "menuSelectMissingID";
-            this.menuSelectMissingID.Size = new System.Drawing.Size(219, 22);
+            this.menuSelectMissingID.Size = new System.Drawing.Size(234, 22);
             this.menuSelectMissingID.Text = "Missing IMDB ID";
             this.menuSelectMissingID.Click += new System.EventHandler(this.menuSelectMissingID_Click);
             // 
             // menuSelectMissingRatings
             // 
             this.menuSelectMissingRatings.Name = "menuSelectMissingRatings";
-            this.menuSelectMissingRatings.Size = new System.Drawing.Size(219, 22);
+            this.menuSelectMissingRatings.Size = new System.Drawing.Size(234, 22);
             this.menuSelectMissingRatings.Text = "Missing Ratings";
             this.menuSelectMissingRatings.Click += new System.EventHandler(this.menuSelectMissingRatings_Click);
             // 
             // menuSelectMissingTitle
             // 
             this.menuSelectMissingTitle.Name = "menuSelectMissingTitle";
-            this.menuSelectMissingTitle.Size = new System.Drawing.Size(219, 22);
+            this.menuSelectMissingTitle.Size = new System.Drawing.Size(234, 22);
             this.menuSelectMissingTitle.Text = "Missing Title/Year";
             this.menuSelectMissingTitle.Click += new System.EventHandler(this.menuSelectMissingTitle_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(216, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(231, 6);
             // 
             // menuSelectMismatchTitle
             // 
             this.menuSelectMismatchTitle.Name = "menuSelectMismatchTitle";
-            this.menuSelectMismatchTitle.Size = new System.Drawing.Size(219, 22);
+            this.menuSelectMismatchTitle.Size = new System.Drawing.Size(234, 22);
             this.menuSelectMismatchTitle.Text = "Mismatched Title/Year";
             this.menuSelectMismatchTitle.Click += new System.EventHandler(this.menuSelectMismatchTitle_Click);
             // 
             // menuSelectMismatchTitleYear1
             // 
             this.menuSelectMismatchTitleYear1.Name = "menuSelectMismatchTitleYear1";
-            this.menuSelectMismatchTitleYear1.Size = new System.Drawing.Size(219, 22);
+            this.menuSelectMismatchTitleYear1.Size = new System.Drawing.Size(234, 22);
             this.menuSelectMismatchTitleYear1.Text = "Mismatched Title/Year±1";
             this.menuSelectMismatchTitleYear1.Click += new System.EventHandler(this.menuSelectMismatchTitleYear1_Click);
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(216, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(231, 6);
             // 
             // menuSelectAdded1
             // 
             this.menuSelectAdded1.Name = "menuSelectAdded1";
-            this.menuSelectAdded1.Size = new System.Drawing.Size(219, 22);
+            this.menuSelectAdded1.Size = new System.Drawing.Size(234, 22);
             this.menuSelectAdded1.Text = "Added today";
             this.menuSelectAdded1.Click += new System.EventHandler(this.menuSelectAdded1_Click);
             // 
             // menuSelectAdded3
             // 
             this.menuSelectAdded3.Name = "menuSelectAdded3";
-            this.menuSelectAdded3.Size = new System.Drawing.Size(219, 22);
+            this.menuSelectAdded3.Size = new System.Drawing.Size(234, 22);
             this.menuSelectAdded3.Text = "Added last 3 days";
             this.menuSelectAdded3.Click += new System.EventHandler(this.menuSelectAdded3_Click);
             // 
             // menuSelectAdded5
             // 
             this.menuSelectAdded5.Name = "menuSelectAdded5";
-            this.menuSelectAdded5.Size = new System.Drawing.Size(219, 22);
+            this.menuSelectAdded5.Size = new System.Drawing.Size(234, 22);
             this.menuSelectAdded5.Text = "Added last 5 days";
             this.menuSelectAdded5.Click += new System.EventHandler(this.menuSelectAdded5_Click);
             // 
             // menuSelectAdded7
             // 
             this.menuSelectAdded7.Name = "menuSelectAdded7";
-            this.menuSelectAdded7.Size = new System.Drawing.Size(219, 22);
+            this.menuSelectAdded7.Size = new System.Drawing.Size(234, 22);
             this.menuSelectAdded7.Text = "Added last 7 days (week)";
             this.menuSelectAdded7.Click += new System.EventHandler(this.menuSelectAdded7_Click);
             // 
             // menuSelectAdded30
             // 
             this.menuSelectAdded30.Name = "menuSelectAdded30";
-            this.menuSelectAdded30.Size = new System.Drawing.Size(219, 22);
+            this.menuSelectAdded30.Size = new System.Drawing.Size(234, 22);
             this.menuSelectAdded30.Text = "Added last 30 days (month)";
             this.menuSelectAdded30.Click += new System.EventHandler(this.menuSelectAdded30_Click);
+            // 
+            // toolStripSeparator8
+            // 
+            this.toolStripSeparator8.Name = "toolStripSeparator8";
+            this.toolStripSeparator8.Size = new System.Drawing.Size(231, 6);
+            // 
+            // menuSelectLocked
+            // 
+            this.menuSelectLocked.Name = "menuSelectLocked";
+            this.menuSelectLocked.Size = new System.Drawing.Size(234, 22);
+            this.menuSelectLocked.Text = "With locked fields";
+            this.menuSelectLocked.Click += new System.EventHandler(this.menuSelectLocked_Click);
+            // 
+            // toolStripSeparator9
+            // 
+            this.toolStripSeparator9.Name = "toolStripSeparator9";
+            this.toolStripSeparator9.Size = new System.Drawing.Size(231, 6);
+            // 
+            // menuSelectNoPoster
+            // 
+            this.menuSelectNoPoster.Name = "menuSelectNoPoster";
+            this.menuSelectNoPoster.Size = new System.Drawing.Size(234, 22);
+            this.menuSelectNoPoster.Text = "Without Poster";
+            this.menuSelectNoPoster.Click += new System.EventHandler(this.menuSelectNoPoster_Click);
+            // 
+            // menuSelectCommonPoster
+            // 
+            this.menuSelectCommonPoster.Name = "menuSelectCommonPoster";
+            this.menuSelectCommonPoster.Size = new System.Drawing.Size(234, 22);
+            this.menuSelectCommonPoster.Text = "With Poster in common folder";
+            this.menuSelectCommonPoster.Click += new System.EventHandler(this.menuSelectCommonPoster_Click);
             // 
             // menuSelectAll
             // 
@@ -256,7 +310,7 @@
             this.menuSelectAll.ShortcutKeyDisplayString = "";
             this.menuSelectAll.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
             this.menuSelectAll.ShowShortcutKeys = false;
-            this.menuSelectAll.Size = new System.Drawing.Size(180, 22);
+            this.menuSelectAll.Size = new System.Drawing.Size(168, 22);
             this.menuSelectAll.Text = "Select all";
             this.menuSelectAll.Click += new System.EventHandler(this.menuSelectAll_Click);
             // 
@@ -266,33 +320,33 @@
             this.menuClearSelection.ShortcutKeyDisplayString = "";
             this.menuClearSelection.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
             this.menuClearSelection.ShowShortcutKeys = false;
-            this.menuClearSelection.Size = new System.Drawing.Size(180, 22);
+            this.menuClearSelection.Size = new System.Drawing.Size(168, 22);
             this.menuClearSelection.Text = "Select none";
             this.menuClearSelection.Click += new System.EventHandler(this.menuClearSelection_Click);
             // 
             // menuToggleSelection
             // 
             this.menuToggleSelection.Name = "menuToggleSelection";
-            this.menuToggleSelection.Size = new System.Drawing.Size(180, 22);
+            this.menuToggleSelection.Size = new System.Drawing.Size(168, 22);
             this.menuToggleSelection.Text = "Toggle selection";
             this.menuToggleSelection.Click += new System.EventHandler(this.menuToggleSelection_Click);
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(165, 6);
             // 
             // menuSelectChanged
             // 
             this.menuSelectChanged.Name = "menuSelectChanged";
-            this.menuSelectChanged.Size = new System.Drawing.Size(180, 22);
+            this.menuSelectChanged.Size = new System.Drawing.Size(168, 22);
             this.menuSelectChanged.Text = "Select changed";
             this.menuSelectChanged.Click += new System.EventHandler(this.menuSelectChanged_Click);
             // 
             // menuSelectUnchanged
             // 
             this.menuSelectUnchanged.Name = "menuSelectUnchanged";
-            this.menuSelectUnchanged.Size = new System.Drawing.Size(180, 22);
+            this.menuSelectUnchanged.Size = new System.Drawing.Size(168, 22);
             this.menuSelectUnchanged.Text = "Select unchanged";
             this.menuSelectUnchanged.Click += new System.EventHandler(this.menuSelectUnchanged_Click);
             // 
@@ -352,6 +406,13 @@
             this.toolStripSeparator7.Name = "toolStripSeparator7";
             this.toolStripSeparator7.Size = new System.Drawing.Size(164, 6);
             // 
+            // menuLockField
+            // 
+            this.menuLockField.Name = "menuLockField";
+            this.menuLockField.Size = new System.Drawing.Size(167, 22);
+            this.menuLockField.Text = "Lock field value";
+            this.menuLockField.Click += new System.EventHandler(this.menuLockField_Click);
+            // 
             // menuCopyField
             // 
             this.menuCopyField.Name = "menuCopyField";
@@ -401,6 +462,59 @@
             this.menuShortcutID.Size = new System.Drawing.Size(169, 22);
             this.menuShortcutID.Text = "IMDB_tt000000.url";
             this.menuShortcutID.Click += new System.EventHandler(this.menuShortcutID_Click);
+            // 
+            // menuPosters
+            // 
+            this.menuPosters.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuPosterTransferIn,
+            this.menuPosterTransferOut,
+            this.menuPosterSync,
+            this.menuRebuildThumbs,
+            this.toolStripSeparator10,
+            this.menuRemovePoster});
+            this.menuPosters.Name = "menuPosters";
+            this.menuPosters.Size = new System.Drawing.Size(167, 22);
+            this.menuPosters.Text = "Posters";
+            // 
+            // menuPosterTransferIn
+            // 
+            this.menuPosterTransferIn.Name = "menuPosterTransferIn";
+            this.menuPosterTransferIn.Size = new System.Drawing.Size(233, 22);
+            this.menuPosterTransferIn.Text = "Transfer to Poster folder";
+            this.menuPosterTransferIn.Click += new System.EventHandler(this.menuPosterTransferIn_Click);
+            // 
+            // menuPosterTransferOut
+            // 
+            this.menuPosterTransferOut.Name = "menuPosterTransferOut";
+            this.menuPosterTransferOut.Size = new System.Drawing.Size(233, 22);
+            this.menuPosterTransferOut.Text = "Transfer to Movie folder";
+            this.menuPosterTransferOut.Click += new System.EventHandler(this.menuPosterTransferOut_Click);
+            // 
+            // menuPosterSync
+            // 
+            this.menuPosterSync.Name = "menuPosterSync";
+            this.menuPosterSync.Size = new System.Drawing.Size(233, 22);
+            this.menuPosterSync.Text = "Sync Movie and Poster folders";
+            this.menuPosterSync.Click += new System.EventHandler(this.menuPosterSync_Click);
+            // 
+            // menuRebuildThumbs
+            // 
+            this.menuRebuildThumbs.Name = "menuRebuildThumbs";
+            this.menuRebuildThumbs.Size = new System.Drawing.Size(233, 22);
+            this.menuRebuildThumbs.Text = "Rebuild JRiver thumbnails";
+            this.menuRebuildThumbs.Click += new System.EventHandler(this.menuRebuildThumbs_Click);
+            // 
+            // toolStripSeparator10
+            // 
+            this.toolStripSeparator10.Name = "toolStripSeparator10";
+            this.toolStripSeparator10.Size = new System.Drawing.Size(230, 6);
+            // 
+            // menuRemovePoster
+            // 
+            this.menuRemovePoster.Name = "menuRemovePoster";
+            this.menuRemovePoster.Size = new System.Drawing.Size(233, 22);
+            this.menuRemovePoster.Text = "Remove Poster";
+            this.menuRemovePoster.Click += new System.EventHandler(this.menuRemovePoster_Click);
             // 
             // btnLoad
             // 
@@ -530,10 +644,127 @@
         "lt FileTitle/Year derived from the filename.");
             this.chkUseJRTitle.UseVisualStyleBackColor = true;
             // 
+            // comboLists
+            // 
+            this.comboLists.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.comboLists.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.comboLists.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboLists.FormattingEnabled = true;
+            this.comboLists.Location = new System.Drawing.Point(80, 30);
+            this.comboLists.Name = "comboLists";
+            this.comboLists.Size = new System.Drawing.Size(256, 21);
+            this.comboLists.TabIndex = 1;
+            this.comboLists.DropDownClosed += new System.EventHandler(this.comboLists_DropDownClosed);
+            this.comboLists.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.comboLists_KeyPress);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.Black;
+            this.label1.Location = new System.Drawing.Point(77, 13);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(122, 15);
+            this.label1.TabIndex = 9;
+            this.label1.Text = "Select JRiver Playlist:";
+            // 
+            // gridMovies
+            // 
+            this.gridMovies.AllowUserToAddRows = false;
+            this.gridMovies.AllowUserToDeleteRows = false;
+            this.gridMovies.AllowUserToOrderColumns = true;
+            this.gridMovies.AllowUserToResizeRows = false;
+            this.gridMovies.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gridMovies.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.gridMovies.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.gridMovies.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.gridMovies.ContextMenuStrip = this.gridMenu;
+            this.gridMovies.Location = new System.Drawing.Point(10, 63);
+            this.gridMovies.MultiSelect = false;
+            this.gridMovies.Name = "gridMovies";
+            this.gridMovies.RowHeadersVisible = false;
+            this.gridMovies.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.gridMovies.Size = new System.Drawing.Size(962, 372);
+            this.gridMovies.TabIndex = 8;
+            this.gridMovies.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.grid2_CellClick);
+            this.gridMovies.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.grid2_CellContentClick);
+            this.gridMovies.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.grid2_CellDoubleClick);
+            this.gridMovies.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.grid2_CellEndEdit);
+            this.gridMovies.CellToolTipTextNeeded += new System.Windows.Forms.DataGridViewCellToolTipTextNeededEventHandler(this.grid2_CellToolTipTextNeeded);
+            this.gridMovies.RowPrePaint += new System.Windows.Forms.DataGridViewRowPrePaintEventHandler(this.grid2_RowPrePaint);
+            this.gridMovies.SelectionChanged += new System.EventHandler(this.gridMovies_SelectionChanged);
+            this.gridMovies.KeyDown += new System.Windows.Forms.KeyEventHandler(this.gridMovies_KeyDown);
+            this.gridMovies.KeyUp += new System.Windows.Forms.KeyEventHandler(this.gridMovies_KeyUp);
+            this.gridMovies.MouseDown += new System.Windows.Forms.MouseEventHandler(this.gridMovies_MouseDown);
+            this.gridMovies.MouseLeave += new System.EventHandler(this.gridMovies_MouseLeave);
+            this.gridMovies.MouseMove += new System.Windows.Forms.MouseEventHandler(this.gridMovies_MouseMove);
+            this.gridMovies.MouseUp += new System.Windows.Forms.MouseEventHandler(this.gridMovies_MouseUp);
+            // 
+            // lblChanges
+            // 
+            this.lblChanges.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblChanges.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblChanges.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.lblChanges.Location = new System.Drawing.Point(817, 5);
+            this.lblChanges.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblChanges.Name = "lblChanges";
+            this.lblChanges.Size = new System.Drawing.Size(160, 18);
+            this.lblChanges.TabIndex = 13;
+            this.lblChanges.Text = "no changes";
+            this.lblChanges.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblChanges.Click += new System.EventHandler(this.lblChanges_Click);
+            // 
+            // lblSelected
+            // 
+            this.lblSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblSelected.AutoSize = true;
+            this.lblSelected.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSelected.ForeColor = System.Drawing.Color.Teal;
+            this.lblSelected.Location = new System.Drawing.Point(424, 448);
+            this.lblSelected.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblSelected.Name = "lblSelected";
+            this.lblSelected.Size = new System.Drawing.Size(25, 15);
+            this.lblSelected.TabIndex = 15;
+            this.lblSelected.Text = "(0)";
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblStatus.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblStatus.ForeColor = System.Drawing.Color.DarkGreen;
+            this.lblStatus.Location = new System.Drawing.Point(499, 448);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(395, 18);
+            this.lblStatus.TabIndex = 16;
+            this.lblStatus.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // imgSpinner
+            // 
+            this.imgSpinner.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.imgSpinner.Image = global::MCRatings.Properties.Resources.Spinner32;
+            this.imgSpinner.Location = new System.Drawing.Point(900, 440);
+            this.imgSpinner.Name = "imgSpinner";
+            this.imgSpinner.Size = new System.Drawing.Size(34, 34);
+            this.imgSpinner.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.imgSpinner.TabIndex = 17;
+            this.imgSpinner.TabStop = false;
+            this.toolTip1.SetToolTip(this.imgSpinner, "Posters/Thumbnails are downloading in the background.\r\nIf Post-processing scripts" +
+        " are enabled, tasks will take longer to complete.");
+            // 
             // btnAbout
             // 
             this.btnAbout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAbout.BackgroundImage = global::MCRatings.Properties.Resources.help_414445_32;
+            this.btnAbout.BackgroundImage = global::MCRatings.Properties.Resources.help32;
             this.btnAbout.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btnAbout.FlatAppearance.BorderSize = 0;
             this.btnAbout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -599,108 +830,21 @@
             this.btnFindNext.UseVisualStyleBackColor = true;
             this.btnFindNext.Click += new System.EventHandler(this.btnSearch_Click);
             // 
-            // comboLists
+            // lblTaskCount
             // 
-            this.comboLists.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.comboLists.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.comboLists.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboLists.FormattingEnabled = true;
-            this.comboLists.Location = new System.Drawing.Point(80, 30);
-            this.comboLists.Name = "comboLists";
-            this.comboLists.Size = new System.Drawing.Size(256, 21);
-            this.comboLists.TabIndex = 1;
-            this.comboLists.DropDownClosed += new System.EventHandler(this.comboLists_DropDownClosed);
-            this.comboLists.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.comboLists_KeyPress);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.Black;
-            this.label1.Location = new System.Drawing.Point(77, 13);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(122, 15);
-            this.label1.TabIndex = 9;
-            this.label1.Text = "Select JRiver Playlist:";
-            // 
-            // gridMovies
-            // 
-            this.gridMovies.AllowUserToAddRows = false;
-            this.gridMovies.AllowUserToDeleteRows = false;
-            this.gridMovies.AllowUserToOrderColumns = true;
-            this.gridMovies.AllowUserToResizeRows = false;
-            this.gridMovies.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.gridMovies.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.gridMovies.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            this.gridMovies.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.gridMovies.ContextMenuStrip = this.gridMenu;
-            this.gridMovies.Location = new System.Drawing.Point(10, 63);
-            this.gridMovies.MultiSelect = false;
-            this.gridMovies.Name = "gridMovies";
-            this.gridMovies.RowHeadersVisible = false;
-            this.gridMovies.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.gridMovies.Size = new System.Drawing.Size(962, 372);
-            this.gridMovies.TabIndex = 8;
-            this.gridMovies.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.grid2_CellClick);
-            this.gridMovies.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.grid2_CellContentClick);
-            this.gridMovies.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.grid2_CellDoubleClick);
-            this.gridMovies.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.grid2_CellEndEdit);
-            this.gridMovies.CellToolTipTextNeeded += new System.Windows.Forms.DataGridViewCellToolTipTextNeededEventHandler(this.grid2_CellToolTipTextNeeded);
-            this.gridMovies.RowPrePaint += new System.Windows.Forms.DataGridViewRowPrePaintEventHandler(this.grid2_RowPrePaint);
-            this.gridMovies.KeyDown += new System.Windows.Forms.KeyEventHandler(this.gridMovies_KeyDown);
-            this.gridMovies.KeyUp += new System.Windows.Forms.KeyEventHandler(this.gridMovies_KeyUp);
-            this.gridMovies.MouseDown += new System.Windows.Forms.MouseEventHandler(this.gridMovies_MouseDown);
-            this.gridMovies.MouseLeave += new System.EventHandler(this.gridMovies_MouseLeave);
-            this.gridMovies.MouseMove += new System.Windows.Forms.MouseEventHandler(this.gridMovies_MouseMove);
-            this.gridMovies.MouseUp += new System.Windows.Forms.MouseEventHandler(this.gridMovies_MouseUp);
-            // 
-            // lblChanges
-            // 
-            this.lblChanges.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblChanges.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblChanges.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.lblChanges.Location = new System.Drawing.Point(817, 5);
-            this.lblChanges.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblChanges.Name = "lblChanges";
-            this.lblChanges.Size = new System.Drawing.Size(160, 18);
-            this.lblChanges.TabIndex = 13;
-            this.lblChanges.Text = "no changes";
-            this.lblChanges.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblChanges.Click += new System.EventHandler(this.lblChanges_Click);
-            // 
-            // lblSelected
-            // 
-            this.lblSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblSelected.AutoSize = true;
-            this.lblSelected.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSelected.ForeColor = System.Drawing.Color.Teal;
-            this.lblSelected.Location = new System.Drawing.Point(424, 448);
-            this.lblSelected.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblSelected.Name = "lblSelected";
-            this.lblSelected.Size = new System.Drawing.Size(25, 15);
-            this.lblSelected.TabIndex = 15;
-            this.lblSelected.Text = "(0)";
-            // 
-            // lblStatus
-            // 
-            this.lblStatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblStatus.Font = new System.Drawing.Font("Calibri", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblStatus.ForeColor = System.Drawing.Color.DarkGreen;
-            this.lblStatus.Location = new System.Drawing.Point(499, 448);
-            this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(433, 18);
-            this.lblStatus.TabIndex = 16;
-            this.lblStatus.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.lblTaskCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblTaskCount.AutoSize = true;
+            this.lblTaskCount.BackColor = System.Drawing.Color.Transparent;
+            this.lblTaskCount.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTaskCount.ForeColor = System.Drawing.Color.Teal;
+            this.lblTaskCount.Location = new System.Drawing.Point(907, 450);
+            this.lblTaskCount.Margin = new System.Windows.Forms.Padding(0);
+            this.lblTaskCount.Name = "lblTaskCount";
+            this.lblTaskCount.Size = new System.Drawing.Size(19, 13);
+            this.lblTaskCount.TabIndex = 18;
+            this.lblTaskCount.Text = "23";
+            this.toolTip1.SetToolTip(this.lblTaskCount, "Posters/Thumbnails are downloading in the background.\r\nIf Post-processing scripts" +
+        " are enabled, tasks will take longer to complete.");
             // 
             // MCRatingsUI
             // 
@@ -709,6 +853,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.ClientSize = new System.Drawing.Size(984, 477);
+            this.Controls.Add(this.lblTaskCount);
+            this.Controls.Add(this.imgSpinner);
             this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.lblSelected);
             this.Controls.Add(this.lblChanges);
@@ -739,8 +885,10 @@
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.MCRatingsUI_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.MCRatingsUI_DragEnter);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MCRatingsUI_KeyDown);
+            this.MouseLeave += new System.EventHandler(this.MCRatingsUI_MouseLeave);
             this.gridMenu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gridMovies)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imgSpinner)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -806,6 +954,21 @@
         private System.Windows.Forms.ToolStripMenuItem menuCopyField;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem menuPaste;
+        private System.Windows.Forms.ToolStripMenuItem menuLockField;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+        private System.Windows.Forms.ToolStripMenuItem menuSelectLocked;
+        private System.Windows.Forms.ToolStripMenuItem menuPosters;
+        private System.Windows.Forms.ToolStripMenuItem menuPosterTransferIn;
+        private System.Windows.Forms.ToolStripMenuItem menuPosterSync;
+        private System.Windows.Forms.ToolStripMenuItem menuRebuildThumbs;
+        private System.Windows.Forms.ToolStripMenuItem menuPosterTransferOut;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
+        private System.Windows.Forms.ToolStripMenuItem menuSelectNoPoster;
+        private System.Windows.Forms.ToolStripMenuItem menuSelectCommonPoster;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
+        private System.Windows.Forms.ToolStripMenuItem menuRemovePoster;
+        private System.Windows.Forms.PictureBox imgSpinner;
+        private System.Windows.Forms.Label lblTaskCount;
     }
 }
 

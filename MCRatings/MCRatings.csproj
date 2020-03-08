@@ -10,8 +10,23 @@
     <AssemblyName>MCRatings</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -93,52 +108,68 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="About.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="About.Designer.cs">
-      <DependentUpon>About.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Model\Stats.cs" />
-    <Compile Include="Settings\StatsUI.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Settings\StatsUI.Designer.cs">
-      <DependentUpon>StatsUI.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Util\Cache.cs" />
-    <Compile Include="Collection\CollectionMovies.cs" />
-    <Compile Include="Util\iso639.cs" />
-    <Compile Include="OMDb\OMDbMovie.cs" />
-    <Compile Include="OMDb\OMDbRating.cs" />
-    <Compile Include="Settings\SourceSelect.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Settings\SourceSelect.Designer.cs">
-      <DependentUpon>SourceSelect.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Settings\SourceSelectCell.cs" />
-    <Compile Include="Settings\SourceSelectColumn.cs" />
-    <Compile Include="TMDb\TMDbAPI.cs" />
-    <Compile Include="TMDb\TMDbSearch.cs" />
-    <Compile Include="TMDb\TMDbMovie.cs" />
-    <Compile Include="Settings\JRFieldMap.cs" />
-    <Compile Include="Upgrade\AutoUpgrade.cs" />
+    <Compile Include="Collection\PtpCollection.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Util\Analytics.cs" />
+    <Compile Include="GUI\About.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\About.Designer.cs">
+      <DependentUpon>About.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ImageTooltip.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ImageTooltip.Designer.cs">
+      <DependentUpon>ImageTooltip.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Stats.cs" />
+    <Compile Include="GUI\PosterBrowser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\PosterBrowser.Designer.cs">
+      <DependentUpon>PosterBrowser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\LockedCells.cs" />
+    <Compile Include="GUI\StatsUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\StatsUI.Designer.cs">
+      <DependentUpon>StatsUI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Util\Downloader.cs" />
+    <Compile Include="Util\Cache.cs" />
+    <Compile Include="Collection\PtpCollectionMovie.cs" />
+    <Compile Include="Util\iso639.cs" />
+    <Compile Include="OMDb\OMDbMovie.cs" />
+    <Compile Include="OMDb\OMDbRating.cs" />
+    <Compile Include="Controls\SourceSelect.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SourceSelect.Designer.cs">
+      <DependentUpon>SourceSelect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SourceSelectCell.cs" />
+    <Compile Include="Controls\SourceSelectColumn.cs" />
+    <Compile Include="TMDb\TMDbAPI.cs" />
+    <Compile Include="TMDb\TMDbSearch.cs" />
+    <Compile Include="TMDb\TMDbMovie.cs" />
+    <Compile Include="Settings\JRFieldMap.cs" />
+    <Compile Include="Upgrade\AutoUpgrade.cs" />
     <Compile Include="Sound\SoundPlayer.cs" />
     <Compile Include="Upgrade\VersionInfo.cs" />
     <Compile Include="Model\FieldInfo.cs" />
     <Compile Include="JRiver\JRiverPlaylist.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Util\Extensions.cs" />
-    <Compile Include="MCRatingsUI.cs">
+    <Compile Include="GUI\MCRatingsUI.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MCRatingsUI.Designer.cs">
+    <Compile Include="GUI\MCRatingsUI.Designer.cs">
       <DependentUpon>MCRatingsUI.cs</DependentUpon>
     </Compile>
     <Compile Include="JRiver\JRiverAPI.cs" />
@@ -154,21 +185,31 @@
     <Compile Include="Progress\ProgressInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings\Settings.cs" />
-    <Compile Include="Settings\SettingsUI.cs">
+    <Compile Include="GUI\SettingsUI.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Settings\SettingsUI.Designer.cs">
+    <Compile Include="GUI\SettingsUI.Designer.cs">
       <DependentUpon>SettingsUI.cs</DependentUpon>
     </Compile>
     <Compile Include="Sound\SoundBite.cs" />
     <Compile Include="Util\Logger.cs" />
+    <Compile Include="Util\Native.cs" />
     <Compile Include="Util\NetVersion.cs" />
+    <Compile Include="Util\OpenFolderEx.cs" />
+    <Compile Include="Util\ToolStripBorderFix.cs" />
     <Compile Include="Util\Util.cs" />
-    <EmbeddedResource Include="About.resx">
+    <EmbeddedResource Include="GUI\About.resx">
       <DependentUpon>About.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MCRatingsUI.resx">
+    <EmbeddedResource Include="GUI\ImageTooltip.resx">
+      <DependentUpon>ImageTooltip.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\MCRatingsUI.resx">
       <DependentUpon>MCRatingsUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\PosterBrowser.resx">
+      <DependentUpon>PosterBrowser.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Progress\ProgressUI.resx">
       <DependentUpon>ProgressUI.cs</DependentUpon>
@@ -178,13 +219,14 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Settings\SettingsUI.resx">
+    <EmbeddedResource Include="GUI\SettingsUI.resx">
       <DependentUpon>SettingsUI.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Settings\SourceSelect.resx">
+    <EmbeddedResource Include="Controls\SourceSelect.resx">
       <DependentUpon>SourceSelect.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Settings\StatsUI.resx">
+    <EmbeddedResource Include="GUI\StatsUI.resx">
       <DependentUpon>StatsUI.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
@@ -196,9 +238,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\search_515151.png" />
@@ -214,17 +253,46 @@
     <None Include="Resources\BTC_icon.png" />
     <None Include="Resources\paypal.png" />
     <None Include="Resources\refresh_2a2b2c.png" />
-    <None Include="Resources\help_414445_32.png" />
     <None Include="Resources\close_red_619539.png" />
     <None Include="Resources\cog32.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="MCRatings.ico" />
+    <None Include="Resources\Spinner32.gif" />
+    <None Include="Resources\oscar32.png" />
+    <None Include="Resources\AcceptLock32.png" />
+    <None Include="Resources\Accept32.png" />
+    <None Include="Resources\arrow_right_sm_2a2b2c_32.png" />
+    <None Include="Resources\width32.png" />
+    <None Include="Resources\height32.png" />
+    <None Include="Resources\arrow_left_sm_2a2b2c_32.png" />
+    <None Include="Resources\dimensions64.png" />
+    <None Include="Resources\help32.png" />
+    <None Include="Resources\thumbsUp64.png" />
+    <None Include="Resources\grid9_64.png" />
+    <None Include="Resources\grid4_64.png" />
+    <None Include="Resources\home64.png" />
+    <None Include="Resources\fullsize64.png" />
+    <None Include="Resources\resolution64.png" />
+    <None Include="Resources\LoadingSpinner.gif" />
+    <None Include="Resources\folderOpen24.png" />
     <None Include="Resources\movie_reel.png" />
     <None Include="Resources\tmdb_small_blue.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="obj\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

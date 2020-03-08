@@ -12,6 +12,7 @@ namespace MCRatings
     // holds Movie Info for Datagrid display
     // tracks changes to fields
     // processes info from JRiver, extracts FTitle and FYear from file name/path
+    public enum PosterSize { Small, Medium, Large, Original }
 
     public class MovieInfo
     {
@@ -55,10 +56,18 @@ namespace MCRatings
         Dictionary<AppField, string> updates = new Dictionary<AppField, string>();      // received values
         Dictionary<int, string> playlists = new Dictionary<int, string>();
 
+        public TMDbMovieImage newPoster;
+        public string currPosterPath;
+        public string newPosterPath;
+        public bool lockPoster = false;
+
         public DateTime modified { get; private set; }
         public bool isDirty { get { return dirtyFieldMask > 0; } }
         public ulong dirtyFieldMask = 0;
         private bool trackChanges = false;
+
+        public OMDbMovie omdbInfo;
+        public TMDbMovie tmdbInfo;
 
         public MovieInfo(int key, Dictionary<AppField, string> JRfields, Dictionary<int, string> Playlists)
         {
@@ -142,6 +151,7 @@ namespace MCRatings
                     CheckMatch();
                 }
             }
+            if (lockPoster && !isModified(AppField.Poster)) lockPoster = false;
         }
 
         public bool isModified(AppField field)
@@ -180,6 +190,8 @@ namespace MCRatings
             if (!trackChanges) return;
             fields = new Dictionary<AppField, string>(snapshot);
             TakeSnapshot();
+
+            if (lockPoster && !isModified(AppField.Poster)) lockPoster = false;
         }
 
         public void ExtractTitle()

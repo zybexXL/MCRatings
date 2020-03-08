@@ -63,6 +63,46 @@ namespace MCRatings.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Accept32 {
+            get {
+                object obj = ResourceManager.GetObject("Accept32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap AcceptLock32 {
+            get {
+                object obj = ResourceManager.GetObject("AcceptLock32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap arrow_left_sm_2a2b2c_32 {
+            get {
+                object obj = ResourceManager.GetObject("arrow_left_sm_2a2b2c_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap arrow_right_sm_2a2b2c_32 {
+            get {
+                object obj = ResourceManager.GetObject("arrow_right_sm_2a2b2c_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap BTC_icon {
             get {
                 object obj = ResourceManager.GetObject("BTC_icon", resourceCulture);
@@ -103,6 +143,16 @@ namespace MCRatings.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap dimensions64 {
+            get {
+                object obj = ResourceManager.GetObject("dimensions64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ETH_icon {
             get {
                 object obj = ResourceManager.GetObject("ETH_icon", resourceCulture);
@@ -113,9 +163,79 @@ namespace MCRatings.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap help_414445_32 {
+        internal static System.Drawing.Bitmap folderOpen {
             get {
-                object obj = ResourceManager.GetObject("help_414445_32", resourceCulture);
+                object obj = ResourceManager.GetObject("folderOpen", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap fullsize64 {
+            get {
+                object obj = ResourceManager.GetObject("fullsize64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap grid4_64 {
+            get {
+                object obj = ResourceManager.GetObject("grid4_64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap grid9_64 {
+            get {
+                object obj = ResourceManager.GetObject("grid9_64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap height32 {
+            get {
+                object obj = ResourceManager.GetObject("height32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap help32 {
+            get {
+                object obj = ResourceManager.GetObject("help32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap home64 {
+            get {
+                object obj = ResourceManager.GetObject("home64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap LoadingSpinner {
+            get {
+                object obj = ResourceManager.GetObject("LoadingSpinner", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -143,6 +263,16 @@ namespace MCRatings.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap oscar32 {
+            get {
+                object obj = ResourceManager.GetObject("oscar32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap paypal {
             get {
                 object obj = ResourceManager.GetObject("paypal", resourceCulture);
@@ -156,6 +286,16 @@ namespace MCRatings.Properties {
         internal static System.Drawing.Bitmap refresh_2a2b2c {
             get {
                 object obj = ResourceManager.GetObject("refresh_2a2b2c", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap resolution64 {
+            get {
+                object obj = ResourceManager.GetObject("resolution64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -193,9 +333,39 @@ namespace MCRatings.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Spinner32 {
+            get {
+                object obj = ResourceManager.GetObject("Spinner32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap thumbsUp64 {
+            get {
+                object obj = ResourceManager.GetObject("thumbsUp64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap tmdb_small_blue {
             get {
                 object obj = ResourceManager.GetObject("tmdb_small_blue", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap width32 {
+            get {
+                object obj = ResourceManager.GetObject("width32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

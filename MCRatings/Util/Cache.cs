@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace MCRatings
 {
+    // Movie Info JSON cache
     static class Cache
     {
         public static void Put(string key, string data)

@@ -117,43 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="dgEnabled.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="dgSetting.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="dgField.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="dgOverwrite.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="dgSourcePlaceHolder.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
-  <data name="chkFastStart.ToolTip" xml:space="preserve">
-    <value>Enable this option to make MCRatings start faster.
-
-When enabled, MCRatings will just load the JRiver Playlist names without checking how many movies are in each playlist.
-The playlist selector will not show the movie counts and empty playlists will also be displayed.</value>
-  </data>
-  <data name="txtLanguage.ToolTip" xml:space="preserve">
-    <value>The preferred language is used to get the Movie Title, description, tagline, and Trailer.
-If data is not available for the selected country, EN values are selected.
-
-Please use a 2-letter language code (ISO-639-1)</value>
-  </data>
-  <data name="maxListLimit.ToolTip" xml:space="preserve">
-    <value>Lists with many items are trimmed to keep only this number of items.
-
-This assumes that lists are ordered by Importance (for instance, top-billed Actors show
-up first on the Actors list). This is true for most lists coming from TMDb, but not necessarily on the OMDb ones.</value>
-  </data>
-  <metadata name="colorDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>114, 17</value>
-  </metadata>
 </root>

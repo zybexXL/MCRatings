@@ -81,6 +81,7 @@ namespace MCRatings
 
         public static bool UpgradeNow()
         {
+            Analytics.Event("GUI", "Upgrading");
             ProgressUI bar = new ProgressUI($"Updating MCRatings to v{LatestVersion.version}", DoUpgrade, false);
             return (bar.ShowDialog() == DialogResult.OK && bar.progress.result == true);
         }

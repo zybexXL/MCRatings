@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -12,6 +15,65 @@ namespace MCRatings
 {
     public static class Util
     {
+        public static string SanitizeFilename(string name)
+        {
+            return string.Join("_", name.Split(Path.GetInvalidFileNameChars(), StringSplitOptions.RemoveEmptyEntries));
+        }
+
+        // download image to temp folder
+        public static Image LoadImageFromUrl(string url, string id)
+        {
+            if (string.IsNullOrEmpty(url)) return null;
+            if (!url.StartsWith("http"))
+                return LoadImage(url);
+
+            string tmp = Path.Combine(Path.GetTempPath(), "MCRatings", $"tmpImage_{id}.jpg");
+            try
+            {
+                if (Downloader.DownloadUrl(url, tmp))
+                    return LoadImage(tmp);
+            }
+            finally { try { File.Delete(tmp); } catch { } }
+            return null;
+        }
+
+        // load an Image from file
+        public static Image LoadImage(string path)
+        {
+            try
+            {
+                if (path == null || !File.Exists(path)) return null;
+
+                byte[] data = File.ReadAllBytes(path);
+                using (var ms = new MemoryStream(data))
+                {
+                    return Image.FromStream(ms);
+                }
+            }
+            catch { }
+            return null;
+        }
+
+        // does what is says
+        public static string ConvertToPng(string file, bool deleteOriginal = true)
+        {
+            try
+            {
+                if (Path.GetExtension(file)?.ToLower() == ".png")
+                    return file;
+
+                string dest = Path.ChangeExtension(file, ".png");
+                using (var image = Image.FromFile(file))
+                    image.Save(dest, ImageFormat.Png);
+
+                if (deleteOriginal)
+                    try { File.Delete(file); } catch { }
+
+                return dest;
+            }
+            catch { }
+            return file;
+        }
 
         public static int[] IdentityArray(int size)
         {
@@ -26,6 +88,16 @@ namespace MCRatings
             string num = Regex.Replace(strvalue, @"[^\d]", "");
             if (long.TryParse(num, out long value))
                 return value;
+            return 0;
+        }
+
+        // X*Y pixel count - used as a measurement of picture resolution/quality
+        public static long PixelCount(string resolution)
+        {
+            if (string.IsNullOrEmpty(resolution)) return 0;
+            var m = Regex.Match(resolution, @"(\d+)\D+(\d+)");
+            if (m.Success)
+                return int.Parse(m.Groups[1].Value) * int.Parse(m.Groups[2].Value);
             return 0;
         }
 
@@ -87,6 +159,13 @@ namespace MCRatings
             }
             catch { }
             return null;
+        }
+
+        public static string OSName()
+        {
+            using (RegistryKey hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
+            using (RegistryKey key = hklm.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion"))
+                return (string)key.GetValue("ProductName", "Windows");
         }
     }
 }

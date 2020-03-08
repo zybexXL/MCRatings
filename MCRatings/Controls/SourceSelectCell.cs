@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 namespace MCRatings
 {
+    // custom datagrid cell type used in Settings
     class SourceSelectCell : DataGridViewCell
     {
         public SourceSelectCell() : base()

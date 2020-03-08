@@ -1,14 +1,10 @@
 
 Settings:
 - create missing fields?
-
-TMDB:
-- get posters?
-- get actor pics?
+- convert to JSON
 
 Main:
 - Get all/row/column from OMDB/TMDB (override settings)
-- locked fields (no overwrite/ignore changes - per movie)
 - drop multiple collection files
 - GET after collection drop
 - toolbar (context menu options as buttons)

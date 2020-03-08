@@ -9,7 +9,7 @@ namespace MCRatings
     public static class iso639
     {
         public static string GetName(string code) {
-            return (iso639_1.TryGetValue(code.ToLower(), out string name)) ? name : null; }
+            return code == null ? null : (iso639_1.TryGetValue(code?.ToLower(), out string name)) ? name : null; }
 
         static Dictionary<string, string> iso639_1 = new Dictionary<string, string>()
         {

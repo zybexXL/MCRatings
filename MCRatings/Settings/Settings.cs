@@ -35,7 +35,28 @@ namespace MCRatings
         public bool OMDbDisabled = false;
         public bool TMDbDisabled = false;
         public bool StartMaximized = false;
+        public bool AddActorRoles = false;
+
         public bool SortByImportedDate = false;
+        public bool ShowSmallThumbnails = false;
+        public bool SavePosterCommonFolder = false;
+        public bool SavePosterMovieFolder = true;
+        public bool PosterFilterLanguage = true;
+        public bool PosterSortVotes = false;
+        public bool LoadFullSizePoster = true;
+        public string PosterFolder;
+        public bool RunPosterScript = false;
+        public string PosterScript;
+
+        public bool SaveActorThumbnails = false;
+        public string ActorFolder;
+        public int ActorThumbnailSize = 1;    // medium
+        public bool RunThumbnailScript = false;
+        public string ThumbnailScript;
+        public bool ActorSaveAsPng = true;
+        public bool AnalyticsEnabled = true;
+        public string AnalyticsID = Guid.NewGuid().ToString();
+        public int ScriptCommandTimeout = 30;
 
         [XmlIgnore]
         public Dictionary<AppField, JRFieldMap> FieldMap = new Dictionary<AppField, JRFieldMap>();
@@ -63,6 +84,9 @@ namespace MCRatings
                     .ToList();
             }
         }
+
+        public bool PostersEnabled { get { return FieldMap.TryGetValue(AppField.Poster, out var map) && map.enabled; } }
+
 
         public Settings()
         {
@@ -120,6 +144,14 @@ namespace MCRatings
                     settings.version = CURRVERSION;
                     settings.Save();
                 }
+
+                // generate random clientID
+                if (!Guid.TryParse(settings.AnalyticsID, out Guid guid))
+                {
+                    settings.AnalyticsID = Guid.NewGuid().ToString();
+                    settings.Save();
+                }
+
                 return settings;
             }
             catch { }    // errors are handled by the caller when settings is null

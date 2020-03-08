@@ -56,11 +56,15 @@ namespace MCRatings
         [DataMember] public int TMDbAPINotFound;
         [DataMember] public int TMDbAPIError;
 
+        [DataMember] public int ImageDownload;
+        [DataMember] public int ImageDownloadError;
+        
         [DataMember] public int JRFieldUpdate;
         [DataMember] public int JRMovieUpdate;
+        [DataMember] public int JRPosterUpdate;
         [DataMember] public int JRMovieCreate;
         [DataMember] public int JRError;
-
+        
         [DataMember] public int AppException;
         [DataMember] public int AppRuns { get; private set; }
         [DataMember] public int AppRuntime { get; private set; }  // seconds
@@ -116,8 +120,12 @@ namespace MCRatings
             TMDbAPINotFound += stats.TMDbAPINotFound;
             TMDbAPIError += stats.TMDbAPIError;
 
+            ImageDownload += stats.ImageDownload;
+            ImageDownloadError += stats.ImageDownloadError;
+
             JRFieldUpdate += stats.JRFieldUpdate;
             JRMovieUpdate += stats.JRMovieUpdate;
+            JRPosterUpdate += stats.JRPosterUpdate;
             JRMovieCreate += stats.JRMovieCreate;
             JRError += stats.JRError;
 

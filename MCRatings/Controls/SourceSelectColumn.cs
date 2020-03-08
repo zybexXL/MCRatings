@@ -7,6 +7,7 @@ using System.Windows.Forms;
 
 namespace MCRatings
 {
+    // custom datagrid column used in Settings
     class SourceSelectColumn : DataGridViewColumn
     {
         public SourceSelectColumn() : base(new SourceSelectCell())
@@ -15,18 +16,13 @@ namespace MCRatings
 
         public override DataGridViewCell CellTemplate
         {
-            get
-            {
-                return base.CellTemplate;
-            }
+            get { return base.CellTemplate; }
             set
             {
-                // Ensure that the cell used for the template is a CalendarCell.
-                if (value != null &&
-                    !value.GetType().IsAssignableFrom(typeof(SourceSelectCell)))
-                {
+                // Ensure that the cell used for the template is a SourceSelectCell.
+                if (value != null && !value.GetType().IsAssignableFrom(typeof(SourceSelectCell)))
                     throw new InvalidCastException("SourceSelectColumn CellTemplate must be a SourceSelectCell");
-                }
+
                 base.CellTemplate = value;
             }
         }

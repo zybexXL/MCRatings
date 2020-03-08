@@ -7,19 +7,20 @@ using System.Web;
 
 namespace MCRatings
 {
-    public class MovieCollection
+    // PTP Movie Collection
+    public class PtpCollection
     {
         public string Title;
-        public List<CollectionMovie> Movies;
+        public List<PtpCollectionMovie> Movies;
         
         public bool isValid { get { return Movies != null && Movies.Count > 0 && !string.IsNullOrEmpty(Movies[0].Title); } }
 
-        public static MovieCollection Parse(string json, string title)
+        public static PtpCollection Parse(string json, string title)
         {
             if (json == null) return null;
             try
             {
-                MovieCollection movies = Util.JsonDeserialize<MovieCollection>(json);
+                PtpCollection movies = Util.JsonDeserialize<PtpCollection>(json);
                 if (!movies.isValid) return null;
 
                 if (title != null && title.Contains("::"))
@@ -31,17 +32,5 @@ namespace MCRatings
             catch { }
             return null;
         }
-    }
-
-    public class CollectionMovie
-    {
-        public string Title;
-        public string Year;
-        public string ImdbId;
-        public string YoutubeId;
-        public string Synopsis;
-        public string Cover;
-
-        public bool tag = false;
     }
 }

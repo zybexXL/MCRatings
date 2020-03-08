@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -34,10 +35,14 @@ namespace MCRatings
         int dragStartRow = -1;
         Point dragStart = Point.Empty;
         bool spacePressed = false;
-        Point LastMouseClick;
+        Point ContextMenuPosition;
         private SoundPlayer Player = new SoundPlayer();
         string clipPlaylists = "MCRatings.Playlists";
-        MovieInfo copiedMovie = null;       // last CTRL+C
+        List<MovieInfo> copiedMovies = null;       // last CTRL+C
+        ImageTooltip imgTooltip;
+        PosterBrowser posterBrowser;
+        Downloader downloader;
+        bool inEvent = false;
 
         public MCRatingsUI()
         {
@@ -47,12 +52,20 @@ namespace MCRatings
             this.comboLists.DrawMode = DrawMode.OwnerDrawFixed;
             this.comboLists.DrawItem += drawCombobox;
             comboLists.DisplayMember = "Name";
+            imgTooltip = new ImageTooltip();
+            imgTooltip.Clicked += OnImageTooltipClicked;
+
+            posterBrowser = new PosterBrowser();
+            posterBrowser.OnPosterSelected += PosterBrowser_OnPosterSelected;
+            downloader = new Downloader();
+            downloader.OnDownloadComplete += imgTooltip.OnImageDownloaded;
+            downloader.OnQueueChanged += (sender, count) => UpdateTaskCount(count);
 
             this.Text = $"MCRatings v{Program.version} - {Program.tagline}";
             Stats.Init();
         }
 
-        #region Form and Button events
+        #region Form and Keyboard/Button events
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -63,11 +76,12 @@ namespace MCRatings
             this.Top = 50;
 
             // load playlists
-            if (!LoadPlaylists(true))
+            if (!GetPlayLists(true))
                 this.Close();
             loading = false;
 
             ApplyColors();
+            UpdateTaskCount(0);
 
             // check for upgrade in background task
             Task.Run(() =>
@@ -87,7 +101,7 @@ namespace MCRatings
             if (!showSettings)
                 foreach (var map in Program.settings.FieldMap.Values)
                 {
-                    if (map.field == AppField.Collections && !Program.settings.Collections)
+                    if (map.field == AppField.Poster || (map.field == AppField.Collections && !Program.settings.Collections))
                         continue;
                     if (map.enabled && (string.IsNullOrWhiteSpace(map.JRfield) || !jrAPI.Fields.ContainsKey(map.JRfield.ToLower())))
                         showSettings = true;
@@ -118,15 +132,30 @@ namespace MCRatings
                 if (DialogResult.Cancel == MessageBox.Show("You have unsaved changes.\nAre you sure you want to exit?", "Discard changes", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning))
                     e.Cancel = true;
 
+            downloader.Stop();
+            posterBrowser?.Exit();
+            LockedCells.Save();
             Stats.Save();
         }
 
         private void btnAbout_MouseDown(object sender, MouseEventArgs e)
         {
+            lblStatus.Focus();
             if (e.Button == MouseButtons.Right)
                 new StatsUI().ShowDialog();
             else
                 new About().ShowDialog();
+        }
+
+        private void btnSettings_Click(object sender, EventArgs e)
+        {
+            lblStatus.Focus();
+            if (new SettingsUI(jrAPI).ShowDialog() == DialogResult.OK)
+            {
+                ApplyColors();
+                omdbAPI = new OMDbAPI(Program.settings.APIkeyList);
+                tmdbAPI = new TMDbAPI(Program.settings.TMDBkeyList);
+            }
         }
 
         // handle some special keys - F3, Tab, ctrl+F, Alt-P
@@ -161,7 +190,9 @@ namespace MCRatings
             if (keyData == (Keys.Control | Keys.C))
                 if (gridMovies.CurrentCell != null && (gridMovies.Focused || gridMovies.IsCurrentCellInEditMode))
                 {
-                    copiedMovie = gridMovies.Rows[gridMovies.CurrentCell.RowIndex].Cells[(int)AppField.Movie].Value as MovieInfo;
+                    // copy list of selected movies (for ctrl+shift+v)
+                    copiedMovies = GetSelectedMovies();  
+                    // copy current cell value
                     string value = gridMovies.CurrentCell.Value.ToString();
                     if (gridMovies.CurrentCell.IsInEditMode && gridMovies.CurrentCell.EditType == typeof(DataGridViewTextBoxEditingControl))
                     {
@@ -175,40 +206,61 @@ namespace MCRatings
                 }
 
             // CTRL+SHIFT+V = paste movie Info
-            if (keyData == (Keys.Control | Keys.Shift | Keys.V) && copiedMovie != null)
-                if (gridMovies.CurrentCell != null && (gridMovies.Focused || gridMovies.IsCurrentCellInEditMode))
-                {
-                    int row = gridMovies.CurrentCell.RowIndex;
-                    MovieInfo movie = gridMovies.Rows[row].Cells[(int)AppField.Movie].Value as MovieInfo;
-                    foreach (AppField f in Enum.GetValues(typeof(AppField)))
-                        if (f >= AppField.Title && f != AppField.File)
-                        {
-                            movie[f] = copiedMovie[f];
-                            gridMovies.Rows[row].Cells[(int)f].Value = copiedMovie[f];
-                            setMovieStatus(movie, true);
-                            gridMovies.Rows[row].Cells[(int)AppField.Status].Value = movie[AppField.Status];
-                        }
-                    gridMovies.Refresh();
-                    updateModifiedCount();
-                    return true;
-                }
+            if (keyData == (Keys.Control | Keys.Shift | Keys.V) && copiedMovies != null)
+            {
+                var destMovies = GetSelectedMovies();
+                PasteSelectedMovies(copiedMovies, destMovies);
+                return true;    
+            }
 
             return base.ProcessCmdKey(ref msg, keyData);
         }
-        
-        #endregion
 
-        #region Settings and Colors
-
-        private void btnSettings_Click(object sender, EventArgs e)
+        // paste 1 or more movies into other rows - useful when replacing existing movies with new version
+        // copies Playlist membership and DateImported as well
+        // if 1 movie copied => paste movie info, overwriting info
+        // if multiple movies copied => paste only on matching IMDB rows
+        private void PasteSelectedMovies(List<MovieInfo> source, List<MovieInfo> dest)
         {
-            if (new SettingsUI(jrAPI).ShowDialog() == DialogResult.OK)
+            if (source == null || dest == null || source.Count == 0 || dest.Count == 0)
+                return;
+
+            DateTime start = DateTime.Now;
+            bool refresh = false;
+            foreach (var m in dest)
             {
-                ApplyColors();
-                omdbAPI = new OMDbAPI(Program.settings.APIkeyList);
-                tmdbAPI = new TMDbAPI(Program.settings.TMDBkeyList);
+                if (string.IsNullOrEmpty(m.IMDBid)) continue;
+                var src = source.Where(s => s.IMDBid == m.IMDBid).SingleOrDefault();
+                if (src == null && dest.Count == 1 && source.Count == 1)
+                    src = source[0];    // for single movie copy, allow different IMDBid
+
+                if (src != null && src != m)
+                {
+                    var locked = LockedCells.GetLockedFields(m.JRKey);
+                    bool updated = false;
+                    foreach (AppField f in Enum.GetValues(typeof(AppField)))
+                        if (f >= AppField.Title && f != AppField.File && f != AppField.Poster && (locked == null || !locked.Contains(f)))
+                        {
+                            overwriteField(m, f, src[f], chkOverwrite.Checked, true);
+                            refresh = true;
+                            updated = true;
+                        }
+                    if (updated)
+                        setMovieStatus(m, true);
+                }
+            }
+
+            if (refresh)
+            {
+                UpdateDataGrid(start);
+                gridMovies.Refresh();
+                updateModifiedCount();
             }
         }
+
+        #endregion
+
+        #region UI status labels
 
         void ApplyColors()
         {
@@ -237,10 +289,6 @@ namespace MCRatings
             return Color.Pink;
         }
     
-        #endregion
-
-        #region Status Labels
-
         // update status label
         private void SetStatus(string status, bool isError = false)
         {
@@ -273,6 +321,25 @@ namespace MCRatings
             chkOverwrite.ForeColor = chkOverwrite.Checked ? Color.Red : SystemColors.ControlText;
         }
 
+        private void UpdateTaskCount(int tasks = 0)
+        {
+            if (this.InvokeRequired)
+            {
+                this.BeginInvoke((MethodInvoker)delegate { UpdateTaskCount(tasks); });
+                return;
+            }
+
+            lblTaskCount.Text = tasks.ToString();
+            lblTaskCount.Visible = imgSpinner.Visible = tasks > 0;
+            if (tasks > 0)
+            {
+                lblStatus.Width = imgSpinner.Left - lblStatus.Left - 10;
+                lblTaskCount.Left = (imgSpinner.Width - lblTaskCount.Width) / 2 + imgSpinner.Left;
+            }
+            else
+                lblStatus.Width = btnAbout.Left - lblStatus.Left - 10;
+        }
+
         #endregion
 
         #region JRiver connect
@@ -280,12 +347,12 @@ namespace MCRatings
         private void btnReconnect_Click(object sender, EventArgs e)
         {
             string currList = comboLists.Text;
-            if (LoadPlaylists())
+            if (GetPlayLists())
                 comboLists.Text = currList;
             comboLists.Focus();
         }
 
-        private bool LoadPlaylists(bool startup = false)
+        private bool GetPlayLists(bool startup = false)
         {
             var progressUI = new ProgressUI("Connecting to JRiver...", ConnectJRiver, null, false);
             if (startup)
@@ -295,6 +362,7 @@ namespace MCRatings
 
             if (!jrAPI.Connected)
             {
+                Analytics.Event("JRiver", "ConnectFailed");
                 progressUI.Close();
                 MessageBox.Show("Cannot connect to JRiver, please make sure it's installed on this PC", "No JRiver!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
@@ -306,6 +374,11 @@ namespace MCRatings
             }
 
             SetStatus($"Connected to JRiver v{jrAPI.Version} - {jrAPI.Library}");
+            if (startup)
+            {
+                Analytics.Event("JRiver", "Connected", $"JRiver v{jrAPI.Version.ToString()}", 1);
+                Analytics.Event("JRiver", "ListPlaylists", "PlayListCount", jrAPI.Playlists.Count);
+            }
 
             comboLists.DataSource = jrAPI.Playlists;
             var allfiles = jrAPI.Playlists.Where(l => l.Name == "All Files (empty search)").FirstOrDefault();
@@ -346,7 +419,7 @@ namespace MCRatings
 
         #endregion
 
-        #region PlayList ComboBox
+        #region PlayList loading
 
         // adds playlist filecount to each combobox entry
         private void drawCombobox(object cmb, DrawItemEventArgs args)
@@ -391,10 +464,6 @@ namespace MCRatings
             }
         }
 
-        #endregion
-
-        #region PlayList Load
-
         private void btnLoad_Click(object sender, EventArgs e)
         {
             if (btnSave.Enabled)
@@ -419,6 +488,8 @@ namespace MCRatings
             if (bar.ShowDialog() == DialogResult.OK && bar.progress.result == true)
                 PopulateDataGrid();
 
+            Analytics.Event("JRiver", "LoadPlaylist", "MoviesLoaded", movies.Count);
+
             updateModifiedCount();
             updateSelectedCount();
         }
@@ -428,6 +499,8 @@ namespace MCRatings
             progress.result = false;
             JRiverPlaylist playlist = progress.args as JRiverPlaylist;
             if (playlist == null) return;
+
+            LockedCells.Load(jrAPI.Library);
 
             List<MovieInfo> newMovies = new List<MovieInfo>();
             progress.totalItems = playlist.Filecount;
@@ -493,7 +566,7 @@ namespace MCRatings
 
         private void PopulateDataGrid(bool updateStatus = true)
         {
-            copiedMovie = null;
+            copiedMovies = null;
             gridMovies.DataSource = null;
             lastClickedRow = 0;
             txtSearch.Text = "";
@@ -581,7 +654,7 @@ namespace MCRatings
 
         #endregion
 
-        #region OMDB fetch
+        #region GetMovieInfo
 
         private List<MovieInfo> GetSelectedMovies(bool selectCurrent = true)
         {
@@ -623,7 +696,11 @@ namespace MCRatings
             {
                 string audiocues = getAudioCues(selected);
                 Player.PlayRandom(audiocues);
+                Analytics.Event("Audio", "PlaySoundClip");
             }
+
+            int oCalls = Stats.Session.OMDbAPICall;
+            int tCalls = Stats.Session.TMDbAPICall;
 
             var bar = new ProgressUI("Getting movie information", GetMovieInfo, selected);
             bar.progress.totalItems = selected.Count;
@@ -639,11 +716,22 @@ namespace MCRatings
             if (bar.progress.skip > 0) msg += $", {bar.progress.skip} skipped";
             SetStatus(msg);
 
+            // analytics
+            if (bar.progress.success > 0) Analytics.Event("API", "GetMovieInfo", "GetInfoSuccess", bar.progress.success);
+            if (bar.progress.fail > 0) Analytics.Event("API", "GetMovieInfo", "GetInfoFails", bar.progress.fail);
+            if (Stats.Session.OMDbAPICall - oCalls > 0) Analytics.Event("API", "OMDb API Calls", "OMDbAPICalls", Stats.Session.OMDbAPICall - oCalls);
+            if (Stats.Session.TMDbAPICall - tCalls > 0) Analytics.Event("API", "TMDb API Calls", "TMDbAPICalls", Stats.Session.TMDbAPICall - tCalls);
+            if (bar.progress.success > 0)
+                Analytics.Timing("API", "GetMovieInfo", "AverageTime", (int)(DateTime.Now - bar.progress.startTime).TotalMilliseconds/bar.progress.success);
+
             this.Cursor = Cursors.WaitCursor;
             UpdateDataGrid(bar.progress.startTime);
             updateModifiedCount();
             updateSelectedCount();
             this.Cursor = Cursors.Default;
+
+            if (posterBrowser != null && posterBrowser.Visible)
+                ShowPictureBrowser(posterBrowser.currMovie, false, true);
 
             if (omdbAPI.lastResponse == 401)
                 MessageBox.Show("OMDb keys are invalid or reached the daily limit!", "Unauthorized", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -690,8 +778,8 @@ namespace MCRatings
 
                     string omdb = null;
                     string tmdb = null;
-                    OMDbMovie info = null;
-                    TMDbMovie info2 = null;
+                    OMDbMovie omdbInfo = null;
+                    TMDbMovie tmdbInfo = null;
                     string imdb = FindByName ? null : movie[AppField.IMDbID];
                     bool doOMDb = !Program.settings.OMDbDisabled;
                     bool doTMDb = !Program.settings.TMDbDisabled;
@@ -700,31 +788,28 @@ namespace MCRatings
                     {
                         Sources preference = Program.settings.FieldMap[AppField.IMDbID].source;
                         if (doTMDb && preference == Sources.TMDb)
-                            tmdb = tmdbAPI?.getByTitle(title, year);
+                            tmdbInfo = tmdbAPI?.getByTitle(title, year);
                         if (doOMDb && (preference == Sources.OMDb || tmdb == null))
-                            omdb = omdbAPI?.getByTitle(title, year);
+                            omdbInfo = omdbAPI?.getByTitle(title, year);
                         // get TMDB if preference was OMDB but it returned null
                         if (doTMDb && preference == Sources.OMDb && omdb == null && tmdb == null)
-                            tmdb = tmdbAPI?.getByTitle(title, year);
+                            tmdbInfo = tmdbAPI?.getByTitle(title, year);
 
-                        info = OMDbMovie.Parse(omdb);
-                        info2 = TMDbMovie.Parse(tmdb);
-                        imdb = info?.imdbID ?? info2?.imdb_id;
+                        imdb = omdbInfo?.imdbID ?? tmdbInfo?.imdb_id;
                     }
 
                     if (doOMDb && imdb != null && omdb == null)
-                    {
-                        omdb = omdbAPI?.getByIMDB(imdb, noCache: progress.noCache);
-                        info = OMDbMovie.Parse(omdb);
-                    }
+                        omdbInfo = omdbAPI?.getByIMDB(imdb, noCache: progress.noCache);
 
                     if (doTMDb && imdb != null && tmdb == null)
-                    {
-                        tmdb = tmdbAPI?.getByIMDB(imdb, noCache: progress.noCache);
-                        info2 = TMDbMovie.Parse(tmdb);
-                    }
+                        tmdbInfo = tmdbAPI?.getByIMDB(imdb, noCache: progress.noCache);
 
-                    if ((info != null && info.isValid) || (info2 != null && info2.isValid))
+                    movie.omdbInfo = omdbInfo;
+                    movie.tmdbInfo = tmdbInfo;
+                    movie.newPoster = null;
+                    movie.lockPoster = false;
+
+                    if ((omdbInfo != null && omdbInfo.isValid) || (tmdbInfo != null && tmdbInfo.isValid))
                     {
                         bool ok = false;
                         Interlocked.Increment(ref progress.success);
@@ -734,7 +819,11 @@ namespace MCRatings
 
                         foreach (AppField f in Enum.GetValues(typeof(AppField)))
                             if (f >= AppField.Title && f != AppField.Imported && f!= AppField.Playlists && f!= AppField.File)
-                                ok |= overwriteField(movie, f, getPreferredValue(f, info, info2), progress.canOverwrite, progress.blanks);
+                                ok |= overwriteField(movie, f, getPreferredValue(f, omdbInfo, tmdbInfo), progress.canOverwrite, progress.blanks);
+
+                        if (movie.isModified(AppField.Poster))
+                            movie.newPoster = tmdbInfo.bestPoster;
+
                         setMovieStatus(movie, true);
                         movie.selected = false;
                     }
@@ -745,6 +834,30 @@ namespace MCRatings
                     }
                 }
             })).ToArray());
+
+            progress.subtitle = "downloading poster and cast/crew thumbnails";
+            progress.Update(true);
+
+            // queue poster downloads
+            int posterCount = 0;
+            int thumbCount = 0;
+            if (Program.settings.PostersEnabled)
+                foreach (var m in movies)
+                    if (m.isModified(AppField.Poster))
+                    {
+                        if (DownloadPoster(m)) posterCount++;
+                        if (DownloadThumbnail(m)) thumbCount++;
+                    }
+
+            // queue actor/crew downloads
+            int actorCount = 0;
+            if (Program.settings.SaveActorThumbnails && Directory.Exists(Program.settings.ActorFolder))
+                foreach (var m in movies)
+                    actorCount += DownloadActors(m);
+
+            if (actorCount > 0) Analytics.Event("Image", "ActorDownload", "ActorDownloads", actorCount);
+            if (posterCount > 0) Analytics.Event("Image", "PosterDownload", "PosterDownloads", posterCount);
+            if (thumbCount > 0) Analytics.Event("Image", "ThumbDownload", "ThumbnailDownloads", thumbCount);
 
             progress.skip = movies.Count - progress.success - progress.fail;
             progress.result = !progress.cancelled;
@@ -771,10 +884,13 @@ namespace MCRatings
 
         // overwrites a cell if overwrite flags are enabled for the field
         // first restores original cell value to prevent stale info from previous GET operations to remain behind
-        private bool overwriteField(MovieInfo movie, AppField field, string value, bool masterOverwrite, bool acceptBlanks = false)
+        private bool overwriteField(MovieInfo movie, AppField field, string value, bool masterOverwrite, bool acceptBlanks = false, bool forced = false)
         {
-            bool fieldOverwrite = Program.settings.FieldMap[field].overwrite;
-            bool fieldEnabled = Program.settings.FieldMap[field].enabled;
+            Program.settings.FieldMap.TryGetValue(field, out var map);
+            bool fieldOverwrite = map?.overwrite ?? true;
+            bool fieldEnabled = map?.enabled ?? true;
+
+            if (LockedCells.isLocked(movie.JRKey, field)) return false;
 
             if (fieldEnabled && field != AppField.IMDbID && field != AppField.Collections)
                 if (movie.JRKey >= 0 || field != AppField.Imported)
@@ -785,6 +901,9 @@ namespace MCRatings
 
             if (fieldEnabled && (value ?? "") != (movie[field] ?? "") && (string.IsNullOrEmpty(movie[field]) || (fieldOverwrite && masterOverwrite)) || field == AppField.Collections)
             {
+                if (field == AppField.Poster && !forced && Util.PixelCount(value) <= Util.PixelCount(movie[field]))
+                    return false;
+                
                 // special handling for Revenue and Budget - only overwrite if value is higher
                 if ((field == AppField.Revenue || field == AppField.Budget) && Util.NumberValue(value) < Util.NumberValue(movie[field]))
                     return false;
@@ -841,11 +960,18 @@ namespace MCRatings
             if (bar.progress.fail > 0) msg += $", {bar.progress.fail} failed";
             if (bar.progress.skip > 0) msg += $", {bar.progress.skip} skipped";
 
+            if (bar.progress.success > 0) Analytics.Event("JRiver", "Save", "MoviesSaved", bar.progress.success);
+            if (bar.progress.fail > 0) Analytics.Event("JRiver", "Save", "MoviesSaveFailed", bar.progress.fail);
+
+            if (posterBrowser != null && posterBrowser.Visible)
+                ShowPictureBrowser(posterBrowser.currMovie, false, true);
+
             SetStatus(msg);
             UpdateDataGrid(bar.progress.startTime);
             updateModifiedCount();
             if (bar.progress.fail > 0)
-                MessageBox.Show($"Error saving changed movies to JRiver!\n{bar.progress.fail} movies still have unsaved changes.\n\nException: {jrAPI.lastException?.Message}",
+                MessageBox.Show($"Error saving changed movies to JRiver!\n{bar.progress.fail} movies still have unsaved changes."
+                    + jrAPI.lastException == null ? "" : $"\n\nException: {jrAPI.lastException?.Message}",
                     "Save failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             gridMovies.Focus();
@@ -866,9 +992,14 @@ namespace MCRatings
                 while (progress.paused)
                     Thread.Sleep(250);
 
+                bool hasPoster = movie.isModified(AppField.Poster) && movie.newPoster != null;
                 progress.currentItem = ++i;
-                progress.subtitle = progress.useAltTitle ? movie.Title : movie.FTitle;
+                progress.subtitle = (progress.useAltTitle ? movie.Title : movie.FTitle ) + (hasPoster ? " [with poster]" : "");
                 progress.Update(false);
+
+                bool posterLock = movie.lockPoster;
+                if (hasPoster) 
+                    movie.newPosterPath = SavePoster(movie);
 
                 if (jrAPI.SaveMovie(movie))
                 {
@@ -881,13 +1012,17 @@ namespace MCRatings
                     progress.fail++;
                     movie[AppField.Status] = "save failed";
                 }
+
+                if (hasPoster && posterLock && !movie.isModified(AppField.Poster))
+                    LockedCells.Lock(movie.JRKey, AppField.Poster);
             }
+
             progress.result = true;
         }
         #endregion
 
         #region Search and Filter
-
+    
         // clicking the "X changed movies" label triggers a filter to show only changed movies
         private void lblChanges_Click(object sender, EventArgs e)
         {
@@ -989,7 +1124,8 @@ namespace MCRatings
             BindingSource bs = gridMovies.DataSource as BindingSource;
             if (bs == null) return;
 
-            if (chkFilter.Checked && !string.IsNullOrEmpty(txtSearch.Text))
+            inEvent = true;
+            if(chkFilter.Checked && !string.IsNullOrEmpty(txtSearch.Text))
             {
                 // escape *%[]" - enclose in square brackets; remove single quotes
                 string text = Regex.Replace(txtSearch.Text, @"([""\*%\[\]])", @"[$1]");
@@ -1006,6 +1142,7 @@ namespace MCRatings
             gridMovies.ClearSelection();
             gridMovies.Refresh();
             txtSearch.ForeColor = bs.Count == 0 ? Color.Red : Color.Black;
+            inEvent = false;
         }
 
         private void chkShowSelected_CheckedChanged(object sender, EventArgs e)
@@ -1026,6 +1163,7 @@ namespace MCRatings
             BindingSource bs = gridMovies.DataSource as BindingSource;
             if (bs == null) return;
 
+            inEvent = true;
             bs.SuspendBinding();
 
             if (fullList)
@@ -1042,11 +1180,13 @@ namespace MCRatings
             }
 
             if (chkShowSelected.Checked)
-                ApplyFilter();
+                ApplyFilter();      // resets inEvent
+            inEvent = true;
             gridMovies.ClearSelection();
             bs.ResumeBinding();
             gridMovies.Refresh();
             updateSelectedCount();
+            inEvent = false;
         }
 
         private void menuSelectAll_Click(object sender, EventArgs e)
@@ -1130,9 +1270,27 @@ namespace MCRatings
             SelectRows(new Predicate<MovieInfo>(m => !m.hasRatings));
         }
 
+        private void menuSelectLocked_Click(object sender, EventArgs e)
+        {
+            SelectRows(new Predicate<MovieInfo>(m => LockedCells.HasLockedFields(m.JRKey)));
+        }
+
+        private void menuSelectNoPoster_Click(object sender, EventArgs e)
+        {
+            SelectRows(new Predicate<MovieInfo>(m => m.currPosterPath == null));
+        }
+
+        private void menuSelectCommonPoster_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(Program.settings.PosterFolder))
+                return;
+            SelectRows(new Predicate<MovieInfo>(m => m.currPosterPath != null
+                && m.currPosterPath.StartsWith(Program.settings.PosterFolder, StringComparison.InvariantCultureIgnoreCase)));
+        }
+
         private void menuRevertField_Click(object sender, EventArgs e)
         {
-            DataGridView.HitTestInfo hit = gridMovies.HitTest(LastMouseClick.X, LastMouseClick.Y);
+            DataGridView.HitTestInfo hit = gridMovies.HitTest(ContextMenuPosition.X, ContextMenuPosition.Y);
             if (hit.RowIndex >= 0 && hit.ColumnIndex > 1 && hit.Type == DataGridViewHitTestType.Cell)
             {
                 MovieInfo m = gridMovies.Rows[hit.RowIndex].Cells[0].Value as MovieInfo;
@@ -1145,7 +1303,7 @@ namespace MCRatings
 
         private void menuRevertRow_Click(object sender, EventArgs e)
         {
-            DataGridView.HitTestInfo hit = gridMovies.HitTest(LastMouseClick.X, LastMouseClick.Y);
+            DataGridView.HitTestInfo hit = gridMovies.HitTest(ContextMenuPosition.X, ContextMenuPosition.Y);
             if (hit.RowIndex >= 0)
             {
                 var row = gridMovies.Rows[hit.RowIndex];
@@ -1161,7 +1319,7 @@ namespace MCRatings
 
         private void menuRevertThisColumn_Click(object sender, EventArgs e)
         {
-            DataGridView.HitTestInfo hit = gridMovies.HitTest(LastMouseClick.X, LastMouseClick.Y);
+            DataGridView.HitTestInfo hit = gridMovies.HitTest(ContextMenuPosition.X, ContextMenuPosition.Y);
             if (hit.ColumnIndex > (int)AppField.Status)
             {
                 for (int i = 0; i < gridMovies.RowCount; i++)
@@ -1183,10 +1341,17 @@ namespace MCRatings
             {
                 var row = gridMovies.Rows[i];
                 MovieInfo m = row.Cells[0].Value as MovieInfo;
-                m.restoreSnapshot();
-                foreach (AppField f in Enum.GetValues(typeof(AppField)))
-                    if (f >= AppField.Status)
-                        row.Cells[(int)f].Value = m.originalValue(f);
+                if (m.isDirty)
+                {
+                    m.restoreSnapshot();
+                    foreach (AppField f in Enum.GetValues(typeof(AppField)))
+                        if (f >= AppField.Status)
+                            row.Cells[(int)f].Value = m.originalValue(f);
+                }
+                else {
+                    row.Cells[(int)AppField.Status].Value = null;
+                    m[AppField.Status] = null;
+                }
             }
             gridMovies.Refresh();
             updateModifiedCount();
@@ -1211,24 +1376,9 @@ namespace MCRatings
             updateModifiedCount();
         }
 
-        private void menuShortcutFilename_Click(object sender, EventArgs e)
-        {
-            createShortcuts(1);
-        }
-
-        private void menuShortcutTitle_Click(object sender, EventArgs e)
-        {
-            createShortcuts(2);
-        }
-
-        private void menuShortcutID_Click(object sender, EventArgs e)
-        {
-            createShortcuts(3);
-        }
-
         private void menuCopyField_Click(object sender, EventArgs e)
         {
-            DataGridView.HitTestInfo hit = gridMovies.HitTest(LastMouseClick.X, LastMouseClick.Y);
+            DataGridView.HitTestInfo hit = gridMovies.HitTest(ContextMenuPosition.X, ContextMenuPosition.Y);
             if (hit.RowIndex >= 0 && hit.ColumnIndex > 1 && hit.Type == DataGridViewHitTestType.Cell)
             {
                 try
@@ -1248,10 +1398,14 @@ namespace MCRatings
 
         private void menuPaste_Click(object sender, EventArgs e)
         {
-            DataGridView.HitTestInfo hit = gridMovies.HitTest(LastMouseClick.X, LastMouseClick.Y);
+            DataGridView.HitTestInfo hit = gridMovies.HitTest(ContextMenuPosition.X, ContextMenuPosition.Y);
             if (hit.RowIndex >= 0 && hit.ColumnIndex > 1 && hit.Type == DataGridViewHitTestType.Cell)
             {
                 AppField field = (AppField)hit.ColumnIndex;
+                MovieInfo m = gridMovies.Rows[hit.RowIndex].Cells[0].Value as MovieInfo;
+
+                if (LockedCells.isLocked(m.JRKey, field)) return;
+
                 string value = null;
                 try
                 {
@@ -1269,13 +1423,24 @@ namespace MCRatings
                 catch { }
                 if (value == null) return;
 
-                MovieInfo m = gridMovies.Rows[hit.RowIndex].Cells[0].Value as MovieInfo;
                 gridMovies.Rows[hit.RowIndex].Cells[hit.ColumnIndex].Value = value;
                 m[(AppField)hit.ColumnIndex] = value;
                 setMovieStatus(m, true);
                 gridMovies.Rows[hit.RowIndex].Cells[(int)AppField.Status].Value = m[AppField.Status];
                 gridMovies.Refresh();
                 updateModifiedCount();
+            }
+        }
+
+        private void menuLockField_Click(object sender, EventArgs e)
+        {
+            DataGridView.HitTestInfo hit = gridMovies.HitTest(ContextMenuPosition.X, ContextMenuPosition.Y);
+            if (hit.RowIndex >= 0 && hit.ColumnIndex > 1 && hit.Type == DataGridViewHitTestType.Cell)
+            {
+                AppField field = (AppField)hit.ColumnIndex;
+                MovieInfo m = gridMovies.Rows[hit.RowIndex].Cells[0].Value as MovieInfo;
+                bool state = LockedCells.Toggle(m.JRKey, field);
+                gridMovies.InvalidateRow(hit.RowIndex);
             }
         }
 
@@ -1339,6 +1504,7 @@ namespace MCRatings
             }
 
             bool hasStatus = m[AppField.Status] != null;
+            var locked = LockedCells.GetLockedFields(m.JRKey);
             foreach (AppField f in Enum.GetValues(typeof(AppField)))
             {
                 if (f >= AppField.Title && f != AppField.File)
@@ -1349,13 +1515,23 @@ namespace MCRatings
                         row.Cells[(int)f].Style.BackColor = mod == 1 ? getColor(CellColor.Overwrite) : getColor(CellColor.NewValue);
                         row.Cells[(int)f].Style.ForeColor = Color.Empty;   // inherit
                     }
-                    else if (mod == 0 && hasStatus)
-                    {
-                        row.Cells[(int)f].Style.ForeColor = m.isUpdated(f) ? getColor(CellColor.Confirmed) : getColor(CellColor.Unconfirmed);
-                        row.Cells[(int)f].Style.BackColor = Color.Empty;   // inherit
-                    }
                     else
-                        row.Cells[(int)f].Style = null;
+                    {
+                        // locked cell - paint foreground, or backround if cell value is blank
+                        if (locked != null && locked.Contains(f))
+                        {
+                            bool empty = string.IsNullOrWhiteSpace(row.Cells[(int)f].Value?.ToString());
+                            row.Cells[(int)f].Style.ForeColor = empty ? Color.Empty : getColor(CellColor.Locked);
+                            row.Cells[(int)f].Style.BackColor = empty ? getColor(CellColor.Locked) : Color.Empty;
+                        }
+                        else if (hasStatus)
+                        {
+                            row.Cells[(int)f].Style.ForeColor = m.isUpdated(f) ? getColor(CellColor.Confirmed) : getColor(CellColor.Unconfirmed);
+                            row.Cells[(int)f].Style.BackColor = Color.Empty;   // inherit
+                        }
+                        else
+                            row.Cells[(int)f].Style = null;
+                    }
                 }
             }
 
@@ -1381,13 +1557,14 @@ namespace MCRatings
             try
             {
                 // shift click on a row
+                MovieInfo m = gridMovies.Rows[e.RowIndex].Cells[0].Value as MovieInfo;
                 if (ModifierKeys.HasFlag(Keys.Shift) && lastClickedRow >= 0)
                 {
                     BindingSource bs = gridMovies.DataSource as BindingSource;
                     bs.SuspendBinding();
                     for (int i = Math.Min(lastClickedRow, e.RowIndex); i <= Math.Max(lastClickedRow, e.RowIndex); i++)
                     {
-                        ((MovieInfo)gridMovies.Rows[i].Cells[0].Value).selected = true;
+                        ((MovieInfo)(gridMovies.Rows[i].Cells[0].Value)).selected = true;
                         gridMovies.Rows[i].Cells[(int)AppField.Selected].Value = true;
                     }
                     bs.ResumeBinding();
@@ -1397,8 +1574,17 @@ namespace MCRatings
                 }
                 lastClickedRow = e.RowIndex;    // row becomes the last clicked
 
-                // handle CTRL+click on IMDB link
+                
                 AppField field = (AppField)e.ColumnIndex;
+                if (Program.settings.PostersEnabled)
+                {
+                    if (field == AppField.Poster)
+                        ShowPictureBrowser(m, true);    // bring to front
+                    else if (posterBrowser?.Visible ?? false)
+                        ShowPictureBrowser(m, false);   // change poster
+                }
+
+                // handle CTRL+click on IMDB link
                 if (field == AppField.IMDbID && ModifierKeys.HasFlag(Keys.Control))
                 {
                     string id = gridMovies.CurrentCell.EditedFormattedValue as string;
@@ -1467,25 +1653,79 @@ namespace MCRatings
         // ToolTip needed - get cell contents, wrap text if too long; append [Previous Value] when value changed
         private void grid2_CellToolTipTextNeeded(object sender, DataGridViewCellToolTipTextNeededEventArgs e)
         {
-            e.ToolTipText = "";
-            if (e.ColumnIndex > 2 && e.RowIndex >= 0)
+            e.ToolTipText = null;
+            if (Program.settings.PostersEnabled && e.ColumnIndex == (int)AppField.Poster && e.RowIndex >= 0)
             {
-                var field = (AppField)e.ColumnIndex;
                 MovieInfo m = gridMovies.Rows[e.RowIndex].Cells[0].Value as MovieInfo;
-                string txt = gridMovies.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
-                if (field == AppField.IMDbVotes || field == AppField.RottenTomatoes || field == AppField.Metascore || field == AppField.Runtime)
-                    txt = txt.Trim();
-                int eq = m.isModified(field, txt);
-                if (eq != 0)
+                Task.Run(() =>
                 {
-                    string prev = m.originalValue(field);
-                    if (!string.IsNullOrEmpty(prev))
+                    try
                     {
-                        //string sep = prev != null && prev.Length > 80 ? "\r\n" : "";
-                        txt += $"\n\n[Previous Value:]\n{prev}";
+                        DateTime start = DateTime.Now;
+                        string url2 = null, poster2 = null;
+                        PosterSize size = Program.settings.ShowSmallThumbnails ? PosterSize.Medium : PosterSize.Large;
+                        if (m.isModified(AppField.Poster))
+                        {
+                            // start thumbnail download in another thread (probably already downloaded after GET)
+                            url2 = TMDbAPI.GetPosterUrl(m.newPoster?.file_path, size, out poster2);
+                            if (url2 != null) downloader.QueueDownload(url2, poster2, m, priority: true);
+                        }
+                        
+                        // get current JRiver thumbnail
+                        string poster1 = jrAPI.GetThumbnail(m, Program.settings.ShowSmallThumbnails);
+                        
+                        //imgTooltip.hide(true);  // dispose previous images
+
+                        // load new images (img2 might not yet exist)
+                        var img1 = Util.LoadImage(poster1); 
+                        var img2 = Util.LoadImage(poster2);
+
+                        bool locked = LockedCells.isLocked(m.JRKey, AppField.Poster);
+                        string label = !locked ? "current" : Program.settings.ShowSmallThumbnails ? "LOCKED" : "current [LOCKED]";
+                        string lbl1 = poster1 == null ? "no poster" : $"{label}: {(m.originalValue(AppField.Poster)?.Replace(" ","").Replace("\u00A0", "") ?? "no poster")}";
+                        string lbl2 = poster2 == null ? null : $"new: {m.newPoster?.width}x{m.newPoster?.height}";
+
+                        // image2 thumbnail size
+                        Size thumbSize = img2 == null ? new Size(0, 0) : new Size(img2.Width, img2.Height);
+                        if (m.newPoster != null && img2 == null && url2 != null)
+                        {
+                            var sz = TMDbAPI.GetThumbnailSize(size, m.newPoster.width, m.newPoster.height);
+                            thumbSize = new Size(sz.Item1, sz.Item2);
+                        }
+
+                        // only show if cursor is on same cell for more than X miliseconds
+                        var ellapsed = DateTime.Now - start;
+                        if (!imgTooltip.Visible && ellapsed.TotalMilliseconds < 100)
+                           Thread.Sleep(101 - (int)ellapsed.TotalMilliseconds);
+
+                        ShowPosterToolTip(m, img1, lbl1, img2, lbl2, poster2, thumbSize, e.RowIndex, e.ColumnIndex);
                     }
+                    catch { imgTooltip.Hide(); }
+                });
+            }
+            else
+            {
+                if (imgTooltip.Visible) imgTooltip.Hide();
+                if (e.ColumnIndex > 2 && e.RowIndex >= 0)
+                {
+                    var field = (AppField)e.ColumnIndex;
+                    MovieInfo m = gridMovies.Rows[e.RowIndex].Cells[0].Value as MovieInfo;
+                    string txt = gridMovies.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+                    if (field == AppField.IMDbVotes || field == AppField.RottenTomatoes || field == AppField.Metascore || field == AppField.Runtime)
+                        txt = txt.Trim();
+                    int eq = m.isModified(field, txt);
+                    if (eq != 0)
+                    {
+                        string prev = m.originalValue(field);
+                        if (!string.IsNullOrEmpty(prev))
+                        {
+                            //string sep = prev != null && prev.Length > 80 ? "\r\n" : "";
+                            txt += $"\n\n[Previous Value:]\n{prev}";
+                        }
+                    }
+                    string locked = LockedCells.isLocked(m.JRKey, field) ? "[LOCKED VALUE]\n" : "";
+                    e.ToolTipText = locked + txt.WordWrap(100);
                 }
-                e.ToolTipText = txt.WordWrap(100);
             }
         }
 
@@ -1519,7 +1759,7 @@ namespace MCRatings
         // When doing mouse-drag select, the mouse release completes the action. This [un]selects the dragged rows.
         private void gridMovies_MouseUp(object sender, MouseEventArgs e)
         {
-            LastMouseClick = e.Location;    // for context menu
+            //LastMouseClick = e.Location;    // for context menu
             dragStart = Point.Empty;
 
             if ((e.Button == MouseButtons.Left || e.Button == MouseButtons.Right) && dragSelect)
@@ -1600,11 +1840,46 @@ namespace MCRatings
         {
             if (dragSelect)
                 e.Cancel = true;
+            else
+            {
+                ContextMenuPosition = gridMovies.PointToClient(MousePosition);
+                DataGridView.HitTestInfo hit = gridMovies.HitTest(ContextMenuPosition.X, ContextMenuPosition.Y);
+                if (hit.RowIndex >= 0 && hit.ColumnIndex > 1 && hit.Type == DataGridViewHitTestType.Cell)
+                {
+                    gridMovies.CurrentCell = gridMovies[hit.ColumnIndex, hit.RowIndex];
+                    menuPosters.Visible = Program.settings.PostersEnabled;
+                    menuPosterSync.Enabled = menuPosterTransferIn.Enabled = menuPosterTransferOut.Enabled = Program.settings.SavePosterCommonFolder;
+                    AppField field = (AppField)hit.ColumnIndex;
+                    MovieInfo m = gridMovies.Rows[hit.RowIndex].Cells[0].Value as MovieInfo;
+                    menuLockField.Text = LockedCells.isLocked(m.JRKey, field) ? "Unlock field" : "Lock field";
+                    menuLockField.Enabled = !m.isModified(field) && (field >= AppField.Title && field != AppField.File && field != AppField.Playlists && gridMovies.Columns[hit.ColumnIndex].ReadOnly);
+                    menuPaste.Enabled = !gridMovies.Columns[hit.ColumnIndex].ReadOnly || field == AppField.Playlists;
+                    menuRevertField.Enabled = field >= AppField.FTitle;
+                    menuRevertThisColumn.Enabled = field >= AppField.FTitle;
+                }
+                else
+                    e.Cancel = true;
+            }
         }
 
         #endregion
 
         #region IMDB shortcuts
+
+        private void menuShortcutFilename_Click(object sender, EventArgs e)
+        {
+            createShortcuts(1);
+        }
+
+        private void menuShortcutTitle_Click(object sender, EventArgs e)
+        {
+            createShortcuts(2);
+        }
+
+        private void menuShortcutID_Click(object sender, EventArgs e)
+        {
+            createShortcuts(3);
+        }
 
         private void createShortcuts(int operation)
         {
@@ -1618,6 +1893,8 @@ namespace MCRatings
 
                 bar.ShowDialog();   // ignore result
                 SetStatus($"{bar.progress.success} shortcuts created/updated");
+
+                if (bar.progress.success > 0) Analytics.Event("Menu", "CreateImdbShortcuts", "ShortcutsCreated", bar.progress.success);
             }
             else SetStatus("No movies selected");
         }
@@ -1701,7 +1978,7 @@ namespace MCRatings
             if (m.Success)
             {
                 string json = m.Groups[1].Value;
-                MovieCollection col = MovieCollection.Parse(json, title);
+                PtpCollection col = PtpCollection.Parse(json, title);
                 if (col != null)
                 {
                     ParseCollection(col);
@@ -1711,7 +1988,7 @@ namespace MCRatings
             MessageBox.Show("Invalid collection file - could not parse JSON data");
         }
 
-        private void ParseCollection(MovieCollection collection)
+        private void ParseCollection(PtpCollection collection)
         {
             DateTime start = DateTime.Now;
 
@@ -1734,7 +2011,7 @@ namespace MCRatings
                     string ftitle = string.IsNullOrEmpty(m[AppField.FTitle]) ? null : $"{m[AppField.FTitle]}|{m[AppField.FYear]}";
                     string jrtitle = string.IsNullOrEmpty(m[AppField.Title]) ? null : $"{m[AppField.Title]}|{m[AppField.Year]}";
 
-                    if (!string.IsNullOrEmpty(imdb) && col.TryGetValue(imdb, out CollectionMovie dup)
+                    if (!string.IsNullOrEmpty(imdb) && col.TryGetValue(imdb, out PtpCollectionMovie dup)
                         || (ftitle != null && col.TryGetValue(ftitle, out dup))
                         || (jrtitle != null && col.TryGetValue(jrtitle, out dup)))
                     {
@@ -1790,6 +2067,302 @@ namespace MCRatings
             updateModifiedCount();
             updateSelectedCount();
             SetStatus($"Imported collection '{collection.Title}': {count} movies, {added + repeated} matches, {created} new");
+        }
+
+        #endregion
+
+        #region posters
+
+        private void ShowPosterToolTip(MovieInfo m, Image original, string lbl1, Image updated, string lbl2, string path2, Size size2, int row, int col)
+        {
+            if (this.InvokeRequired)
+            {
+                BeginInvoke((MethodInvoker)delegate { ShowPosterToolTip(m, original, lbl1, updated, lbl2, path2, size2, row, col); });
+                return;
+            }
+
+            if (original == null && path2 == null)
+                imgTooltip.Hide();
+            else
+            {
+                var point = gridMovies.PointToClient(MousePosition);
+                var hit = gridMovies.HitTest(point.X, point.Y);
+                if (hit.RowIndex != row || hit.ColumnIndex != col)
+                    return;
+
+                Rectangle rect = gridMovies.GetCellDisplayRectangle(col, row, false);
+                point = gridMovies.PointToScreen(rect.Location);
+                var location = new Point(point.X + gridMovies.Columns[col].Width / 2, point.Y);
+                imgTooltip.Tag = m;
+                imgTooltip.Show(location, original, lbl1, updated, size2, lbl2, path2);
+            }
+        }
+
+        private void OnImageTooltipClicked(object sender, EventArgs args)
+        {
+            MovieInfo m = imgTooltip.Tag as MovieInfo;
+            if (m != null)
+                ShowPictureBrowser(m, true);
+        }
+
+        private void PosterBrowser_OnPosterSelected(object sender, EventArgs e)
+        {
+            MovieInfo movie = posterBrowser.currMovie;
+            if (posterBrowser.selectedPoster != null)
+            {
+                DateTime start = DateTime.Now;
+                string res = $"{posterBrowser.selectedPoster.width} x {posterBrowser.selectedPoster.height}";
+                if (overwriteField(movie, AppField.Poster, res, chkOverwrite.Checked, forced: true))
+                {
+                    movie.newPoster = posterBrowser.selectedPoster;
+                    movie.lockPoster = posterBrowser.selectAndLock;
+                }
+
+                if (DownloadPoster(movie))
+                    Analytics.Event("Image", "PosterDownload", "PosterDownloads", 1);
+                if (DownloadThumbnail(movie))
+                    Analytics.Event("Image", "ThumbDownload", "ThumbnailDownloads", 1);
+
+                UpdateDataGrid(start);
+                gridMovies.Refresh();
+                updateModifiedCount();
+                this.BringToFront();
+            }
+        }
+
+        private void ShowPictureBrowser(MovieInfo m, bool bringtoFront, bool reload=false)
+        {
+            if (!Program.settings.PostersEnabled) return;
+
+            if (posterBrowser == null || posterBrowser.IsDisposed)
+                posterBrowser = new PosterBrowser();
+
+            if (!posterBrowser.Visible) reload = true;
+
+            // get current JRiver thumbnail
+            string currPoster = jrAPI.GetThumbnail(m, false);
+            string currRes = currPoster == null ? "no poster" : m.originalValue(AppField.Poster)?.Replace(" ", "") ?? "no poster";
+            var img = Util.LoadImage(currPoster);
+            posterBrowser.ShowMovie(m, img, currRes, reload);
+            if (bringtoFront)
+                posterBrowser.BringToFront();
+        }
+
+        // queue thumbnail and poster download in background
+        private bool DownloadPoster(MovieInfo m)
+        {
+            var poster = m.newPoster;
+            if (poster != null)
+            {
+                // poster
+                string url = TMDbAPI.GetPosterUrl(m.newPoster?.file_path, PosterSize.Original, out string path);
+                return (url != null && downloader.QueueDownload(url, path, m));
+            }
+            return false;
+        }
+
+        private bool DownloadThumbnail(MovieInfo m)
+        {
+            var poster = m.newPoster;
+            if (poster != null)
+            {
+                // thumbnail
+                PosterSize size = Program.settings.ShowSmallThumbnails ? PosterSize.Medium : PosterSize.Large;
+                string url = TMDbAPI.GetPosterUrl(m.newPoster?.file_path, size, out string path);
+                return (url != null && downloader.QueueDownload(url, path, m, priority: true));
+            }
+            return false;
+        }
+
+        // queue thumbnail and poster download in background
+        private int DownloadActors(MovieInfo movie)
+        {
+            if (movie?.tmdbInfo == null) return 0;
+            int items = Program.settings.ListItemsLimit;
+            if (items <= 0) items = 100;
+
+            var cast = movie.tmdbInfo.getCast(items);
+            cast.AddRange(movie.tmdbInfo.getCrew(items));
+
+            PosterSize size = (PosterSize)Program.settings.ActorThumbnailSize;
+
+            int count = 0;
+            foreach (var c in cast)
+            {
+                string url = TMDbAPI.GetCastUrl(c.profile_path, size);
+                if (string.IsNullOrEmpty(url)) continue;
+
+                string file = Util.SanitizeFilename(c.name) + Path.GetExtension(url);
+                file = Path.Combine(Program.settings.ActorFolder, file);
+                string pngFile = Program.settings.ActorSaveAsPng ? Path.ChangeExtension(file, ".png") : file;
+
+                if (!File.Exists(pngFile))
+                    if (downloader.QueueDownload(url, file, movie, c, convertToPng: Program.settings.ActorSaveAsPng))
+                        count++;
+            }
+            return count;
+        }
+
+        // download and copy poster file to movie/common folder
+        private string SavePoster(MovieInfo movie)
+        {
+            try
+            {
+                // get poster
+                string url = TMDbAPI.GetPosterUrl(movie.newPoster.file_path, PosterSize.Original, out string path);
+                if (url != null && downloader.DownloadWait(url, path, movie))
+                {
+                    string dest = null;
+                    string ext = Path.GetExtension(path);
+                    // save to movie folder
+                    if (Program.settings.SavePosterMovieFolder || !Program.settings.SavePosterCommonFolder)
+                    {
+                        dest = Path.ChangeExtension(movie[AppField.File], ext);
+                        File.Copy(path, dest, true);
+                        dest = Path.GetFileName(dest);  // just the filename needed for JRiver
+                    }
+                    // save to common folder
+                    if (Program.settings.SavePosterCommonFolder && !string.IsNullOrWhiteSpace(Program.settings.PosterFolder))
+                    {
+                        string filename = Path.GetFileNameWithoutExtension(movie[AppField.File]);
+                        dest = Path.Combine(Program.settings.PosterFolder, $"{filename}.{movie.JRKey}{ext}");
+                        Directory.CreateDirectory(Program.settings.PosterFolder);
+                        File.Copy(path, dest, true);
+                        FileInfo fi = new FileInfo(dest);
+                        fi.LastWriteTime = DateTime.Now;
+                    }
+                    return dest;
+                }
+            }
+            catch (Exception ex) { Logger.Log(ex, "SavePoster"); }
+            return null;
+        }
+
+        private void MCRatingsUI_MouseLeave(object sender, EventArgs e)
+        {
+            imgTooltip.Hide();
+        }
+
+        private void gridMovies_SelectionChanged(object sender, EventArgs e)
+        {
+            if (!Program.settings.PostersEnabled || posterBrowser == null || !posterBrowser.Visible) return;
+            if (!inEvent && gridMovies.SelectedRows.Count == 1)
+            {
+                var row = gridMovies.SelectedRows[0];
+                MovieInfo m = row.Cells[0].Value as MovieInfo;
+                if (m != null)
+                    ShowPictureBrowser(m, false);
+            }
+        }
+
+        private void menuRebuildThumbs_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Yeah, that would be nice.\nUnfortunately, JRiver doesn't have an API to do that, " +
+                "so when we change the Poster the thumbnails are not regenerated.\n\n" +
+                "Please use the 'Rebuild Thumbnail' menu in JRiver directly.", "No way Jose",
+                MessageBoxButtons.OK, MessageBoxIcon.Hand);
+        }
+
+        private void menuPosterTransferIn_Click(object sender, EventArgs e)
+        {
+            PosterTransfer(true);
+        }
+
+        private void menuPosterTransferOut_Click(object sender, EventArgs e)
+        {
+            PosterTransfer(false);
+        }
+
+        private void PosterTransfer(bool toCommon)
+        {
+            if (!Program.settings.SavePosterCommonFolder || string.IsNullOrWhiteSpace(Program.settings.PosterFolder))
+                return;
+
+            Cursor = Cursors.WaitCursor;
+            int ok = 0;
+            int err = 0;
+            int skip = 0;
+            var movies = GetSelectedMovies();
+            foreach (var m in movies)
+            {
+                if (m.currPosterPath == null)
+                    err++;
+                else if (toCommon == m.currPosterPath.StartsWith(Program.settings.PosterFolder, StringComparison.InvariantCultureIgnoreCase))
+                    skip++;
+                else
+                {
+                    if (syncPoster(m, out string newPath) && jrAPI.SetPosterPath(m, newPath))
+                        ok++;
+                    else
+                        err++;
+                }
+            }
+            SetStatus($"{ok} poster(s) transferred{(skip > 0 ? $", {skip} already there" : "")}{(err > 0 ? $", {err} copy error(s)" : "")}");
+            Cursor = Cursors.Default;
+        }
+
+        private bool syncPoster(MovieInfo m, out string newPath)
+        {
+            newPath = null;
+            if (m.JRKey < 0 || m.currPosterPath == null) return false;
+
+            try
+            {
+                string common = Program.settings.PosterFolder;
+                string curr = m.currPosterPath;
+                string ext = Path.GetExtension(curr);
+                string filename = Path.GetFileNameWithoutExtension(m[AppField.File]);
+                string posterInMovie = Path.ChangeExtension(m[AppField.File], ext);
+                string posterInCommon = Path.Combine(common, $"{filename}.{m.JRKey}{ext}");
+
+                newPath = posterInCommon;
+                if (curr.StartsWith(common, StringComparison.InvariantCultureIgnoreCase))
+                    newPath = posterInMovie;
+                else
+                    Directory.CreateDirectory(common);
+
+                File.Copy(curr, newPath, true);
+                return true;
+            }
+            catch { }
+            return false;
+        }
+
+        private void menuPosterSync_Click(object sender, EventArgs e)
+        {
+            if (!Program.settings.SavePosterCommonFolder || string.IsNullOrWhiteSpace(Program.settings.PosterFolder))
+                return;
+
+            Cursor = Cursors.WaitCursor;
+            var movies = GetSelectedMovies();
+            int ok = 0;
+            int err = 0;
+            foreach (var m in movies)
+            {
+                if (syncPoster(m, out string newPoster))
+                    ok++;
+               else
+                    err++;
+            }
+            SetStatus($"{ok} poster(s) synced{(err > 0 ? $", {err} copy error(s)" : "")}");
+            Cursor = Cursors.Default;
+        }
+
+        private void menuRemovePoster_Click(object sender, EventArgs e)
+        {
+            var movies = GetSelectedMovies();
+            DateTime start = DateTime.Now;
+            foreach (var m in movies)
+            {
+                if (overwriteField(m, AppField.Poster, null, chkOverwrite.Checked, true, true))
+                {
+                    m.newPoster = null;
+                    m.newPosterPath = null;
+                }
+            }
+            UpdateDataGrid(start);
+            gridMovies.Refresh();
+            updateModifiedCount();
         }
 
         #endregion

@@ -20,6 +20,7 @@ namespace MCRatings
         private void StatsUI_Load(object sender, EventArgs e)
         {
             LoadStats();
+            Analytics.Event("GUI", "Statistics");
         }
 
         void LoadStats()
@@ -44,6 +45,9 @@ namespace MCRatings
             dgStats.Rows.Add("TMDb API Title Not Found", current.TMDbAPINotFound, total.TMDbAPINotFound);
             dgStats.Rows.Add("TMDb API Errors", current.TMDbAPIError, total.TMDbAPIError);
 
+            dgStats.Rows.Add("Poster Downloads", current.ImageDownload, total.ImageDownload);
+            dgStats.Rows.Add("Poster Download Errors", current.ImageDownloadError, total.ImageDownloadError);
+
             dgStats.Rows.Add("Cache Hits", current.CacheHit, total.CacheHit);
             dgStats.Rows.Add("Cache Misses", current.CacheMiss, total.CacheMiss);
             dgStats.Rows.Add("Cache Expired", current.CacheExpired, total.CacheExpired);
@@ -52,17 +56,19 @@ namespace MCRatings
             if (Program.settings.Collections)
                 dgStats.Rows.Add("JRiver Movies Created", current.JRMovieCreate, total.JRMovieCreate);
             dgStats.Rows.Add("JRiver Movies Updated", current.JRMovieUpdate, total.JRMovieUpdate);
+            dgStats.Rows.Add("JRiver Posters Updated", current.JRPosterUpdate, total.JRPosterUpdate);
             dgStats.Rows.Add("JRiver Fields Updated", current.JRFieldUpdate, total.JRFieldUpdate);
             dgStats.Rows.Add("JRiver API Errors", current.JRError, total.JRError);
             
             for (int i = 3; i <= 7; i++) dgStats.Rows[i].DefaultCellStyle.ForeColor = Color.Blue;
             for (int i = 8; i <= 12; i++) dgStats.Rows[i].DefaultCellStyle.ForeColor = Color.Green;
-            for (int i = 13; i <= 16; i++) dgStats.Rows[i].DefaultCellStyle.ForeColor = Color.DarkMagenta;
-            for (int i = 17; i < dgStats.Rows.Count; i++) dgStats.Rows[i].DefaultCellStyle.ForeColor = Color.OrangeRed;
+            for (int i = 13; i <= 14; i++) dgStats.Rows[i].DefaultCellStyle.ForeColor = Color.DarkBlue;
+            for (int i = 15; i <= 18; i++) dgStats.Rows[i].DefaultCellStyle.ForeColor = Color.DarkMagenta;
+            for (int i = 19; i < dgStats.Rows.Count; i++) dgStats.Rows[i].DefaultCellStyle.ForeColor = Color.DarkRed;
 
             int height = dgStats.ColumnHeadersHeight + 2;
             height += dgStats.Rows.Count * dgStats.Rows[0].Height;    // grid height
-            height = this.Height - dgStats.Height + height;       // required form heigh
+            height = this.Height - dgStats.Height + height;           // required form heigh
             height = Math.Min(height, Screen.FromControl(this).Bounds.Height - 100);
             this.Height = height;
             this.Top = (Screen.FromControl(this).Bounds.Height - height) / 2;

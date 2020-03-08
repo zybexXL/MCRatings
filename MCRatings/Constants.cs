@@ -12,12 +12,12 @@ namespace MCRatings
     public enum CellColor {
         Default = 0, ActiveRow, SelectedRow, ActiveSelectedRow, ColumnEdit,
         TitleMismatch, Year1Mismatch, NewValue, Overwrite,
-        Confirmed, Unconfirmed      // foreground
+        Confirmed, Unconfirmed, Locked      // foreground
     }
 
     public enum AppField {
         Movie=0, Selected, Filter, Status, FTitle, FYear,       // non-JR fields
-        Title, Year, Imported, Playlists, Release, IMDbID,
+        Title, Year, Imported, Playlists, Release, Poster, IMDbID, 
         IMDbRating, IMDbVotes, TMDbScore, RottenTomatoes, Metascore, MPAARating,
         Runtime, OriginalTitle, Series, Collections, Tagline, Description, Genre, Keywords,
         Production, Producer, Director, Writers, Actors, Language, Country, Budget, Revenue,
@@ -39,12 +39,16 @@ namespace MCRatings
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "JRatings");
 
-        public static string SettingsFile = Path.Combine(DataFolder, "settings.xml");
+        public static string SettingsFile = Path.Combine(DataFolder, "settings.xml");       // TOOD: move to JSON
+        public static string LockedCellsFile = Path.Combine(DataFolder, "lockedFields.json");
         public static string StatsFile = Path.Combine(DataFolder, "stats.json");
         public static string OMDBCache = Path.Combine(DataFolder, "cache");
         public static string AudioCache = Path.Combine(DataFolder, "audio");
-        public static int MaxCacheDays = 7;      // 1 week
+        public static string PosterCache = Path.Combine(DataFolder, "posters");
 
+        public static int MaxCacheDays = 7;      // 1 week
+        public static int MaxDownloadThreads = 4;
+        
         public static uint[] CellColors = new uint[]
         {
                 (uint)SystemColors.Window.ToArgb(),         // normal
@@ -58,6 +62,7 @@ namespace MCRatings
                 (uint)0xFFFFC040,                           // overwrite
                 (uint)Color.Green.ToArgb(),                 // confirmed (foreground)
                 (uint)Color.Blue.ToArgb(),                  // unconfirmed (foreground)
+                (uint)Color.Red.ToArgb(),                   // locked (foreground)
         };
 
         // datagrid column names
@@ -74,6 +79,7 @@ namespace MCRatings
             { AppField.Release, new FieldInfo("Release", "Date (release)", true, 75, 1) },
             { AppField.Imported, new FieldInfo("Imported", "Date Imported", false, 120, 1) },
             { AppField.IMDbID, new FieldInfo("IMDbID", "IMDb ID", false, 75, 1) },
+            { AppField.Poster, new FieldInfo("Poster", "Image File", true, 75, 1) },
             { AppField.IMDbRating, new FieldInfo("IMDb", "IMDb Rating", true, 50, 1) },
             { AppField.IMDbVotes, new FieldInfo("Votes", "IMDb Votes", true, 75, 2) },
             { AppField.TMDbScore, new FieldInfo("TMDb", "TMDb Score", true, 50, 1) },

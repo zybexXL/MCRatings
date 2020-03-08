@@ -5,6 +5,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Text;
@@ -191,6 +193,13 @@ namespace MCRatings
                     if (Constants.ViewColumnInfo[f].isJRField)
                         JRfields[f] = getFieldValue(movie, f);
 
+                string imageH = movie.Get("Image Height", true);
+                string imageW = movie.Get("Image Width", true);
+                string imageFile = movie.Get("Image File", false);
+                bool hasPoster = !string.IsNullOrEmpty(imageFile) && !string.IsNullOrEmpty(imageW);
+                // \u00A0 = nbsp; using nbsp for original poster and Spaces for new Poster to track the cell change
+                JRfields[AppField.Poster] = !hasPoster ? null : $"{imageW}\u00A0x\u00A0{imageH}"; 
+
                 JRfields[AppField.File] = movie.Get("Filename", true);
                 JRfields[AppField.Imported] = movie.Get("Date Imported", false);         //epoch
                 if (DateTime.TryParse(JRfields[AppField.Release], out DateTime date))
@@ -200,6 +209,8 @@ namespace MCRatings
                         JRfields[AppField.Release] = $"{yyyy}-01-02";
                 }
                 MovieInfo info = new MovieInfo(movie.GetKey(), JRfields, lists);
+                info.currPosterPath = !hasPoster ? null : Path.Combine(Path.GetDirectoryName(JRfields[AppField.File]), imageFile);
+
                 return info;
             }
             catch (Exception ex)
@@ -316,7 +327,10 @@ namespace MCRatings
                             value = Util.DaysSince1900(new DateTime(year, 1, 1)).ToString();
                         }
 
-                        bool saved = (f == AppField.Playlists) ? setPlaylistMembership(file, value) : setFieldValue(file, jrfield, value);
+                        bool saved = (f == AppField.Playlists) ? setPlaylistMembership(file, value)
+                            : (f == AppField.Poster) ? SavePoster(file, movie)
+                            : setFieldValue(file, jrfield, value);
+
                         if (saved)
                         {
                             Interlocked.Increment(ref Stats.Session.JRFieldUpdate);
@@ -392,6 +406,87 @@ namespace MCRatings
             return false;
         }
 
+        public string GetThumbnail(MovieInfo movie, bool small)
+        {
+            try
+            {
+                IMJFileAutomation file = jr.GetFileByKey(movie.JRKey);
+                if (small) return file.GetImageFile(MJImageFileFlags.IMAGEFILE_THUMBNAIL_MEDIUM);
+                return file.GetImageFile(MJImageFileFlags.IMAGEFILE_THUMBNAIL_LARGE);
+            }
+            catch { }
+            return null;
+        }
+
+        internal bool RemovePoster(MovieInfo movie)
+        {
+            try
+            {
+                IMJFileAutomation file = jr.GetFileByKey(movie.JRKey);
+                if (SetPosterPath(file, null))
+                {
+                    movie.currPosterPath = null;
+                    return true;
+                }
+            }
+            catch { }
+            return false;
+        }
+
+        internal bool SetPosterPath(MovieInfo movie, string path, bool force = false)
+        {
+            try
+            {
+                string jrpath = path;
+                if (path.StartsWith(Path.GetDirectoryName(movie[AppField.File]), StringComparison.InvariantCultureIgnoreCase))
+                    jrpath = Path.GetFileName(path);
+                IMJFileAutomation file = jr.GetFileByKey(movie.JRKey);
+                if (SetPosterPath(file, jrpath))
+                {
+                    movie.currPosterPath = Path.Combine(Path.GetDirectoryName(movie[AppField.File]), path);
+                    return true;
+                }
+            }
+            catch { }
+            return false;
+        }
+
+        private bool SetPosterPath(IMJFileAutomation file, string path)
+        {
+            try
+            {
+                // clear current file in case new path is the same, so that JR detects a change
+                file.SetImageFile(null, MJImageFileFlags.IMAGEFILE_IN_DATABASE);
+                if (file.SetImageFile(path, MJImageFileFlags.IMAGEFILE_IN_DATABASE))
+                {
+                    Interlocked.Increment(ref Stats.Session.JRPosterUpdate);
+                    return true;
+                }
+            }
+            catch { }
+            return false;
+        }
+
+        private bool SavePoster(IMJFileAutomation file, MovieInfo movie)
+        {
+            bool remove = movie.newPoster == null || string.IsNullOrWhiteSpace(movie.newPosterPath);
+            try
+            {
+                string path = remove ? null : movie.newPosterPath;
+                if (path != null && path.StartsWith(Path.GetDirectoryName(movie[AppField.File]), StringComparison.InvariantCultureIgnoreCase))
+                    path = Path.GetFileName(path);
+                if (SetPosterPath(file, path))
+                {
+                    // \u00A0 is a non-breaking space. It's used here to force the cell content to be different,
+                    // so that it's highlighted even if the actual poster resolution is the same 
+                    movie[AppField.Poster] = remove ? null : $"{movie.newPoster?.width}\u00A0x\u00A0{movie.newPoster?.height}";
+                    movie.currPosterPath = remove ? null : Path.Combine(Path.GetDirectoryName(movie[AppField.File]), movie.newPosterPath);
+                    return true;
+                }
+            }
+            catch { }
+            return false;
+        }
     }
 
 }

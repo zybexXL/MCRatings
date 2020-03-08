@@ -21,15 +21,6 @@ namespace MCRatings
         const string donationETH = "0x90fdd0f04C32bE356b5a73dbf7D50528bb9Ed4ba";
         const string email = "pbfonseca@gmail.com";
 
-        public const int WM_NCLBUTTONDOWN = 0xA1;
-        public const int HT_CAPTION = 0x2;
-
-        [DllImport("user32.dll")]
-        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-        [DllImport("user32.dll")]
-        public static extern bool ReleaseCapture();
-
-
         public About()
         {
             InitializeComponent();
@@ -42,15 +33,14 @@ namespace MCRatings
             lblDebug.Visible = true;
 #endif
             SetUpgradeLabel();
+
+            Analytics.Event("GUI", "About");
         }
 
         private void MouseDown_Drag(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
-            {
-                ReleaseCapture();
-                SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
-            }
+                Native.MouseDragCapture(Handle);
         }
 
         private void SetUpgradeLabel()
@@ -71,6 +61,7 @@ namespace MCRatings
         {
             try
             {
+                Analytics.Event("GUI", "Donation");
                 Process.Start(donationPaypal);
             }
             catch { }
