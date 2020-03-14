@@ -175,6 +175,17 @@ namespace MCRatings
                 txtSearch.Focus();
             else if (e.KeyCode == Keys.X && e.Alt)          // ALT+X = Exit
                 this.Close();
+            else if (e.KeyCode == Keys.F1)                  // HELP/About
+                new About().ShowDialog();
+            else if (e.KeyCode == Keys.F12)                  // Statistics
+                new StatsUI().ShowDialog();
+            else if (e.KeyCode == Keys.F5)                  // reload playlist
+                btnLoad_Click(null, EventArgs.Empty);
+            else if (e.KeyCode == Keys.F8)                  // get movie info
+                btnGetMovieInfo_Click(null, EventArgs.Empty);
+            else if (e.KeyCode == Keys.F10)                  // save
+                if (DialogResult.Yes == MessageBox.Show("Save changes to JRiver?", "Save changes", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                    btnSave_Click(null, EventArgs.Empty);
             else
                 e.Handled = false;
 
@@ -2253,7 +2264,13 @@ namespace MCRatings
                 var row = gridMovies.SelectedRows[0];
                 MovieInfo m = row.Cells[0].Value as MovieInfo;
                 if (m != null)
+                {
+                    menuOpenImdb.Enabled = m?.IMDBid != null;
+                    menuOpenTmdb.Enabled = m?.tmdbInfo != null && m.tmdbInfo.id > 0;
+                    menuOpenTrailer.Enabled = m?[AppField.Trailer] != null;
+                    menuOpenPosterBrowser.Visible = Program.settings.PostersEnabled;
                     ShowPictureBrowser(m, false);
+                }
             }
         }
 
@@ -2278,6 +2295,10 @@ namespace MCRatings
         private void PosterTransfer(bool toCommon)
         {
             if (!Program.settings.SavePosterCommonFolder || string.IsNullOrWhiteSpace(Program.settings.PosterFolder))
+                return;
+
+            if (DialogResult.Cancel == MessageBox.Show("The new poster path will be immediately set in JRiver!\n" +
+                "Are you sure you want to continue?", "WARNING: Immediate change", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning))
                 return;
 
             Cursor = Cursors.WaitCursor;
