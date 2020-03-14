@@ -117,13 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="btnFitLeft.Text" xml:space="preserve">
+    <value>Switch poster scaling on left side:
+Horizontal scaling - resize poster so that its' width it completely visible
+Vertical scaling - resize poster so that its' height is completely visible
+No scaling - no resize, shows original poster size</value>
+  </data>
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
   <metadata name="toolStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>114, 17</value>
   </metadata>
-  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
+  <data name="btnSort.ToolTipText" xml:space="preserve">
+    <value>Toggle poster sort order between "sort by resolution" and "sort by votes":
+- Sort by resolution: displays highest-resolution posters first
+- Sort by votes: displays highest-voted posters first. Note that TMDb users often don't
+rate posters, so the number of votes is usually low and rather meaningless.</value>
+  </data>
+  <data name="btnFitRight.ToolTipText" xml:space="preserve">
+    <value>Switch poster scaling on right side:
+Horizontal scaling - resize poster so that its' width it completely visible
+Vertical scaling - resize poster so that its' height is completely visible
+No scaling - no resize, shows original poster size</value>
+  </data>
 </root>

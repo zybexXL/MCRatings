@@ -120,9 +120,22 @@
   <metadata name="gridMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>504, 17</value>
   </metadata>
-  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>391, 17</value>
-  </metadata>
+  <data name="menuPosterTransferIn.ToolTipText" xml:space="preserve">
+    <value>If you have a "Common Poster Folder" enabled and defined in Settings,
+then this will transfer the existing poster from the Movie folder
+to the common folder. JRiver will then look for the poster for this movie
+on the Common Poster Folder, not the movie folder.
+
+WARNING - Change in JRiver is immediate, no need to Save Changes</value>
+  </data>
+  <data name="menuPosterTransferOut.ToolTipText" xml:space="preserve">
+    <value>If you have a "Common Poster Folder" enabled and defined in Settings,
+then this will transfer the existing poster from the Common Poster Folder
+to the Movie Folder. JRiver will then look for the poster for this movie
+on the Movie Folder (default).
+
+WARNING - Change in JRiver is immediate, no need to Save Changes</value>
+  </data>
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>391, 17</value>
   </metadata>

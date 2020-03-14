@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PosterBrowser));
             this.browser = new System.Windows.Forms.WebBrowser();
             this.lblRes = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -133,6 +134,7 @@
             this.btnFitLeft.Size = new System.Drawing.Size(24, 24);
             this.btnFitLeft.TabIndex = 9;
             this.btnFitLeft.TabStop = false;
+            this.btnFitLeft.Text = resources.GetString("btnFitLeft.Text");
             this.btnFitLeft.UseVisualStyleBackColor = true;
             this.btnFitLeft.Click += new System.EventHandler(this.btnFitLeft_Click);
             // 
@@ -274,6 +276,7 @@
             this.btnThumbsize.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnThumbsize.Name = "btnThumbsize";
             this.btnThumbsize.Size = new System.Drawing.Size(36, 36);
+            this.btnThumbsize.ToolTipText = "Toggle between small and large thumbnails";
             this.btnThumbsize.Click += new System.EventHandler(this.btnThumbsize_Click);
             // 
             // btnSort
@@ -283,6 +286,7 @@
             this.btnSort.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSort.Name = "btnSort";
             this.btnSort.Size = new System.Drawing.Size(36, 36);
+            this.btnSort.ToolTipText = resources.GetString("btnSort.ToolTipText");
             this.btnSort.Click += new System.EventHandler(this.btnSort_Click);
             // 
             // btnFitRight
@@ -292,6 +296,7 @@
             this.btnFitRight.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnFitRight.Name = "btnFitRight";
             this.btnFitRight.Size = new System.Drawing.Size(36, 36);
+            this.btnFitRight.ToolTipText = resources.GetString("btnFitRight.ToolTipText");
             this.btnFitRight.Click += new System.EventHandler(this.btnFitRight_Click);
             // 
             // comboLanguage
@@ -320,6 +325,7 @@
             this.btnCast.Margin = new System.Windows.Forms.Padding(10, 1, 0, 2);
             this.btnCast.Name = "btnCast";
             this.btnCast.Size = new System.Drawing.Size(36, 36);
+            this.btnCast.ToolTipText = "Toggle between Poster view and Cast/Crew view";
             this.btnCast.Click += new System.EventHandler(this.btnCast_Click);
             // 
             // PosterBrowser

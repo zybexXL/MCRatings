@@ -30,11 +30,16 @@
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsUI));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsUI));
             this.gridFields = new System.Windows.Forms.DataGridView();
+            this.dgEnabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.dgSetting = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dgField = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dgOverwrite = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.dgSourcePlaceHolder = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label1 = new System.Windows.Forms.Label();
             this.txtCleanup = new System.Windows.Forms.TextBox();
             this.btnSave = new System.Windows.Forms.Button();
@@ -136,11 +141,7 @@
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.btnClose = new System.Windows.Forms.Button();
-            this.dgEnabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.dgSetting = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgField = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgOverwrite = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.dgSourcePlaceHolder = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.iNSERTARGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.gridFields)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.maxListLimit)).BeginInit();
             this.scriptTagMenu.SuspendLayout();
@@ -191,6 +192,55 @@
             this.gridFields.Size = new System.Drawing.Size(557, 418);
             this.gridFields.TabIndex = 1;
             this.gridFields.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridFields_CellValueChanged);
+            // 
+            // dgEnabled
+            // 
+            this.dgEnabled.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.dgEnabled.HeaderText = "Enabled";
+            this.dgEnabled.MinimumWidth = 70;
+            this.dgEnabled.Name = "dgEnabled";
+            this.dgEnabled.Width = 70;
+            // 
+            // dgSetting
+            // 
+            this.dgSetting.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dgSetting.DefaultCellStyle = dataGridViewCellStyle2;
+            this.dgSetting.HeaderText = "MCRatings field";
+            this.dgSetting.Name = "dgSetting";
+            this.dgSetting.ReadOnly = true;
+            this.dgSetting.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.dgSetting.Width = 125;
+            // 
+            // dgField
+            // 
+            this.dgField.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dgField.DefaultCellStyle = dataGridViewCellStyle3;
+            this.dgField.HeaderText = "JRiver field (Display)";
+            this.dgField.Name = "dgField";
+            this.dgField.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // dgOverwrite
+            // 
+            this.dgOverwrite.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.dgOverwrite.HeaderText = "Overwrite";
+            this.dgOverwrite.MinimumWidth = 70;
+            this.dgOverwrite.Name = "dgOverwrite";
+            this.dgOverwrite.Width = 70;
+            // 
+            // dgSourcePlaceHolder
+            // 
+            this.dgSourcePlaceHolder.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
+            this.dgSourcePlaceHolder.DefaultCellStyle = dataGridViewCellStyle4;
+            this.dgSourcePlaceHolder.HeaderText = "Source";
+            this.dgSourcePlaceHolder.Name = "dgSourcePlaceHolder";
+            this.dgSourcePlaceHolder.ReadOnly = true;
+            this.dgSourcePlaceHolder.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgSourcePlaceHolder.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.dgSourcePlaceHolder.Width = 57;
             // 
             // label1
             // 
@@ -603,6 +653,7 @@
             // scriptTagMenu
             // 
             this.scriptTagMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.iNSERTARGToolStripMenuItem,
             this.movieTitleToolStripMenuItem,
             this.movieYearToolStripMenuItem,
             this.originalTitleToolStripMenuItem,
@@ -631,7 +682,7 @@
             this.tagMenuDepartment,
             this.tagMenuCharacter});
             this.scriptTagMenu.Name = "scriptTagMenu";
-            this.scriptTagMenu.Size = new System.Drawing.Size(196, 534);
+            this.scriptTagMenu.Size = new System.Drawing.Size(196, 578);
             this.scriptTagMenu.Opening += new System.ComponentModel.CancelEventHandler(this.scriptTagMenu_Opening);
             // 
             // movieTitleToolStripMenuItem
@@ -1485,54 +1536,13 @@
             this.btnClose.UseVisualStyleBackColor = false;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
-            // dgEnabled
+            // iNSERTARGToolStripMenuItem
             // 
-            this.dgEnabled.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.dgEnabled.HeaderText = "Enabled";
-            this.dgEnabled.MinimumWidth = 70;
-            this.dgEnabled.Name = "dgEnabled";
-            this.dgEnabled.Width = 70;
-            // 
-            // dgSetting
-            // 
-            this.dgSetting.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgSetting.DefaultCellStyle = dataGridViewCellStyle2;
-            this.dgSetting.HeaderText = "MCRatings field";
-            this.dgSetting.Name = "dgSetting";
-            this.dgSetting.ReadOnly = true;
-            this.dgSetting.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.dgSetting.Width = 125;
-            // 
-            // dgField
-            // 
-            this.dgField.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgField.DefaultCellStyle = dataGridViewCellStyle3;
-            this.dgField.HeaderText = "JRiver field (Display)";
-            this.dgField.Name = "dgField";
-            this.dgField.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // dgOverwrite
-            // 
-            this.dgOverwrite.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.dgOverwrite.HeaderText = "Overwrite";
-            this.dgOverwrite.MinimumWidth = 70;
-            this.dgOverwrite.Name = "dgOverwrite";
-            this.dgOverwrite.Width = 70;
-            // 
-            // dgSourcePlaceHolder
-            // 
-            this.dgSourcePlaceHolder.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
-            this.dgSourcePlaceHolder.DefaultCellStyle = dataGridViewCellStyle4;
-            this.dgSourcePlaceHolder.HeaderText = "Source";
-            this.dgSourcePlaceHolder.Name = "dgSourcePlaceHolder";
-            this.dgSourcePlaceHolder.ReadOnly = true;
-            this.dgSourcePlaceHolder.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgSourcePlaceHolder.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.dgSourcePlaceHolder.Width = 57;
+            this.iNSERTARGToolStripMenuItem.BackColor = System.Drawing.SystemColors.Info;
+            this.iNSERTARGToolStripMenuItem.Enabled = false;
+            this.iNSERTARGToolStripMenuItem.Name = "iNSERTARGToolStripMenuItem";
+            this.iNSERTARGToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.iNSERTARGToolStripMenuItem.Text = "INSERT PARAMETER:";
             // 
             // SettingsUI
             // 
@@ -1691,5 +1701,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dgField;
         private System.Windows.Forms.DataGridViewCheckBoxColumn dgOverwrite;
         private System.Windows.Forms.DataGridViewTextBoxColumn dgSourcePlaceHolder;
+        private System.Windows.Forms.ToolStripMenuItem iNSERTARGToolStripMenuItem;
     }
 }

@@ -175,8 +175,6 @@ namespace MCRatings
                 txtSearch.Focus();
             else if (e.KeyCode == Keys.X && e.Alt)          // ALT+X = Exit
                 this.Close();
-            else if (e.KeyCode == Keys.I && e.Control)          // CTRL+I - stats
-                this.BeginInvoke((MethodInvoker)delegate { new StatsUI().ShowDialog(); });
             else
                 e.Handled = false;
 
@@ -1856,6 +1854,10 @@ namespace MCRatings
                     menuPaste.Enabled = !gridMovies.Columns[hit.ColumnIndex].ReadOnly || field == AppField.Playlists;
                     menuRevertField.Enabled = field >= AppField.FTitle;
                     menuRevertThisColumn.Enabled = field >= AppField.FTitle;
+                    menuOpenImdb.Enabled = m?.IMDBid != null;
+                    menuOpenTmdb.Enabled = m?.tmdbInfo != null && m.tmdbInfo.id > 0;
+                    menuOpenTrailer.Enabled = m?[AppField.Trailer] != null;
+                    menuOpenPosterBrowser.Visible = Program.settings.PostersEnabled;
                 }
                 else
                     e.Cancel = true;
@@ -2366,6 +2368,62 @@ namespace MCRatings
         }
 
         #endregion
+
+        private void menuOpenPosterBrowser_Click(object sender, EventArgs e)
+        {
+            MovieInfo currmovie = gridMovies.CurrentRow?.Cells[0].Value as MovieInfo;
+            ShowPictureBrowser(currmovie, true);
+        }
+
+        private void menuOpenFolder_Click(object sender, EventArgs e)
+        {
+            MovieInfo currmovie = gridMovies.CurrentRow?.Cells[0].Value as MovieInfo;
+            try
+            {
+                if (currmovie != null)
+                    Process.Start(Path.GetDirectoryName(currmovie[AppField.File]));
+            }
+            catch { }
+        }
+
+        private void menuOpenImdb_Click(object sender, EventArgs e)
+        {
+            MovieInfo currmovie = gridMovies.CurrentRow?.Cells[0].Value as MovieInfo;
+            try
+            {
+                if (currmovie?.IMDBid != null && currmovie.IMDBid.ToLower().StartsWith("tt"))
+                    Process.Start($"https://www.imdb.com/title/{currmovie.IMDBid.ToLower()}");
+            }
+            catch { }
+        }
+
+        private void menuOpenTmdb_Click(object sender, EventArgs e)
+        {
+            MovieInfo currmovie = gridMovies.CurrentRow?.Cells[0].Value as MovieInfo;
+            try
+            {
+                if (currmovie?.tmdbInfo != null && currmovie.tmdbInfo.id > 0)
+                    Process.Start($"https://www.themoviedb.org/movie/{currmovie.tmdbInfo.id}");
+            }
+            catch { }
+        }
+
+        private void menuOpenTrailer_Click(object sender, EventArgs e)
+        {
+            MovieInfo currmovie = gridMovies.CurrentRow?.Cells[0].Value as MovieInfo;
+            try
+            {
+                string url = currmovie?[AppField.Trailer];
+                if (url != null && url.ToLower().StartsWith("http"))
+                    Process.Start(url);
+            }
+            catch { }
+        }
+
+        private void menuOpenStatistics_Click(object sender, EventArgs e)
+        {
+            new StatsUI().ShowDialog();
+        }
     }
 }
 

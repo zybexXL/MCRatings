@@ -92,12 +92,6 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.chkOverwrite = new System.Windows.Forms.CheckBox();
             this.chkUseJRTitle = new System.Windows.Forms.CheckBox();
-            this.comboLists = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.gridMovies = new System.Windows.Forms.DataGridView();
-            this.lblChanges = new System.Windows.Forms.Label();
-            this.lblSelected = new System.Windows.Forms.Label();
-            this.lblStatus = new System.Windows.Forms.Label();
             this.imgSpinner = new System.Windows.Forms.PictureBox();
             this.btnAbout = new System.Windows.Forms.Button();
             this.btnSettings = new System.Windows.Forms.Button();
@@ -105,9 +99,23 @@
             this.btnClear = new System.Windows.Forms.Button();
             this.btnFindNext = new System.Windows.Forms.Button();
             this.lblTaskCount = new System.Windows.Forms.Label();
+            this.comboLists = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.gridMovies = new System.Windows.Forms.DataGridView();
+            this.lblChanges = new System.Windows.Forms.Label();
+            this.lblSelected = new System.Windows.Forms.Label();
+            this.lblStatus = new System.Windows.Forms.Label();
+            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuOpenPosterBrowser = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuOpenFolder = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuOpenImdb = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuOpenTmdb = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuOpenTrailer = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuOpenStatistics = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
             this.gridMenu.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.gridMovies)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgSpinner)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridMovies)).BeginInit();
             this.SuspendLayout();
             // 
             // gridMenu
@@ -125,10 +133,11 @@
             this.menuPaste,
             this.toolStripSeparator2,
             this.menuCreateShortcuts,
-            this.menuPosters});
+            this.menuPosters,
+            this.openToolStripMenuItem});
             this.gridMenu.Name = "contextMenuStrip1";
             this.gridMenu.ShowImageMargin = false;
-            this.gridMenu.Size = new System.Drawing.Size(168, 220);
+            this.gridMenu.Size = new System.Drawing.Size(177, 242);
             this.gridMenu.Opening += new System.ComponentModel.CancelEventHandler(this.gridMenu_Opening);
             // 
             // menuTitle
@@ -138,7 +147,7 @@
             this.menuTitle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.menuTitle.ForeColor = System.Drawing.SystemColors.ControlText;
             this.menuTitle.Name = "menuTitle";
-            this.menuTitle.Size = new System.Drawing.Size(167, 22);
+            this.menuTitle.Size = new System.Drawing.Size(176, 22);
             this.menuTitle.Text = "VISIBLE ROWS:";
             // 
             // menuSelect
@@ -152,7 +161,7 @@
             this.menuSelectChanged,
             this.menuSelectUnchanged});
             this.menuSelect.Name = "menuSelect";
-            this.menuSelect.Size = new System.Drawing.Size(167, 22);
+            this.menuSelect.Size = new System.Drawing.Size(176, 22);
             this.menuSelect.Text = "Select...";
             // 
             // menuSelectCriteria
@@ -178,7 +187,7 @@
             this.menuSelectNoPoster,
             this.menuSelectCommonPoster});
             this.menuSelectCriteria.Name = "menuSelectCriteria";
-            this.menuSelectCriteria.Size = new System.Drawing.Size(168, 22);
+            this.menuSelectCriteria.Size = new System.Drawing.Size(180, 22);
             this.menuSelectCriteria.Text = "Select criteria...";
             // 
             // menuSelectValidID
@@ -310,7 +319,7 @@
             this.menuSelectAll.ShortcutKeyDisplayString = "";
             this.menuSelectAll.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
             this.menuSelectAll.ShowShortcutKeys = false;
-            this.menuSelectAll.Size = new System.Drawing.Size(168, 22);
+            this.menuSelectAll.Size = new System.Drawing.Size(180, 22);
             this.menuSelectAll.Text = "Select all";
             this.menuSelectAll.Click += new System.EventHandler(this.menuSelectAll_Click);
             // 
@@ -320,33 +329,33 @@
             this.menuClearSelection.ShortcutKeyDisplayString = "";
             this.menuClearSelection.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
             this.menuClearSelection.ShowShortcutKeys = false;
-            this.menuClearSelection.Size = new System.Drawing.Size(168, 22);
+            this.menuClearSelection.Size = new System.Drawing.Size(180, 22);
             this.menuClearSelection.Text = "Select none";
             this.menuClearSelection.Click += new System.EventHandler(this.menuClearSelection_Click);
             // 
             // menuToggleSelection
             // 
             this.menuToggleSelection.Name = "menuToggleSelection";
-            this.menuToggleSelection.Size = new System.Drawing.Size(168, 22);
+            this.menuToggleSelection.Size = new System.Drawing.Size(180, 22);
             this.menuToggleSelection.Text = "Toggle selection";
             this.menuToggleSelection.Click += new System.EventHandler(this.menuToggleSelection_Click);
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(165, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(177, 6);
             // 
             // menuSelectChanged
             // 
             this.menuSelectChanged.Name = "menuSelectChanged";
-            this.menuSelectChanged.Size = new System.Drawing.Size(168, 22);
+            this.menuSelectChanged.Size = new System.Drawing.Size(180, 22);
             this.menuSelectChanged.Text = "Select changed";
             this.menuSelectChanged.Click += new System.EventHandler(this.menuSelectChanged_Click);
             // 
             // menuSelectUnchanged
             // 
             this.menuSelectUnchanged.Name = "menuSelectUnchanged";
-            this.menuSelectUnchanged.Size = new System.Drawing.Size(168, 22);
+            this.menuSelectUnchanged.Size = new System.Drawing.Size(180, 22);
             this.menuSelectUnchanged.Text = "Select unchanged";
             this.menuSelectUnchanged.Click += new System.EventHandler(this.menuSelectUnchanged_Click);
             // 
@@ -358,7 +367,7 @@
             this.menuRevertRow,
             this.menuRevertSelectedRows});
             this.menuRevert.Name = "menuRevert";
-            this.menuRevert.Size = new System.Drawing.Size(167, 22);
+            this.menuRevert.Size = new System.Drawing.Size(176, 22);
             this.menuRevert.Text = "Revert...";
             // 
             // menuRevertField
@@ -392,45 +401,48 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(164, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(173, 6);
             // 
             // menuDiscardChanges
             // 
             this.menuDiscardChanges.Name = "menuDiscardChanges";
-            this.menuDiscardChanges.Size = new System.Drawing.Size(167, 22);
+            this.menuDiscardChanges.Size = new System.Drawing.Size(176, 22);
             this.menuDiscardChanges.Text = "Discard ALL changes";
             this.menuDiscardChanges.Click += new System.EventHandler(this.menuDiscardChanges_Click);
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(164, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(173, 6);
             // 
             // menuLockField
             // 
             this.menuLockField.Name = "menuLockField";
-            this.menuLockField.Size = new System.Drawing.Size(167, 22);
+            this.menuLockField.Size = new System.Drawing.Size(176, 22);
             this.menuLockField.Text = "Lock field value";
+            this.menuLockField.ToolTipText = "Lock/unlock a field to prevent changes to that field value";
             this.menuLockField.Click += new System.EventHandler(this.menuLockField_Click);
             // 
             // menuCopyField
             // 
             this.menuCopyField.Name = "menuCopyField";
-            this.menuCopyField.Size = new System.Drawing.Size(167, 22);
+            this.menuCopyField.Size = new System.Drawing.Size(176, 22);
             this.menuCopyField.Text = "Copy field";
+            this.menuCopyField.ToolTipText = "You can also just double-click any field to copy its\' contents to clipboard";
             this.menuCopyField.Click += new System.EventHandler(this.menuCopyField_Click);
             // 
             // menuPaste
             // 
             this.menuPaste.Name = "menuPaste";
-            this.menuPaste.Size = new System.Drawing.Size(167, 22);
+            this.menuPaste.Size = new System.Drawing.Size(176, 22);
             this.menuPaste.Text = "Paste field";
+            this.menuPaste.ToolTipText = "You can only paste into fields on the Yellow columns.";
             this.menuPaste.Click += new System.EventHandler(this.menuPaste_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(164, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(173, 6);
             // 
             // menuCreateShortcuts
             // 
@@ -439,27 +451,27 @@
             this.menuShortcutTitle,
             this.menuShortcutID});
             this.menuCreateShortcuts.Name = "menuCreateShortcuts";
-            this.menuCreateShortcuts.Size = new System.Drawing.Size(167, 22);
-            this.menuCreateShortcuts.Text = "Create IMDB shortcuts";
+            this.menuCreateShortcuts.Size = new System.Drawing.Size(176, 22);
+            this.menuCreateShortcuts.Text = "Create IMDB shortcuts...";
             // 
             // menuShortcutFilename
             // 
             this.menuShortcutFilename.Name = "menuShortcutFilename";
-            this.menuShortcutFilename.Size = new System.Drawing.Size(169, 22);
+            this.menuShortcutFilename.Size = new System.Drawing.Size(180, 22);
             this.menuShortcutFilename.Text = "Filename.url";
             this.menuShortcutFilename.Click += new System.EventHandler(this.menuShortcutFilename_Click);
             // 
             // menuShortcutTitle
             // 
             this.menuShortcutTitle.Name = "menuShortcutTitle";
-            this.menuShortcutTitle.Size = new System.Drawing.Size(169, 22);
+            this.menuShortcutTitle.Size = new System.Drawing.Size(180, 22);
             this.menuShortcutTitle.Text = "Title [Year].url";
             this.menuShortcutTitle.Click += new System.EventHandler(this.menuShortcutTitle_Click);
             // 
             // menuShortcutID
             // 
             this.menuShortcutID.Name = "menuShortcutID";
-            this.menuShortcutID.Size = new System.Drawing.Size(169, 22);
+            this.menuShortcutID.Size = new System.Drawing.Size(180, 22);
             this.menuShortcutID.Text = "IMDB_tt000000.url";
             this.menuShortcutID.Click += new System.EventHandler(this.menuShortcutID_Click);
             // 
@@ -473,14 +485,15 @@
             this.toolStripSeparator10,
             this.menuRemovePoster});
             this.menuPosters.Name = "menuPosters";
-            this.menuPosters.Size = new System.Drawing.Size(167, 22);
-            this.menuPosters.Text = "Posters";
+            this.menuPosters.Size = new System.Drawing.Size(176, 22);
+            this.menuPosters.Text = "Posters...";
             // 
             // menuPosterTransferIn
             // 
             this.menuPosterTransferIn.Name = "menuPosterTransferIn";
             this.menuPosterTransferIn.Size = new System.Drawing.Size(233, 22);
             this.menuPosterTransferIn.Text = "Transfer to Poster folder";
+            this.menuPosterTransferIn.ToolTipText = resources.GetString("menuPosterTransferIn.ToolTipText");
             this.menuPosterTransferIn.Click += new System.EventHandler(this.menuPosterTransferIn_Click);
             // 
             // menuPosterTransferOut
@@ -488,6 +501,7 @@
             this.menuPosterTransferOut.Name = "menuPosterTransferOut";
             this.menuPosterTransferOut.Size = new System.Drawing.Size(233, 22);
             this.menuPosterTransferOut.Text = "Transfer to Movie folder";
+            this.menuPosterTransferOut.ToolTipText = resources.GetString("menuPosterTransferOut.ToolTipText");
             this.menuPosterTransferOut.Click += new System.EventHandler(this.menuPosterTransferOut_Click);
             // 
             // menuPosterSync
@@ -495,6 +509,8 @@
             this.menuPosterSync.Name = "menuPosterSync";
             this.menuPosterSync.Size = new System.Drawing.Size(233, 22);
             this.menuPosterSync.Text = "Sync Movie and Poster folders";
+            this.menuPosterSync.ToolTipText = "This will sync the poster in the Movie Folder and the Common Poster Folder.\r\nThe " +
+    "current poster path set in JRiver will not change.";
             this.menuPosterSync.Click += new System.EventHandler(this.menuPosterSync_Click);
             // 
             // menuRebuildThumbs
@@ -502,6 +518,8 @@
             this.menuRebuildThumbs.Name = "menuRebuildThumbs";
             this.menuRebuildThumbs.Size = new System.Drawing.Size(233, 22);
             this.menuRebuildThumbs.Text = "Rebuild JRiver thumbnails";
+            this.menuRebuildThumbs.ToolTipText = "This is useful to force JRiver to actually display the\r\ncorrect thumbnail for the" +
+    " current movie poster.";
             this.menuRebuildThumbs.Click += new System.EventHandler(this.menuRebuildThumbs_Click);
             // 
             // toolStripSeparator10
@@ -514,6 +532,8 @@
             this.menuRemovePoster.Name = "menuRemovePoster";
             this.menuRemovePoster.Size = new System.Drawing.Size(233, 22);
             this.menuRemovePoster.Text = "Remove Poster";
+            this.menuRemovePoster.ToolTipText = "Removes the current movie poster.\r\nChanges are only effective after you click \"Sa" +
+    "ve to JRiver\"";
             this.menuRemovePoster.Click += new System.EventHandler(this.menuRemovePoster_Click);
             // 
             // btnLoad
@@ -644,6 +664,104 @@
         "lt FileTitle/Year derived from the filename.");
             this.chkUseJRTitle.UseVisualStyleBackColor = true;
             // 
+            // imgSpinner
+            // 
+            this.imgSpinner.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.imgSpinner.Image = global::MCRatings.Properties.Resources.Spinner32;
+            this.imgSpinner.Location = new System.Drawing.Point(900, 440);
+            this.imgSpinner.Name = "imgSpinner";
+            this.imgSpinner.Size = new System.Drawing.Size(34, 34);
+            this.imgSpinner.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.imgSpinner.TabIndex = 17;
+            this.imgSpinner.TabStop = false;
+            this.toolTip1.SetToolTip(this.imgSpinner, "Posters/Thumbnails are downloading in the background.\r\nIf Post-processing scripts" +
+        " are enabled, tasks will take longer to complete.");
+            // 
+            // btnAbout
+            // 
+            this.btnAbout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAbout.BackgroundImage = global::MCRatings.Properties.Resources.help32;
+            this.btnAbout.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btnAbout.FlatAppearance.BorderSize = 0;
+            this.btnAbout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAbout.Location = new System.Drawing.Point(938, 439);
+            this.btnAbout.Name = "btnAbout";
+            this.btnAbout.Size = new System.Drawing.Size(34, 34);
+            this.btnAbout.TabIndex = 7;
+            this.btnAbout.TabStop = false;
+            this.toolTip1.SetToolTip(this.btnAbout, "left-click to open About dialog\r\nright-click to open Statistics [ALT-I]");
+            this.btnAbout.UseVisualStyleBackColor = true;
+            this.btnAbout.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btnAbout_MouseDown);
+            // 
+            // btnSettings
+            // 
+            this.btnSettings.BackgroundImage = global::MCRatings.Properties.Resources.cog32;
+            this.btnSettings.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btnSettings.FlatAppearance.BorderSize = 0;
+            this.btnSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSettings.Location = new System.Drawing.Point(10, 21);
+            this.btnSettings.Name = "btnSettings";
+            this.btnSettings.Size = new System.Drawing.Size(34, 34);
+            this.btnSettings.TabIndex = 6;
+            this.btnSettings.TabStop = false;
+            this.toolTip1.SetToolTip(this.btnSettings, "Open Settings menu");
+            this.btnSettings.UseVisualStyleBackColor = true;
+            this.btnSettings.Click += new System.EventHandler(this.btnSettings_Click);
+            // 
+            // btnReconnect
+            // 
+            this.btnReconnect.BackColor = System.Drawing.Color.Transparent;
+            this.btnReconnect.FlatAppearance.BorderSize = 0;
+            this.btnReconnect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnReconnect.Image = global::MCRatings.Properties.Resources.refresh_2a2b2c;
+            this.btnReconnect.Location = new System.Drawing.Point(51, 28);
+            this.btnReconnect.Name = "btnReconnect";
+            this.btnReconnect.Size = new System.Drawing.Size(23, 22);
+            this.btnReconnect.TabIndex = 0;
+            this.toolTip1.SetToolTip(this.btnReconnect, "Reconnect to JRiver and refresh Playlists");
+            this.btnReconnect.UseVisualStyleBackColor = false;
+            this.btnReconnect.Click += new System.EventHandler(this.btnReconnect_Click);
+            // 
+            // btnClear
+            // 
+            this.btnClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnClear.Image = global::MCRatings.Properties.Resources.close_win_414445;
+            this.btnClear.Location = new System.Drawing.Point(208, 445);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(23, 22);
+            this.btnClear.TabIndex = 11;
+            this.toolTip1.SetToolTip(this.btnClear, "clear search box");
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
+            // btnFindNext
+            // 
+            this.btnFindNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnFindNext.Image = global::MCRatings.Properties.Resources.search_515151;
+            this.btnFindNext.Location = new System.Drawing.Point(182, 445);
+            this.btnFindNext.Name = "btnFindNext";
+            this.btnFindNext.Size = new System.Drawing.Size(23, 22);
+            this.btnFindNext.TabIndex = 10;
+            this.toolTip1.SetToolTip(this.btnFindNext, "find next");
+            this.btnFindNext.UseVisualStyleBackColor = true;
+            this.btnFindNext.Click += new System.EventHandler(this.btnSearch_Click);
+            // 
+            // lblTaskCount
+            // 
+            this.lblTaskCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblTaskCount.AutoSize = true;
+            this.lblTaskCount.BackColor = System.Drawing.Color.Transparent;
+            this.lblTaskCount.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTaskCount.ForeColor = System.Drawing.Color.Teal;
+            this.lblTaskCount.Location = new System.Drawing.Point(907, 450);
+            this.lblTaskCount.Margin = new System.Windows.Forms.Padding(0);
+            this.lblTaskCount.Name = "lblTaskCount";
+            this.lblTaskCount.Size = new System.Drawing.Size(19, 13);
+            this.lblTaskCount.TabIndex = 18;
+            this.lblTaskCount.Text = "23";
+            this.toolTip1.SetToolTip(this.lblTaskCount, "Posters/Thumbnails are downloading in the background.\r\nIf Post-processing scripts" +
+        " are enabled, tasks will take longer to complete.");
+            // 
             // comboLists
             // 
             this.comboLists.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
@@ -748,103 +866,79 @@
             this.lblStatus.TabIndex = 16;
             this.lblStatus.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
-            // imgSpinner
+            // openToolStripMenuItem
             // 
-            this.imgSpinner.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.imgSpinner.Image = global::MCRatings.Properties.Resources.Spinner32;
-            this.imgSpinner.Location = new System.Drawing.Point(900, 440);
-            this.imgSpinner.Name = "imgSpinner";
-            this.imgSpinner.Size = new System.Drawing.Size(34, 34);
-            this.imgSpinner.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.imgSpinner.TabIndex = 17;
-            this.imgSpinner.TabStop = false;
-            this.toolTip1.SetToolTip(this.imgSpinner, "Posters/Thumbnails are downloading in the background.\r\nIf Post-processing scripts" +
-        " are enabled, tasks will take longer to complete.");
+            this.openToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuOpenPosterBrowser,
+            this.menuOpenFolder,
+            this.menuOpenImdb,
+            this.menuOpenTmdb,
+            this.menuOpenTrailer,
+            this.toolStripSeparator12,
+            this.menuOpenStatistics});
+            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.openToolStripMenuItem.Text = "Open...";
             // 
-            // btnAbout
+            // menuOpenPosterBrowser
             // 
-            this.btnAbout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAbout.BackgroundImage = global::MCRatings.Properties.Resources.help32;
-            this.btnAbout.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnAbout.FlatAppearance.BorderSize = 0;
-            this.btnAbout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAbout.Location = new System.Drawing.Point(938, 439);
-            this.btnAbout.Name = "btnAbout";
-            this.btnAbout.Size = new System.Drawing.Size(34, 34);
-            this.btnAbout.TabIndex = 7;
-            this.btnAbout.TabStop = false;
-            this.toolTip1.SetToolTip(this.btnAbout, "left-click to open About dialog\r\nright-click to open Statistics [ALT-I]");
-            this.btnAbout.UseVisualStyleBackColor = true;
-            this.btnAbout.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btnAbout_MouseDown);
+            this.menuOpenPosterBrowser.Name = "menuOpenPosterBrowser";
+            this.menuOpenPosterBrowser.ShortcutKeyDisplayString = "";
+            this.menuOpenPosterBrowser.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.B)));
+            this.menuOpenPosterBrowser.Size = new System.Drawing.Size(193, 22);
+            this.menuOpenPosterBrowser.Text = "Poster Browser";
+            this.menuOpenPosterBrowser.ToolTipText = "You can also just click on the \"Poster\" cell for the movie";
+            this.menuOpenPosterBrowser.Click += new System.EventHandler(this.menuOpenPosterBrowser_Click);
             // 
-            // btnSettings
+            // menuOpenFolder
             // 
-            this.btnSettings.BackgroundImage = global::MCRatings.Properties.Resources.cog32;
-            this.btnSettings.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnSettings.FlatAppearance.BorderSize = 0;
-            this.btnSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSettings.Location = new System.Drawing.Point(10, 21);
-            this.btnSettings.Name = "btnSettings";
-            this.btnSettings.Size = new System.Drawing.Size(34, 34);
-            this.btnSettings.TabIndex = 6;
-            this.btnSettings.TabStop = false;
-            this.toolTip1.SetToolTip(this.btnSettings, "Open Settings menu");
-            this.btnSettings.UseVisualStyleBackColor = true;
-            this.btnSettings.Click += new System.EventHandler(this.btnSettings_Click);
+            this.menuOpenFolder.Name = "menuOpenFolder";
+            this.menuOpenFolder.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M)));
+            this.menuOpenFolder.Size = new System.Drawing.Size(193, 22);
+            this.menuOpenFolder.Text = "Movie Folder";
+            this.menuOpenFolder.ToolTipText = "CTRL+click on the \"File path\" cell also works";
+            this.menuOpenFolder.Click += new System.EventHandler(this.menuOpenFolder_Click);
             // 
-            // btnReconnect
+            // menuOpenImdb
             // 
-            this.btnReconnect.BackColor = System.Drawing.Color.Transparent;
-            this.btnReconnect.FlatAppearance.BorderSize = 0;
-            this.btnReconnect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnReconnect.Image = global::MCRatings.Properties.Resources.refresh_2a2b2c;
-            this.btnReconnect.Location = new System.Drawing.Point(51, 28);
-            this.btnReconnect.Name = "btnReconnect";
-            this.btnReconnect.Size = new System.Drawing.Size(23, 22);
-            this.btnReconnect.TabIndex = 0;
-            this.toolTip1.SetToolTip(this.btnReconnect, "Reconnect to JRiver and refresh Playlists");
-            this.btnReconnect.UseVisualStyleBackColor = false;
-            this.btnReconnect.Click += new System.EventHandler(this.btnReconnect_Click);
+            this.menuOpenImdb.Name = "menuOpenImdb";
+            this.menuOpenImdb.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
+            this.menuOpenImdb.Size = new System.Drawing.Size(193, 22);
+            this.menuOpenImdb.Text = "IMDb page";
+            this.menuOpenImdb.ToolTipText = "CTRL+click on the IMDB cell also works";
+            this.menuOpenImdb.Click += new System.EventHandler(this.menuOpenImdb_Click);
             // 
-            // btnClear
+            // menuOpenTmdb
             // 
-            this.btnClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnClear.Image = global::MCRatings.Properties.Resources.close_win_414445;
-            this.btnClear.Location = new System.Drawing.Point(208, 445);
-            this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(23, 22);
-            this.btnClear.TabIndex = 11;
-            this.toolTip1.SetToolTip(this.btnClear, "clear search box");
-            this.btnClear.UseVisualStyleBackColor = true;
-            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            this.menuOpenTmdb.Name = "menuOpenTmdb";
+            this.menuOpenTmdb.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.U)));
+            this.menuOpenTmdb.Size = new System.Drawing.Size(193, 22);
+            this.menuOpenTmdb.Text = "TMDb page";
+            this.menuOpenTmdb.ToolTipText = "This one is only available after you \"Get Movie Info\"";
+            this.menuOpenTmdb.Click += new System.EventHandler(this.menuOpenTmdb_Click);
             // 
-            // btnFindNext
+            // menuOpenTrailer
             // 
-            this.btnFindNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnFindNext.Image = global::MCRatings.Properties.Resources.search_515151;
-            this.btnFindNext.Location = new System.Drawing.Point(182, 445);
-            this.btnFindNext.Name = "btnFindNext";
-            this.btnFindNext.Size = new System.Drawing.Size(23, 22);
-            this.btnFindNext.TabIndex = 10;
-            this.toolTip1.SetToolTip(this.btnFindNext, "find next");
-            this.btnFindNext.UseVisualStyleBackColor = true;
-            this.btnFindNext.Click += new System.EventHandler(this.btnSearch_Click);
+            this.menuOpenTrailer.Name = "menuOpenTrailer";
+            this.menuOpenTrailer.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.T)));
+            this.menuOpenTrailer.Size = new System.Drawing.Size(193, 22);
+            this.menuOpenTrailer.Text = "Movie Trailer";
+            this.menuOpenTrailer.ToolTipText = "CTRL+click on the Trailer cell also works";
+            this.menuOpenTrailer.Click += new System.EventHandler(this.menuOpenTrailer_Click);
             // 
-            // lblTaskCount
+            // menuOpenStatistics
             // 
-            this.lblTaskCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblTaskCount.AutoSize = true;
-            this.lblTaskCount.BackColor = System.Drawing.Color.Transparent;
-            this.lblTaskCount.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTaskCount.ForeColor = System.Drawing.Color.Teal;
-            this.lblTaskCount.Location = new System.Drawing.Point(907, 450);
-            this.lblTaskCount.Margin = new System.Windows.Forms.Padding(0);
-            this.lblTaskCount.Name = "lblTaskCount";
-            this.lblTaskCount.Size = new System.Drawing.Size(19, 13);
-            this.lblTaskCount.TabIndex = 18;
-            this.lblTaskCount.Text = "23";
-            this.toolTip1.SetToolTip(this.lblTaskCount, "Posters/Thumbnails are downloading in the background.\r\nIf Post-processing scripts" +
-        " are enabled, tasks will take longer to complete.");
+            this.menuOpenStatistics.Name = "menuOpenStatistics";
+            this.menuOpenStatistics.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.K)));
+            this.menuOpenStatistics.Size = new System.Drawing.Size(193, 22);
+            this.menuOpenStatistics.Text = "Statistics";
+            this.menuOpenStatistics.ToolTipText = "Right-click on the \"Help\" icon also opens Statistics";
+            this.menuOpenStatistics.Click += new System.EventHandler(this.menuOpenStatistics_Click);
+            // 
+            // toolStripSeparator12
+            // 
+            this.toolStripSeparator12.Name = "toolStripSeparator12";
+            this.toolStripSeparator12.Size = new System.Drawing.Size(190, 6);
             // 
             // MCRatingsUI
             // 
@@ -887,8 +981,8 @@
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MCRatingsUI_KeyDown);
             this.MouseLeave += new System.EventHandler(this.MCRatingsUI_MouseLeave);
             this.gridMenu.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.gridMovies)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgSpinner)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridMovies)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -969,6 +1063,14 @@
         private System.Windows.Forms.ToolStripMenuItem menuRemovePoster;
         private System.Windows.Forms.PictureBox imgSpinner;
         private System.Windows.Forms.Label lblTaskCount;
+        private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem menuOpenPosterBrowser;
+        private System.Windows.Forms.ToolStripMenuItem menuOpenFolder;
+        private System.Windows.Forms.ToolStripMenuItem menuOpenImdb;
+        private System.Windows.Forms.ToolStripMenuItem menuOpenTmdb;
+        private System.Windows.Forms.ToolStripMenuItem menuOpenTrailer;
+        private System.Windows.Forms.ToolStripMenuItem menuOpenStatistics;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
     }
 }
 
