@@ -23,6 +23,7 @@ This is what **MCRatings** can do for you:
 
 - Gets movie metadata from OMDb and TMDb including IMDb/TMDb/RottenTomatoes/Metacritic ratings...
 - ... Actors, Director, Writers, Tagline, Keywords, Awards, Plot, Website, Trailer... and a few more!
+- Poster selection and download, courtesy of the embedded Poster Browser
 - Uses IMDb ID if available (tt number), or movie Title/Year otherwise.
 - Automagically extracts movie title/year from your filenames and folders.
 - Uses the JRiver API to load and update movie tags, so there's no need to mess with Sidecar XMLs.
@@ -37,7 +38,7 @@ This is what **MCRatings** can do for you:
 
 Requirements
 ------
-- .Net Framework 4.6.2 or above (Windows 10 should have it by default)
+- .NET Framework 4.6.2 or above (Windows 10 should have it by default)
 - JRiver MediaCenter must be installed on same PC (client or server)
 - OMDb API key (free or otherwise) - get it from [here](http://www.omdbapi.com/apikey.aspx)
 - TMDb API key (free) - get it from [here](http://www.themoviedb.org/settings/api) (you may need to register a TMDb account first)
