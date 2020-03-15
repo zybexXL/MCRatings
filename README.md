@@ -21,17 +21,15 @@ Features
 ------
 This is what **MCRatings** can do for you:
 
-- Gets movie metadata from OMDb and TMDb including IMDb/TMDb/RottenTomatoes/Metacritic ratings...
-- ... Actors, Director, Writers, Tagline, Keywords, Awards, Plot, Website, Trailer... and a few more!
+- Get movie metadata including IMDb Rating, TMDb, Rotten Tomatoes, Metacritic scores ...
+- ... Actors, Director, Writers, Awards, Plot, Tagline, Trailer, Website... and a few more!
 - Poster selection and download, courtesy of the embedded Poster Browser
-- Uses IMDb ID if available (tt number), or movie Title/Year otherwise.
-- Automagically extracts movie title/year from your filenames and folders.
+- Actor and Crew thumbnail downloads for each movie
 - Uses the JRiver API to load and update movie tags, so there's no need to mess with Sidecar XMLs.
 - Mapping of which JRiver fields to use and which ones to allow overwrite
+- Color coding of changes for review of new vs previous value before committing it to JRiver
 - Easily revert changes to a movie field, movie row, or entire column of data
-- Lets you easily review new and changed movie metadata before committing it to Jriver.
 - Very functional UI with search/filtering/sort, batch update, click-to-open IMDb page and movie folder, etc.
-- Color coding of changed fields and fields with new information; review of new vs previous value
 - Easter eggs!
 
 <br>
