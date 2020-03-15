@@ -73,7 +73,7 @@ namespace MCRatings
         {
             if (this.IsHandleCreated && this.Visible && m.Msg == WM_APPCOMMAND)
             {
-                int key = (m.LParam.ToInt32() >> 16) & 0x3f;
+                long key = (m.LParam.ToInt64() >> 16) & 0x3f;
                 // detect APPCOMMAND_BROWSER_BACKWARD
                 if (key == 7)
                     processKey(Keys.BrowserHome);
