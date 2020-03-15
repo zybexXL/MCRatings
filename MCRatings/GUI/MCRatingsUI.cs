@@ -184,8 +184,10 @@ namespace MCRatings
             else if (e.KeyCode == Keys.F8)                  // get movie info
                 btnGetMovieInfo_Click(null, EventArgs.Empty);
             else if (e.KeyCode == Keys.F10)                  // save
+            {
                 if (DialogResult.Yes == MessageBox.Show("Save changes to JRiver?", "Save changes", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                     btnSave_Click(null, EventArgs.Empty);
+            }
             else
                 e.Handled = false;
 

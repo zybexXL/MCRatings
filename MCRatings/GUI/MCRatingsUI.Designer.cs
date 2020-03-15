@@ -137,7 +137,7 @@
             this.openToolStripMenuItem});
             this.gridMenu.Name = "contextMenuStrip1";
             this.gridMenu.ShowImageMargin = false;
-            this.gridMenu.Size = new System.Drawing.Size(177, 242);
+            this.gridMenu.Size = new System.Drawing.Size(177, 264);
             this.gridMenu.Opening += new System.ComponentModel.CancelEventHandler(this.gridMenu_Opening);
             // 
             // menuTitle

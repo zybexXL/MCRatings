@@ -12,7 +12,7 @@ namespace MCRatings
 {
     static class Program
     {
-        public static Version version = new Version(3, 0);    // major, minor, revision
+        public static Version version = new Version(3, 0, 1);    // major, minor, revision
         public static string tagline = "\"Nothing spreads like fear\" - Contagion (2001)";        // changes on every major or minor release
         public static Settings settings;
 
