@@ -348,7 +348,9 @@ namespace MCRatings
             catch (Exception ex) {
                 Logger.Log(ex, "JRiverAPI.SaveMovie()");
                 Interlocked.Increment(ref Stats.Session.JRError);
-                lastException = ex; }
+                lastException = ex;
+                ok = false;
+            }
             return ok;
         }
 
@@ -469,7 +471,9 @@ namespace MCRatings
 
         private bool SavePoster(IMJFileAutomation file, MovieInfo movie)
         {
-            bool remove = movie.newPoster == null || string.IsNullOrWhiteSpace(movie.newPosterPath);
+            bool remove = movie.newPoster == null && string.IsNullOrWhiteSpace(movie.newPosterPath);
+            if (!remove && movie.newPosterPath == null)
+                return false;
             try
             {
                 string path = remove ? null : movie.newPosterPath;

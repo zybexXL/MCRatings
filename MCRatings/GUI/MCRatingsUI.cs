@@ -982,7 +982,7 @@ namespace MCRatings
             updateModifiedCount();
             if (bar.progress.fail > 0)
                 MessageBox.Show($"Error saving changed movies to JRiver!\n{bar.progress.fail} movies still have unsaved changes."
-                    + jrAPI.lastException == null ? "" : $"\n\nException: {jrAPI.lastException?.Message}",
+                    + (jrAPI.lastException == null ? "" : $"\n\nException: {jrAPI.lastException?.Message}"),
                     "Save failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             gridMovies.Focus();
@@ -2233,19 +2233,21 @@ namespace MCRatings
         // download and copy poster file to movie/common folder
         private string SavePoster(MovieInfo movie)
         {
+            string dest = null;
+            string source = null;
             try
             {
                 // get poster
-                string url = TMDbAPI.GetPosterUrl(movie.newPoster.file_path, PosterSize.Original, out string path);
-                if (url != null && downloader.DownloadWait(url, path, movie))
+                string url = TMDbAPI.GetPosterUrl(movie.newPoster.file_path, PosterSize.Original, out source);
+                if (url != null && downloader.DownloadWait(url, source, movie))
                 {
-                    string dest = null;
-                    string ext = Path.GetExtension(path);
+                    dest = null;
+                    string ext = Path.GetExtension(source);
                     // save to movie folder
                     if (Program.settings.SavePosterMovieFolder || !Program.settings.SavePosterCommonFolder)
                     {
                         dest = Path.ChangeExtension(movie[AppField.File], ext);
-                        File.Copy(path, dest, true);
+                        File.Copy(source, dest, true);
                         dest = Path.GetFileName(dest);  // just the filename needed for JRiver
                     }
                     // save to common folder
@@ -2254,14 +2256,16 @@ namespace MCRatings
                         string filename = Path.GetFileNameWithoutExtension(movie[AppField.File]);
                         dest = Path.Combine(Program.settings.PosterFolder, $"{filename}.{movie.JRKey}{ext}");
                         Directory.CreateDirectory(Program.settings.PosterFolder);
-                        File.Copy(path, dest, true);
+                        File.Copy(source, dest, true);
                         FileInfo fi = new FileInfo(dest);
                         fi.LastWriteTime = DateTime.Now;
                     }
                     return dest;
                 }
             }
-            catch (Exception ex) { Logger.Log(ex, "SavePoster"); }
+            catch (Exception ex) {
+                jrAPI.lastException = ex;       // not a pretty hack. This is for user to see the exception error.
+                Logger.Log(ex, $"SavePoster: Exception copying poster file!\nSource: {source}\nTarget: {dest}"); }
             return null;
         }
 
