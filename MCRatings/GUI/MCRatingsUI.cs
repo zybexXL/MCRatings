@@ -1445,13 +1445,25 @@ namespace MCRatings
 
         private void menuLockField_Click(object sender, EventArgs e)
         {
+            bool shift = ModifierKeys.HasFlag(Keys.Shift);
             DataGridView.HitTestInfo hit = gridMovies.HitTest(ContextMenuPosition.X, ContextMenuPosition.Y);
             if (hit.RowIndex >= 0 && hit.ColumnIndex > 1 && hit.Type == DataGridViewHitTestType.Cell)
             {
                 AppField field = (AppField)hit.ColumnIndex;
-                MovieInfo m = gridMovies.Rows[hit.RowIndex].Cells[0].Value as MovieInfo;
-                bool state = LockedCells.Toggle(m.JRKey, field);
-                gridMovies.InvalidateRow(hit.RowIndex);
+                if (shift)
+                {
+                    var movies = GetSelectedMovies();
+                    foreach (var mov in movies)
+                        LockedCells.Toggle(mov.JRKey, field);
+                    gridMovies.Invalidate();
+                    gridMovies.Refresh();
+                }
+                else
+                {
+                    MovieInfo m = gridMovies.Rows[hit.RowIndex].Cells[0].Value as MovieInfo;
+                    bool state = LockedCells.Toggle(m.JRKey, field);
+                    gridMovies.InvalidateRow(hit.RowIndex);
+                }
             }
         }
 
