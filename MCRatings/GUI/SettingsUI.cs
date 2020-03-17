@@ -447,12 +447,14 @@ namespace MCRatings
 
         private void tagMenuItem_Click(object sender, EventArgs e)
         {
+            bool shift = ModifierKeys.HasFlag(Keys.Shift);
             var item = sender as ToolStripMenuItem;
             ContextMenuStrip menu = (sender as ToolStripMenuItem)?.Owner as ContextMenuStrip;
             TextBox box = menu.SourceControl as TextBox;
             string tag = item?.Tag as string;
 
             if (box == null || tag == null) return;
+            if (shift) tag = tag.Replace("$", "%");
             box.SelectedText = tag + " ";
         }
 

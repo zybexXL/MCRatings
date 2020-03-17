@@ -258,41 +258,50 @@ namespace MCRatings
 
             if (script == null) return false;
             string image = item.destPath;
-            script = Regex.Replace(script, @"\$imagename", quote(Path.GetFileNameWithoutExtension(image)), RegexOptions.IgnoreCase);
-            script = Regex.Replace(script, @"\$imagefile", quote(Path.GetFileName(image)), RegexOptions.IgnoreCase);
-            script = Regex.Replace(script, @"\$imagedir", quote(Path.GetDirectoryName(image)), RegexOptions.IgnoreCase);
-            script = Regex.Replace(script, @"\$image", quote(image), RegexOptions.IgnoreCase);
+            script = replace(script, "imagename", Path.GetFileNameWithoutExtension(image));
+            script = replace(script, "imagefile", Path.GetFileName(image));
+            script = replace(script, "imagedir", Path.GetDirectoryName(image));
+            script = replace(script, "image", image);
 
             string movieFile = item.movie[AppField.File] ?? "";
-            script = Regex.Replace(script, @"\$moviename", quote(Path.GetFileNameWithoutExtension(movieFile)), RegexOptions.IgnoreCase);
-            script = Regex.Replace(script, @"\$moviefile", quote(Path.GetFileName(movieFile)), RegexOptions.IgnoreCase);
-            script = Regex.Replace(script, @"\$moviedir", quote(Path.GetDirectoryName(movieFile)), RegexOptions.IgnoreCase);
-            script = Regex.Replace(script, @"\$movie", quote(movieFile), RegexOptions.IgnoreCase);
+            script = replace(script, "moviename", Path.GetFileNameWithoutExtension(movieFile));
+            script = replace(script, "moviefile", Path.GetFileName(movieFile));
+            script = replace(script, "moviedir", Path.GetDirectoryName(movieFile));
+            script = replace(script, "movie", movieFile);
 
-            script = Regex.Replace(script, @"\$rating", quote(item.movie[AppField.MPAARating]), RegexOptions.IgnoreCase);
-            script = Regex.Replace(script, @"\$metascore", quote(item.movie[AppField.Metascore]), RegexOptions.IgnoreCase);
-            script = Regex.Replace(script, @"\$imdbscore", quote(item.movie[AppField.IMDbRating]), RegexOptions.IgnoreCase);
-            script = Regex.Replace(script, @"\$rottenscore", quote(item.movie[AppField.RottenTomatoes]), RegexOptions.IgnoreCase);
-            script = Regex.Replace(script, @"\$languages?", quote(item.movie[AppField.Language]), RegexOptions.IgnoreCase);
-            script = Regex.Replace(script, @"\$studios?", quote(item.movie[AppField.Production]), RegexOptions.IgnoreCase);
-            script = Regex.Replace(script, @"\$country", quote(item.movie[AppField.Country]), RegexOptions.IgnoreCase);
-            script = Regex.Replace(script, @"\$awards?", quote(item.movie[AppField.Awards]), RegexOptions.IgnoreCase);
+            script = replace(script, "rating", item.movie[AppField.MPAARating]);
+            script = replace(script, "metascore", item.movie[AppField.Metascore]);
+            script = replace(script, "imdbscore", item.movie[AppField.IMDbRating]);
+            script = replace(script, "rottenscore", item.movie[AppField.RottenTomatoes]);
+            script = replace(script, "languages?", item.movie[AppField.Language]);
+            script = replace(script, "studios?", item.movie[AppField.Production]);
+            script = replace(script, "country", item.movie[AppField.Country]);
+            script = replace(script, "awards?", item.movie[AppField.Awards]);
 
-            script = Regex.Replace(script, @"\$title", quote(item.movie.Title), RegexOptions.IgnoreCase);
-            script = Regex.Replace(script, @"\$originaltitle", quote(item.movie[AppField.OriginalTitle]), RegexOptions.IgnoreCase);
-            script = Regex.Replace(script, @"\$year", quote(item.movie.Year), RegexOptions.IgnoreCase);
-            script = Regex.Replace(script, @"\$imdb(id)?", quote(item.movie.IMDBid), RegexOptions.IgnoreCase);
+            script = replace(script, "title", item.movie.Title);
+            script = replace(script, "originaltitle", item.movie[AppField.OriginalTitle]);
+            script = replace(script, "year", item.movie.Year);
+            script = replace(script, "imdb(id)?", item.movie.IMDBid);
 
-            script = Regex.Replace(script, @"\$namerole", quote($"{item.person?.name} [{item.person?.job ?? item.person?.character}]"), RegexOptions.IgnoreCase);
-            script = Regex.Replace(script, @"\$name", quote(item.person?.name), RegexOptions.IgnoreCase);
-            script = Regex.Replace(script, @"\$job", quote(item.person?.job), RegexOptions.IgnoreCase);
-            script = Regex.Replace(script, @"\$department", quote(item.person?.department), RegexOptions.IgnoreCase);
-            script = Regex.Replace(script, @"\$character", quote(item.person?.character), RegexOptions.IgnoreCase);
-            script = Regex.Replace(script, @"\$role", quote(item.person?.job ?? item.person?.character), RegexOptions.IgnoreCase);
-            script = Regex.Replace(script, @"\$type", item.person == null ? "POSTER" : item.person.job != null ? "CREW" : "CAST", RegexOptions.IgnoreCase);
+            script = replace(script, "namerole", $"{item.person?.name} [{item.person?.job ?? item.person?.character}]");
+            script = replace(script, "name", item.person?.name);
+            script = replace(script, "job", item.person?.job);
+            script = replace(script, "department", item.person?.department);
+            script = replace(script, "character", item.person?.character);
+            script = replace(script, "role", item.person?.job ?? item.person?.character);
+            script = replace(script, "type", item.person == null ? "POSTER" : item.person.job != null ? "CREW" : "CAST");
 
-            script = Regex.Replace(script, @"\\""(.*?)""", "$1");
             return ExecuteCommand(script, Path.GetDirectoryName(image));
+        }
+
+        string replace(string text, string tag, string replacement)
+        {
+            // tags with double $$ => no quotes
+            text = Regex.Replace(text, $@"%{tag}", replacement ?? "", RegexOptions.IgnoreCase);
+            text = Regex.Replace(text, $@"""(\${tag})", $"\"{replacement}", RegexOptions.IgnoreCase);
+            // tags with single $ => quote if needed
+            text = Regex.Replace(text, $@"\${tag}", quote(replacement), RegexOptions.IgnoreCase);
+            return text;
         }
 
         string quote(string arg)
