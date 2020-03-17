@@ -258,11 +258,13 @@ namespace MCRatings
 
             if (script == null) return false;
             string image = item.destPath;
+            script = Regex.Replace(script, @"\$imagename", quote(Path.GetFileNameWithoutExtension(image)), RegexOptions.IgnoreCase);
             script = Regex.Replace(script, @"\$imagefile", quote(Path.GetFileName(image)), RegexOptions.IgnoreCase);
             script = Regex.Replace(script, @"\$imagedir", quote(Path.GetDirectoryName(image)), RegexOptions.IgnoreCase);
             script = Regex.Replace(script, @"\$image", quote(image), RegexOptions.IgnoreCase);
 
             string movieFile = item.movie[AppField.File] ?? "";
+            script = Regex.Replace(script, @"\$moviename", quote(Path.GetFileNameWithoutExtension(movieFile)), RegexOptions.IgnoreCase);
             script = Regex.Replace(script, @"\$moviefile", quote(Path.GetFileName(movieFile)), RegexOptions.IgnoreCase);
             script = Regex.Replace(script, @"\$moviedir", quote(Path.GetDirectoryName(movieFile)), RegexOptions.IgnoreCase);
             script = Regex.Replace(script, @"\$movie", quote(movieFile), RegexOptions.IgnoreCase);
@@ -281,18 +283,21 @@ namespace MCRatings
             script = Regex.Replace(script, @"\$year", quote(item.movie.Year), RegexOptions.IgnoreCase);
             script = Regex.Replace(script, @"\$imdb(id)?", quote(item.movie.IMDBid), RegexOptions.IgnoreCase);
 
+            script = Regex.Replace(script, @"\$namerole", quote($"{item.person?.name} [{item.person?.job ?? item.person?.character}]"), RegexOptions.IgnoreCase);
             script = Regex.Replace(script, @"\$name", quote(item.person?.name), RegexOptions.IgnoreCase);
             script = Regex.Replace(script, @"\$job", quote(item.person?.job), RegexOptions.IgnoreCase);
             script = Regex.Replace(script, @"\$department", quote(item.person?.department), RegexOptions.IgnoreCase);
             script = Regex.Replace(script, @"\$character", quote(item.person?.character), RegexOptions.IgnoreCase);
+            script = Regex.Replace(script, @"\$role", quote(item.person?.job ?? item.person?.character), RegexOptions.IgnoreCase);
             script = Regex.Replace(script, @"\$type", item.person == null ? "POSTER" : item.person.job != null ? "CREW" : "CAST", RegexOptions.IgnoreCase);
 
+            script = Regex.Replace(script, @"\\""(.*?)""", "$1");
             return ExecuteCommand(script, Path.GetDirectoryName(image));
         }
 
         string quote(string arg)
         {
-            char[] needQuotes = { ' ','"','&' };
+            char[] needQuotes = { ' ','"','&', '^' };
 
             arg = arg?.Trim();
             if (string.IsNullOrWhiteSpace(arg)) return "\"\"";   // empty

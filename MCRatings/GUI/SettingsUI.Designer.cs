@@ -70,6 +70,7 @@
             this.chkGetActorPics = new System.Windows.Forms.CheckBox();
             this.txtThumbScript = new System.Windows.Forms.TextBox();
             this.scriptTagMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tagMenuHeader = new System.Windows.Forms.ToolStripMenuItem();
             this.movieTitleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.movieYearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.originalTitleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -97,6 +98,7 @@
             this.tagMenuJob = new System.Windows.Forms.ToolStripMenuItem();
             this.tagMenuDepartment = new System.Windows.Forms.ToolStripMenuItem();
             this.tagMenuCharacter = new System.Windows.Forms.ToolStripMenuItem();
+            this.tagMenuRole = new System.Windows.Forms.ToolStripMenuItem();
             this.txtPosterScript = new System.Windows.Forms.TextBox();
             this.txtTMDBkeys = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -141,7 +143,7 @@
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.btnClose = new System.Windows.Forms.Button();
-            this.iNSERTARGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tagMenuNameRole = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.gridFields)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.maxListLimit)).BeginInit();
             this.scriptTagMenu.SuspendLayout();
@@ -653,7 +655,7 @@
             // scriptTagMenu
             // 
             this.scriptTagMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.iNSERTARGToolStripMenuItem,
+            this.tagMenuHeader,
             this.movieTitleToolStripMenuItem,
             this.movieYearToolStripMenuItem,
             this.originalTitleToolStripMenuItem,
@@ -680,15 +682,25 @@
             this.tagMenuName,
             this.tagMenuJob,
             this.tagMenuDepartment,
-            this.tagMenuCharacter});
+            this.tagMenuCharacter,
+            this.tagMenuRole,
+            this.tagMenuNameRole});
             this.scriptTagMenu.Name = "scriptTagMenu";
-            this.scriptTagMenu.Size = new System.Drawing.Size(196, 578);
+            this.scriptTagMenu.Size = new System.Drawing.Size(218, 622);
             this.scriptTagMenu.Opening += new System.ComponentModel.CancelEventHandler(this.scriptTagMenu_Opening);
+            // 
+            // tagMenuHeader
+            // 
+            this.tagMenuHeader.BackColor = System.Drawing.SystemColors.Info;
+            this.tagMenuHeader.Enabled = false;
+            this.tagMenuHeader.Name = "tagMenuHeader";
+            this.tagMenuHeader.Size = new System.Drawing.Size(217, 22);
+            this.tagMenuHeader.Text = "INSERT PARAMETER:";
             // 
             // movieTitleToolStripMenuItem
             // 
             this.movieTitleToolStripMenuItem.Name = "movieTitleToolStripMenuItem";
-            this.movieTitleToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.movieTitleToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
             this.movieTitleToolStripMenuItem.Tag = "$title";
             this.movieTitleToolStripMenuItem.Text = "Movie Title";
             this.movieTitleToolStripMenuItem.Click += new System.EventHandler(this.tagMenuItem_Click);
@@ -696,7 +708,7 @@
             // movieYearToolStripMenuItem
             // 
             this.movieYearToolStripMenuItem.Name = "movieYearToolStripMenuItem";
-            this.movieYearToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.movieYearToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
             this.movieYearToolStripMenuItem.Tag = "$year";
             this.movieYearToolStripMenuItem.Text = "Movie Year";
             this.movieYearToolStripMenuItem.Click += new System.EventHandler(this.tagMenuItem_Click);
@@ -704,7 +716,7 @@
             // originalTitleToolStripMenuItem
             // 
             this.originalTitleToolStripMenuItem.Name = "originalTitleToolStripMenuItem";
-            this.originalTitleToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.originalTitleToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
             this.originalTitleToolStripMenuItem.Tag = "$originaltitle";
             this.originalTitleToolStripMenuItem.Text = "Original Title";
             this.originalTitleToolStripMenuItem.Click += new System.EventHandler(this.tagMenuItem_Click);
@@ -712,7 +724,7 @@
             // iMDBIdToolStripMenuItem
             // 
             this.iMDBIdToolStripMenuItem.Name = "iMDBIdToolStripMenuItem";
-            this.iMDBIdToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.iMDBIdToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
             this.iMDBIdToolStripMenuItem.Tag = "$imdb";
             this.iMDBIdToolStripMenuItem.Text = "IMDB id";
             this.iMDBIdToolStripMenuItem.Click += new System.EventHandler(this.tagMenuItem_Click);
@@ -720,12 +732,12 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(192, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(214, 6);
             // 
             // imageFullPathToolStripMenuItem
             // 
             this.imageFullPathToolStripMenuItem.Name = "imageFullPathToolStripMenuItem";
-            this.imageFullPathToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.imageFullPathToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
             this.imageFullPathToolStripMenuItem.Tag = "$image";
             this.imageFullPathToolStripMenuItem.Text = "Image full path";
             this.imageFullPathToolStripMenuItem.Click += new System.EventHandler(this.tagMenuItem_Click);
@@ -733,7 +745,7 @@
             // imageFolderPathToolStripMenuItem
             // 
             this.imageFolderPathToolStripMenuItem.Name = "imageFolderPathToolStripMenuItem";
-            this.imageFolderPathToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.imageFolderPathToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
             this.imageFolderPathToolStripMenuItem.Tag = "$imagedir";
             this.imageFolderPathToolStripMenuItem.Text = "Image folder path";
             this.imageFolderPathToolStripMenuItem.Click += new System.EventHandler(this.tagMenuItem_Click);
@@ -741,7 +753,7 @@
             // imageFilenameToolStripMenuItem
             // 
             this.imageFilenameToolStripMenuItem.Name = "imageFilenameToolStripMenuItem";
-            this.imageFilenameToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.imageFilenameToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
             this.imageFilenameToolStripMenuItem.Tag = "$imagefile";
             this.imageFilenameToolStripMenuItem.Text = "Image filename";
             this.imageFilenameToolStripMenuItem.Click += new System.EventHandler(this.tagMenuItem_Click);
@@ -749,7 +761,7 @@
             // movieFullPathToolStripMenuItem
             // 
             this.movieFullPathToolStripMenuItem.Name = "movieFullPathToolStripMenuItem";
-            this.movieFullPathToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.movieFullPathToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
             this.movieFullPathToolStripMenuItem.Tag = "$movie";
             this.movieFullPathToolStripMenuItem.Text = "Movie full path";
             this.movieFullPathToolStripMenuItem.Click += new System.EventHandler(this.tagMenuItem_Click);
@@ -757,7 +769,7 @@
             // movieFolderPathToolStripMenuItem
             // 
             this.movieFolderPathToolStripMenuItem.Name = "movieFolderPathToolStripMenuItem";
-            this.movieFolderPathToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.movieFolderPathToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
             this.movieFolderPathToolStripMenuItem.Tag = "$moviedir";
             this.movieFolderPathToolStripMenuItem.Text = "Movie folder path";
             this.movieFolderPathToolStripMenuItem.Click += new System.EventHandler(this.tagMenuItem_Click);
@@ -765,7 +777,7 @@
             // movieFilenameToolStripMenuItem
             // 
             this.movieFilenameToolStripMenuItem.Name = "movieFilenameToolStripMenuItem";
-            this.movieFilenameToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.movieFilenameToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
             this.movieFilenameToolStripMenuItem.Tag = "$moviefile";
             this.movieFilenameToolStripMenuItem.Text = "Movie filename";
             this.movieFilenameToolStripMenuItem.Click += new System.EventHandler(this.tagMenuItem_Click);
@@ -773,12 +785,12 @@
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(192, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(214, 6);
             // 
             // languageToolStripMenuItem
             // 
             this.languageToolStripMenuItem.Name = "languageToolStripMenuItem";
-            this.languageToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.languageToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
             this.languageToolStripMenuItem.Tag = "$language";
             this.languageToolStripMenuItem.Text = "Language";
             this.languageToolStripMenuItem.Click += new System.EventHandler(this.tagMenuItem_Click);
@@ -786,7 +798,7 @@
             // countryToolStripMenuItem
             // 
             this.countryToolStripMenuItem.Name = "countryToolStripMenuItem";
-            this.countryToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.countryToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
             this.countryToolStripMenuItem.Tag = "$country";
             this.countryToolStripMenuItem.Text = "Country";
             this.countryToolStripMenuItem.Click += new System.EventHandler(this.tagMenuItem_Click);
@@ -794,7 +806,7 @@
             // studioProducerToolStripMenuItem
             // 
             this.studioProducerToolStripMenuItem.Name = "studioProducerToolStripMenuItem";
-            this.studioProducerToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.studioProducerToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
             this.studioProducerToolStripMenuItem.Tag = "$studio";
             this.studioProducerToolStripMenuItem.Text = "Studio/Producer";
             this.studioProducerToolStripMenuItem.Click += new System.EventHandler(this.tagMenuItem_Click);
@@ -802,7 +814,7 @@
             // awardsToolStripMenuItem
             // 
             this.awardsToolStripMenuItem.Name = "awardsToolStripMenuItem";
-            this.awardsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.awardsToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
             this.awardsToolStripMenuItem.Tag = "$awards";
             this.awardsToolStripMenuItem.Text = "Awards";
             this.awardsToolStripMenuItem.Click += new System.EventHandler(this.tagMenuItem_Click);
@@ -810,12 +822,12 @@
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(192, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(214, 6);
             // 
             // iMDBScoreToolStripMenuItem
             // 
             this.iMDBScoreToolStripMenuItem.Name = "iMDBScoreToolStripMenuItem";
-            this.iMDBScoreToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.iMDBScoreToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
             this.iMDBScoreToolStripMenuItem.Tag = "$imdbscore";
             this.iMDBScoreToolStripMenuItem.Text = "IMDB score";
             this.iMDBScoreToolStripMenuItem.Click += new System.EventHandler(this.tagMenuItem_Click);
@@ -823,7 +835,7 @@
             // metacriticScoreToolStripMenuItem
             // 
             this.metacriticScoreToolStripMenuItem.Name = "metacriticScoreToolStripMenuItem";
-            this.metacriticScoreToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.metacriticScoreToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
             this.metacriticScoreToolStripMenuItem.Tag = "$metascore";
             this.metacriticScoreToolStripMenuItem.Text = "Metacritic score";
             this.metacriticScoreToolStripMenuItem.Click += new System.EventHandler(this.tagMenuItem_Click);
@@ -831,7 +843,7 @@
             // rottenTomatoesScoreToolStripMenuItem
             // 
             this.rottenTomatoesScoreToolStripMenuItem.Name = "rottenTomatoesScoreToolStripMenuItem";
-            this.rottenTomatoesScoreToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.rottenTomatoesScoreToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
             this.rottenTomatoesScoreToolStripMenuItem.Tag = "$rottenscore";
             this.rottenTomatoesScoreToolStripMenuItem.Text = "Rotten Tomatoes score";
             this.rottenTomatoesScoreToolStripMenuItem.Click += new System.EventHandler(this.tagMenuItem_Click);
@@ -839,7 +851,7 @@
             // ratingToolStripMenuItem
             // 
             this.ratingToolStripMenuItem.Name = "ratingToolStripMenuItem";
-            this.ratingToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.ratingToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
             this.ratingToolStripMenuItem.Tag = "$rating";
             this.ratingToolStripMenuItem.Text = "Parental rating";
             this.ratingToolStripMenuItem.Click += new System.EventHandler(this.tagMenuItem_Click);
@@ -847,12 +859,12 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(192, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(214, 6);
             // 
             // imageTypePosterCastCrewToolStripMenuItem
             // 
             this.imageTypePosterCastCrewToolStripMenuItem.Name = "imageTypePosterCastCrewToolStripMenuItem";
-            this.imageTypePosterCastCrewToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.imageTypePosterCastCrewToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
             this.imageTypePosterCastCrewToolStripMenuItem.Tag = "$type";
             this.imageTypePosterCastCrewToolStripMenuItem.Text = "Image type";
             this.imageTypePosterCastCrewToolStripMenuItem.ToolTipText = "$type has one of 3 values: POSTER, CREW or CAST";
@@ -861,7 +873,7 @@
             // tagMenuName
             // 
             this.tagMenuName.Name = "tagMenuName";
-            this.tagMenuName.Size = new System.Drawing.Size(195, 22);
+            this.tagMenuName.Size = new System.Drawing.Size(217, 22);
             this.tagMenuName.Tag = "$name";
             this.tagMenuName.Text = "Name (cast/crew)";
             this.tagMenuName.Click += new System.EventHandler(this.tagMenuItem_Click);
@@ -869,7 +881,7 @@
             // tagMenuJob
             // 
             this.tagMenuJob.Name = "tagMenuJob";
-            this.tagMenuJob.Size = new System.Drawing.Size(195, 22);
+            this.tagMenuJob.Size = new System.Drawing.Size(217, 22);
             this.tagMenuJob.Tag = "$job";
             this.tagMenuJob.Text = "Job title (crew)";
             this.tagMenuJob.Click += new System.EventHandler(this.tagMenuItem_Click);
@@ -877,7 +889,7 @@
             // tagMenuDepartment
             // 
             this.tagMenuDepartment.Name = "tagMenuDepartment";
-            this.tagMenuDepartment.Size = new System.Drawing.Size(195, 22);
+            this.tagMenuDepartment.Size = new System.Drawing.Size(217, 22);
             this.tagMenuDepartment.Tag = "$department";
             this.tagMenuDepartment.Text = "Department (crew)";
             this.tagMenuDepartment.Click += new System.EventHandler(this.tagMenuItem_Click);
@@ -885,10 +897,18 @@
             // tagMenuCharacter
             // 
             this.tagMenuCharacter.Name = "tagMenuCharacter";
-            this.tagMenuCharacter.Size = new System.Drawing.Size(195, 22);
+            this.tagMenuCharacter.Size = new System.Drawing.Size(217, 22);
             this.tagMenuCharacter.Tag = "$character";
             this.tagMenuCharacter.Text = "Character (cast)";
             this.tagMenuCharacter.Click += new System.EventHandler(this.tagMenuItem_Click);
+            // 
+            // tagMenuRole
+            // 
+            this.tagMenuRole.Name = "tagMenuRole";
+            this.tagMenuRole.Size = new System.Drawing.Size(217, 22);
+            this.tagMenuRole.Tag = "$role";
+            this.tagMenuRole.Text = "Role (Character or Job title)";
+            this.tagMenuRole.Click += new System.EventHandler(this.tagMenuItem_Click);
             // 
             // txtPosterScript
             // 
@@ -1536,13 +1556,13 @@
             this.btnClose.UseVisualStyleBackColor = false;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
-            // iNSERTARGToolStripMenuItem
+            // tagMenuNameRole
             // 
-            this.iNSERTARGToolStripMenuItem.BackColor = System.Drawing.SystemColors.Info;
-            this.iNSERTARGToolStripMenuItem.Enabled = false;
-            this.iNSERTARGToolStripMenuItem.Name = "iNSERTARGToolStripMenuItem";
-            this.iNSERTARGToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-            this.iNSERTARGToolStripMenuItem.Text = "INSERT PARAMETER:";
+            this.tagMenuNameRole.Name = "tagMenuNameRole";
+            this.tagMenuNameRole.Size = new System.Drawing.Size(217, 22);
+            this.tagMenuNameRole.Tag = "$namerole";
+            this.tagMenuNameRole.Text = "Name [Role]";
+            this.tagMenuNameRole.Click += new System.EventHandler(this.tagMenuItem_Click);
             // 
             // SettingsUI
             // 
@@ -1701,6 +1721,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dgField;
         private System.Windows.Forms.DataGridViewCheckBoxColumn dgOverwrite;
         private System.Windows.Forms.DataGridViewTextBoxColumn dgSourcePlaceHolder;
-        private System.Windows.Forms.ToolStripMenuItem iNSERTARGToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tagMenuHeader;
+        private System.Windows.Forms.ToolStripMenuItem tagMenuRole;
+        private System.Windows.Forms.ToolStripMenuItem tagMenuNameRole;
     }
 }
