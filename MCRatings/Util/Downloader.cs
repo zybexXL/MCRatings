@@ -21,19 +21,21 @@ namespace MCRatings
         public AutoResetEvent OnFinished;
         public bool running;
         public bool result;
-        public bool convertPNG;
         public MovieInfo movie;
         public TMDbMoviePerson person;
-        public DownloadType imgType;        
+        public DownloadType imgType;
+        public bool isPlaceholder;
+        public bool postProcess;
 
-        public DownloadItem(string URL, string path, MovieInfo m, TMDbMoviePerson p = null, bool pngConvert = false)
+        public DownloadItem(string URL, string path, MovieInfo m, TMDbMoviePerson p = null, bool process = true)
         {
             url = URL;
             destPath = path;
             movie = m;
             person = p;
-            convertPNG = pngConvert;
+            postProcess = process;
             imgType = p == null ? DownloadType.Poster : DownloadType.Person;
+            isPlaceholder = p != null && string.IsNullOrEmpty(p.profile_path);
         }
     }
 
@@ -45,13 +47,13 @@ namespace MCRatings
         public event EventHandler<DownloadItem> OnDownloadComplete;
         public event EventHandler<int> OnQueueChanged;
 
-        int maxThreads = Constants.MaxDownloadThreads;    // parallel downloads
         int activeThreads = 0;
         List<DownloadItem> Queue = new List<DownloadItem>();
         
         AutoResetEvent signal = new AutoResetEvent(false);
         Thread controller;
         bool stop = false;
+        static int count = 0;
 
         public Downloader()
         {
@@ -77,7 +79,7 @@ namespace MCRatings
         }
 
         // starts a new synchronous download or waits for an existing one to complete (if file is already downloading)
-        public bool DownloadWait(string url, string path, MovieInfo movie, TMDbMovieImage person = null, bool overwrite = false)
+        public bool DownloadWait(string url, string path, MovieInfo movie, TMDbMoviePerson person = null, bool overwrite = false, bool process = true)
         {
             if (url == null || path == null) return false;
             if (!overwrite && File.Exists(path) && new FileInfo(path).Length > 0)
@@ -100,7 +102,7 @@ namespace MCRatings
             }
 
             if (task == null || !task.running)
-                return doDownload(new DownloadItem(url, path, movie));
+                return doDownload(new DownloadItem(url, path, movie, person, process));
             else
             {
                 task.OnFinished.WaitOne();
@@ -109,15 +111,15 @@ namespace MCRatings
         }
 
         // asynchronous download
-        public bool QueueDownload(string url, string path, MovieInfo movie, TMDbMoviePerson person = null, bool priority = false, bool overwrite = false, bool convertToPng = false)
+        public bool QueueDownload(string url, string dest, MovieInfo movie, TMDbMoviePerson person = null, bool priority = false, bool overwrite = false, bool process = true)
         {
-            if (url == null || path == null) return false;
-            if (!overwrite && File.Exists(path) && new FileInfo(path).Length > 0)
+            if (url == null || dest == null) return false;
+            if (!overwrite && File.Exists(dest) && new FileInfo(dest).Length > 0)
                 return false;
 
             lock (Queue)
             {
-                var task = Queue.Find(q => q.destPath == path);
+                var task = Queue.Find(q => q.destPath == dest);
                 if (task != null)
                 {
                     if (priority)
@@ -128,7 +130,7 @@ namespace MCRatings
                     return true;   // already queued
                 }
 
-                task = new DownloadItem(url, path, movie, person, convertToPng);
+                task = new DownloadItem(url, dest, movie, person, process);
                 if (priority)
                     Queue.Insert(0, task);
                 else
@@ -142,6 +144,12 @@ namespace MCRatings
 
         void Controller()
         {
+            int maxThreads = Program.settings.ProcessingThreads;
+#if DEBUG
+            //maxThreads = 4;
+#endif
+            if (maxThreads <= 0 || maxThreads > 2 * Environment.ProcessorCount) maxThreads = Environment.ProcessorCount;
+
             while (!stop)
             {
                 try
@@ -193,13 +201,32 @@ namespace MCRatings
         private bool doDownload(DownloadItem item)
         {
             Interlocked.Increment(ref Stats.Session.ImageDownload);
-            bool ok = DownloadUrl(item.url, item.destPath);
+            bool ok = false;
+            try
+            {
+                if (!item.url.ToLower().StartsWith("http:"))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(item.destPath));
+                    File.Copy(item.url, item.destPath, true);
+                    ok = true;
+                }
+                else
+                    ok = DownloadUrl(item.url, item.destPath);
 
-            if (!ok)
-                Interlocked.Increment(ref Stats.Session.ImageDownloadError);
-            else
-                ok = PostProcess(item);
-            
+                if (!ok)
+                    Interlocked.Increment(ref Stats.Session.ImageDownloadError);
+                else
+                {
+                    convertPNG(item);
+                    if (item.postProcess)
+                        ok = PostProcess(item);
+                    if (item.isPlaceholder)
+                        File.SetCreationTimeUtc(item.destPath, Constants.DummyTimestamp);
+                }
+            }
+            catch (Exception ex) {
+                Logger.Log(ex, $"doDownload({item.destPath})");
+                ok = false; }
             return ok;
         }
 
@@ -216,7 +243,9 @@ namespace MCRatings
                     HttpResponseMessage response = client.GetAsync(url).Result;
                     if (response.IsSuccessStatusCode)
                     {
-                        string temp = Path.Combine(Path.GetTempPath(), "MCRatings", Path.GetFileName(url));
+                        int counter = Interlocked.Increment(ref count);
+
+                        string temp = Path.Combine(Path.GetTempPath(), "MCRatings", $"{counter.ToString("D4")}_{Path.GetFileName(url)}");
                         Directory.CreateDirectory(Path.GetDirectoryName(temp));
 
                         using (FileStream sw = new FileStream(temp, FileMode.Create, FileAccess.Write, FileShare.Read))
@@ -240,112 +269,96 @@ namespace MCRatings
                     else Logger.Log($"Error {response.StatusCode} downloading image: {url}");
                 }
             }
-            catch (Exception ex) { Logger.Log(ex, $"Exception downloading image\n\tsource: {url}\n\ttarget: {destpath}"); }
+            catch (Exception ex) {
+                Logger.Log(ex, $"Exception downloading image\n\tsource: {url}\n\ttarget: {destpath}"); }
 
+            return false;
+        }
+
+        bool convertPNG(DownloadItem item)
+        {
+            try
+            {
+                bool convertPNG = item.destPath.ToLower().EndsWith(".png") && !item.url.ToLower().EndsWith(".png");
+                if (convertPNG)
+                {
+                    string original = Path.ChangeExtension(item.destPath, Path.GetExtension(item.url));
+                    File.Move(item.destPath, original);
+                    Util.ConvertToPng(original); 
+                }
+                return true;
+            }
+            catch (Exception ex) { Logger.Log(ex, $"convertPNG({item.destPath})"); }
             return false;
         }
 
         bool PostProcess(DownloadItem item)
         {
-            if (item.convertPNG)
-                item.destPath = Util.ConvertToPng(item.destPath);
+            try
+            {
+                File.SetAttributes(item.destPath, FileAttributes.Archive);
 
-            string script = null;
-            if (item.imgType == DownloadType.Person && Program.settings.RunThumbnailScript)
-                script = Program.settings.ThumbnailScript;
-            else if (item.imgType == DownloadType.Poster && Program.settings.RunPosterScript)
-                script = Program.settings.PosterScript;
+                string script = null;
+                if (item.imgType == DownloadType.Person && Program.settings.RunThumbnailScript)
+                    script = Program.settings.ThumbnailScript;
+                else if (item.imgType == DownloadType.Poster && Program.settings.RunPosterScript)
+                    script = Program.settings.PosterScript;
 
-            if (script == null) return false;
-            string image = item.destPath;
-            script = replace(script, "imagename", Path.GetFileNameWithoutExtension(image));
-            script = replace(script, "imagefile", Path.GetFileName(image));
-            script = replace(script, "imagedir", Path.GetDirectoryName(image));
-            script = replace(script, "image", image);
+                if (script == null) return true;
+                script = Macro.resolveScript(script, item.destPath, item.movie, item.person);
 
-            string movieFile = item.movie[AppField.File] ?? "";
-            script = replace(script, "moviename", Path.GetFileNameWithoutExtension(movieFile));
-            script = replace(script, "moviefile", Path.GetFileName(movieFile));
-            script = replace(script, "moviedir", Path.GetDirectoryName(movieFile));
-            script = replace(script, "movie", movieFile);
-
-            script = replace(script, "rating", item.movie[AppField.MPAARating]);
-            script = replace(script, "metascore", item.movie[AppField.Metascore]);
-            script = replace(script, "imdbscore", item.movie[AppField.IMDbRating]);
-            script = replace(script, "rottenscore", item.movie[AppField.RottenTomatoes]);
-            script = replace(script, "languages?", item.movie[AppField.Language]);
-            script = replace(script, "studios?", item.movie[AppField.Production]);
-            script = replace(script, "country", item.movie[AppField.Country]);
-            script = replace(script, "awards?", item.movie[AppField.Awards]);
-
-            script = replace(script, "title", item.movie.Title);
-            script = replace(script, "originaltitle", item.movie[AppField.OriginalTitle]);
-            script = replace(script, "year", item.movie.Year);
-            script = replace(script, "imdb(id)?", item.movie.IMDBid);
-
-            script = replace(script, "namerole", $"{item.person?.name} [{item.person?.job ?? item.person?.character}]");
-            script = replace(script, "name", item.person?.name);
-            script = replace(script, "job", item.person?.job);
-            script = replace(script, "department", item.person?.department);
-            script = replace(script, "character", item.person?.character);
-            script = replace(script, "role", item.person?.job ?? item.person?.character);
-            script = replace(script, "type", item.person == null ? "POSTER" : item.person.job != null ? "CREW" : "CAST");
-
-            return ExecuteCommand(script, Path.GetDirectoryName(image));
-        }
-
-        string replace(string text, string tag, string replacement)
-        {
-            // tags with double $$ => no quotes
-            text = Regex.Replace(text, $@"%{tag}", replacement ?? "", RegexOptions.IgnoreCase);
-            text = Regex.Replace(text, $@"""(\${tag})", $"\"{replacement}", RegexOptions.IgnoreCase);
-            // tags with single $ => quote if needed
-            text = Regex.Replace(text, $@"\${tag}", quote(replacement), RegexOptions.IgnoreCase);
-            return text;
-        }
-
-        string quote(string arg)
-        {
-            char[] needQuotes = { ' ','"','&', '^' };
-
-            arg = arg?.Trim();
-            if (string.IsNullOrWhiteSpace(arg)) return "\"\"";   // empty
-            if (arg.IndexOfAny(needQuotes) >= 0) return $"\"{arg}\""; // quoted
-            return arg;
+                if (ExecuteCommand(script, Path.GetDirectoryName(item.destPath)))
+                {
+                    // remove A attribute
+                    File.SetAttributes(item.destPath, FileAttributes.Normal);
+                    return true;
+                }
+            }
+            catch (Exception ex) { Logger.Log(ex, $"PostProcess {item.destPath}"); }
+            return false;
         }
 
         bool ExecuteCommand(string cmdLine, string workDir = null)
         {
             if (string.IsNullOrWhiteSpace(cmdLine)) return false;
-            try
+
+            Analytics.Event("Image", "PostProcessing", "PostProcessRuns", 1);
+
+            SplitCommandLine(cmdLine, out string cmd, out string args);
+            if (workDir != null && workDir.StartsWith("\\\\"))
+                workDir = null;
+            ProcessStartInfo info = new ProcessStartInfo()
             {
-                Analytics.Event("Image", "PostProcessing", "PostProcessRuns", 1);
+                FileName = cmd,
+                Arguments = args,
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+                WorkingDirectory = workDir,
+                WindowStyle = ProcessWindowStyle.Hidden,
+            };
 
-                Logger.Log($"Executing PostProcessing command: {cmdLine}");
-                SplitCommandLine(cmdLine, out string cmd, out string args);
-                ProcessStartInfo info = new ProcessStartInfo()
-                {
-                    FileName = cmd,
-                    Arguments = args,
-                    CreateNoWindow = true,
-                    UseShellExecute = false,
-                    WorkingDirectory = workDir,
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                };
+            int timeout = Program.settings.ScriptCommandTimeout * 1000;
+            Process p = Process.Start(info);
+            int pid = p.Id;
+            Logger.Log($"Process {pid,5} Executing PP command: {cmdLine}");
 
-                int timeout = Program.settings.ScriptCommandTimeout * 1000;
-                Process p = Process.Start(info);
-                if (!p.WaitForExit(timeout))
-                {
-                    Logger.Log("Error - Command timed out after {timeout} seconds!");
-                    try { p.Kill(); } catch { }
-                }
-                Logger.Log($"Command exit code = {p.ExitCode}");
-                return p.ExitCode == 0;
+            var stdout = p.StandardOutput.ReadToEndAsync();
+            var stderr = p.StandardError.ReadToEndAsync();
+
+            if (!p.WaitForExit(timeout))
+            {
+                Logger.Log("Error - Command timed out after {timeout} seconds!");
+                try { p.Kill(); } catch { }
             }
-            catch (Exception ex) { Logger.Log(ex, $"ExecuteCommand()"); }
-            return false;
-            
+
+            string output = stdout.Result;
+            string error = stderr.Result;
+            Logger.Log($"Process {pid,5} exitcode: {p.ExitCode}, STDOUT:\n{output}");
+            if (!string.IsNullOrEmpty(error)) Logger.Log($"Process {pid,5} STDERR:\n{error}");
+
+            return p.ExitCode == 0;
         }
 
         void SplitCommandLine(string cmdLine, out string cmd, out string args)

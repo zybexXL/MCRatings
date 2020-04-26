@@ -184,6 +184,63 @@ or if you don't want your NAS disks to spin-up when you're just browsing in JRiv
   <metadata name="scriptTagMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>375, 17</value>
   </metadata>
+  <data name="txtThumbScript.ToolTip" xml:space="preserve">
+    <value>Example: 
+c:\scripts\caption.bat $image $name $role $type
+
+Right-click on the textbox to insert valid $Tags via a menu.
+You can enter a substring of any Tag using the syntax:
+$tag[start]  or  $tag[start,count]
+
+For instance:
+$name[0]  -&gt; first letter of the name
+$name[0,2]  -&gt; first 2 letters of the name</value>
+  </data>
+  <data name="txtPosterScript.ToolTip" xml:space="preserve">
+    <value>Example:
+c:\scripts\jewelCase.bat $image
+
+Right-click on the textbox to insert valid $Tags via a menu.
+You can enter a substring of any Tag using the syntax:
+$tag[start]  or  $tag[start,count]
+
+For instance:
+$name[0]  -&gt; first letter of the name
+$name[0,2]  -&gt; first 2 letters of the name</value>
+  </data>
+  <data name="chkIgnoreArticles.ToolTip" xml:space="preserve">
+    <value>When sorting by Title, ignore articles like The/A/An.
+Titles will still be written correctly to JRiver.
+
+Example: "The Shining" will display as "Shining, The"
+
+The full list of ignored articles can be edited on MCRatings' Settings.xml.
+</value>
+  </data>
+  <data name="txtActorPicsPath.ToolTip" xml:space="preserve">
+    <value>Path to store the Cast/Crew thumbnails.
+
+Right-click on the textbox to insert valid $Tags via a menu.
+You can enter a substring of any Tag using the syntax:
+$tag[start]  or  $tag[start,count]
+
+For instance:
+$tmdb  -&gt; TMDb ID of the movie
+$name[0]  -&gt; first letter of the Actor name
+$name[0,2]  -&gt; first 2 letters of the Actor name</value>
+  </data>
+  <data name="txtPosterPath.ToolTip" xml:space="preserve">
+    <value>Common Path to store movie posters.
+
+Right-click on the textbox to insert valid $Tags via a menu.
+You can enter a substring of any Tag using the syntax:
+$tag[start]  or  $tag[start,count]
+
+For instance:
+$year  -&gt; adds the movie Year
+$year[2,2]  -&gt; 2 last digits of the year
+$title[0]  -&gt; first letter of the movie Title</value>
+  </data>
   <metadata name="colorDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>114, 17</value>
   </metadata>

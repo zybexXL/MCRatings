@@ -92,7 +92,7 @@ namespace MCRatings
                 if (!loading || !Visible || item.destPath != loadingPath)
                     return;
 
-            this.BeginInvoke((MethodInvoker)delegate { Show(position, img2.Image, label2.Text, null, thumbSize, label1.Text, loadingPath); });
+            this.BeginInvoke((MethodInvoker)delegate { Show(position, img1.Image, label1.Text, null, thumbSize, label2.Text, loadingPath); });
         }
 
         private void img1_MouseClick(object sender, MouseEventArgs e)

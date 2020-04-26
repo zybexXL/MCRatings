@@ -325,7 +325,7 @@ namespace MCRatings
         private void OpenBrowserPoster(TMDbMovieImage poster)
         {
             if (poster == null) return;
-            string url = TMDbAPI.GetPosterUrl(poster.file_path, PosterSize.Original, out string cachedOriginal);
+            string url = TMDbAPI.GetImageUrl(poster.file_path, PosterSize.Original, out string cachedOriginal);
             OpenBrowser(url);
         }
 
@@ -334,7 +334,7 @@ namespace MCRatings
         {
             if (movieCredits != null && id >= 0 && movieCredits.Count >= id)
             {
-                string url = TMDbAPI.GetPosterUrl(movieCredits[id], PosterSize.Original, out string cached);
+                string url = TMDbAPI.GetImageUrl(movieCredits[id], PosterSize.Original, out string cached);
                 OpenBrowser(url);
             }
         }
@@ -400,7 +400,8 @@ namespace MCRatings
                     //panelScroll.Top = splitContainer1.Panel1.DisplayRectangle.Height - panelScroll.Height - 2;
                     break;
             }
-            lblCurr.Width = lblThumbError.Width = lblRes.Width = splitContainer1.SplitterDistance - 20;
+            lblCurr.Width = lblRes.Width = splitContainer1.SplitterDistance - 20;
+            lblThumbError.Width = splitContainer1.SplitterDistance - 20 - btnSelectLockOriginal.Right;
             inEvent = false;
         }
 
@@ -452,7 +453,7 @@ namespace MCRatings
 
         public string getPosterHtml(TMDbMovieImage poster)
         {
-            string url = TMDbAPI.GetPosterUrl(poster.file_path, PosterSize.Original, out string cachedOriginal);
+            string url = TMDbAPI.GetImageUrl(poster.file_path, PosterSize.Original, out string cachedOriginal);
             string style1 = "";
             string style2 = "border:1px solid gray;";
             switch (FitModeRight)
@@ -510,7 +511,7 @@ namespace MCRatings
                         string lang = iso639.GetName(poster.iso_639_1) ?? "No Language";
                         string res = $"{poster.width}x{poster.height}";
                         string vote = poster.vote_average.ToString("0.000");
-                        string url = TMDbAPI.GetPosterUrl(poster.file_path, SmallThumbs ? PosterSize.Medium : PosterSize.Large, out string cached);
+                        string url = TMDbAPI.GetImageUrl(poster.file_path, SmallThumbs ? PosterSize.Medium : PosterSize.Large, out string cached);
                         if (File.Exists(cached)) url = new Uri(cached).AbsoluteUri;
                         //if (File.Exists(cachedOriginal)) original = new Uri(cachedOriginal).AbsoluteUri;
                         string size = SmallThumbs ? "small" : "large";
@@ -550,8 +551,8 @@ namespace MCRatings
 
             if (currMovie?.tmdbInfo != null)
             {
-                var cast = currMovie.tmdbInfo?.getCast(20, false);
-                var crew = currMovie.tmdbInfo?.getCrew(2, true);
+                var cast = currMovie.tmdbInfo?.getCast(20, !btnShowAvatars.Checked);
+                var crew = currMovie.tmdbInfo?.getCrew(2, !btnShowAvatars.Checked);
 
                 sb.AppendLine("<div class=\"flex-container wrap\">");
                 foreach (var credit in crew)
@@ -560,7 +561,9 @@ namespace MCRatings
                     {
                         int id = creditIndex.Count;
                         creditIndex.Add(credit.profile_path);
-                        string url = TMDbAPI.GetPosterUrl(credit.profile_path, SmallThumbs ? PosterSize.Medium : PosterSize.Large, out string cached);
+                        string url = TMDbAPI.GetImageUrl(credit.profile_path, SmallThumbs ? PosterSize.Medium : PosterSize.Large, out string cached);
+                        if (url == null && cached == null)
+                            cached = credit.gender == 1 ? Constants.AvatarFemale : Constants.AvatarMale;
                         if (File.Exists(cached)) url = new Uri(cached).AbsoluteUri;
                         //if (File.Exists(cachedOriginal)) original = new Uri(cachedOriginal).AbsoluteUri;
                         string size = SmallThumbs ? "small" : "large";
@@ -581,7 +584,9 @@ namespace MCRatings
                     {
                         int id = creditIndex.Count;
                         creditIndex.Add(credit.profile_path);
-                        string url = TMDbAPI.GetPosterUrl(credit.profile_path, SmallThumbs ? PosterSize.Medium : PosterSize.Large, out string cached);
+                        string url = TMDbAPI.GetImageUrl(credit.profile_path, SmallThumbs ? PosterSize.Medium : PosterSize.Large, out string cached);
+                        if (url == null && cached == null)
+                            cached = credit.gender == 1 ? Constants.AvatarFemale : Constants.AvatarMale;
                         if (File.Exists(cached)) url = new Uri(cached).AbsoluteUri;
                         //if (File.Exists(cachedOriginal)) original = new Uri(cachedOriginal).AbsoluteUri;
                         string size = SmallThumbs ? "small" : "large";
@@ -924,7 +929,7 @@ img {{  vertical-align: middle; }}
 
         private void selectPoster(TMDbMovieImage poster, bool locked = false)
         {
-            if (poster == null) return;
+            //if (poster == null) return;
             selectedPoster = poster;
             selectAndLock = locked;
             OnPosterSelected?.Invoke(this, EventArgs.Empty);
@@ -941,11 +946,27 @@ img {{  vertical-align: middle; }}
             selectPoster(currPoster, true);
         }
 
+        private void btnSelectOriginal_Click(object sender, EventArgs e)
+        {
+            selectPoster(null, false);
+        }
+
+        private void btnSelectLockOriginal_Click(object sender, EventArgs e)
+        {
+            selectPoster(null, true);
+        }
+
         private void btnCast_Click(object sender, EventArgs e)
         {
             showCast = !showCast;
+            btnShowAvatars.Visible = showCast;
             if (showCast)
                 Analytics.Event("GUI", "ActorBrowser");
+            LoadHome();
+        }
+
+        private void btnShowAvatars_Click(object sender, EventArgs e)
+        {
             LoadHome();
         }
     }

@@ -50,6 +50,7 @@ namespace MCRatings
                 case AppField.Budget:
                 case AppField.Trailer:
                 case AppField.Poster:
+                case AppField.TMDbID:
                     return new List<Sources>() { Sources.TMDb };
 
                 case AppField.IMDbID:

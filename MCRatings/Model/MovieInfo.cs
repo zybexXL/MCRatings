@@ -13,6 +13,8 @@ namespace MCRatings
     // tracks changes to fields
     // processes info from JRiver, extracts FTitle and FYear from file name/path
     public enum PosterSize { Small, Medium, Large, Original }
+    public enum ImageType { Poster, Profile }
+
 
     public class MovieInfo
     {

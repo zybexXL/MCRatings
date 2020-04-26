@@ -89,6 +89,7 @@ namespace MCRatings
                         return null;
                 case AppField.Release: return release_dates.getEarliestReleaseDate(release_date); // release_dates?.getReleaseDate(Program.settings.Country) ?? release_date;
                 case AppField.IMDbID: return imdb_id;
+                case AppField.TMDbID: return id <= 0 ? "" : id.ToString();
                 case AppField.TMDbScore: return vote_average.HasValue && vote_average > 0 ? vote_average.Value.ToString("0.0").Replace(",", ".") : null;
                 case AppField.MPAARating: return release_dates?.getCertification();
                 case AppField.Runtime: return runtime.HasValue && runtime.Value > 0 ? runtime.Value.ToString() : null;
@@ -148,7 +149,16 @@ namespace MCRatings
             return credits?.cast?
                 .OrderBy(c => c.order)
                 .Take(max)
-                .Select(c => includeRole ? $"{c.name} [{c.character}]" : c.name).ToList();
+                .Select(c => fixBadChars(includeRole ? $"{c.name} [{c.character}]" : c.name))
+                .ToList();
+        }
+
+        // remove double-quotes and slashes
+        private string fixBadChars(string str)
+        {
+            str = Regex.Replace(str, @" ?[\\/]", ",");
+            str = str.Replace('"', '\'');
+            return str;
         }
 
         private List<string> getCrewNames(int max, string job, bool byDepartment = false)
@@ -157,7 +167,7 @@ namespace MCRatings
             return credits?.crew?
                 .Where(c => byDepartment ? c.department?.ToLower() == filter : c.job?.ToLower() == filter)
                 .Take(max)
-                .Select(c => c.name).ToList();  
+                .Select(c => fixBadChars(c.name)).ToList();  
         }
 
         internal List<TMDbMoviePerson> getCast(int max, bool withPicOnly = false)
@@ -167,14 +177,14 @@ namespace MCRatings
             return cast?.ToList() ?? new List<TMDbMoviePerson>();
         }
 
-        internal List<TMDbMoviePerson> getCrew(int max, bool withPicOnly = false)
+        internal List<TMDbMoviePerson> getCrew(int max, bool withPicOnly = false, bool mainOnly = false)
         {
             if (credits.crew == null) return new List<TMDbMoviePerson>();
             var crew = credits.crew.Where(c => c.job?.ToLower() == "director").Take(max);
             crew = crew.Concat(credits.crew.Where(c => c.job?.ToLower() == "producer").Take(max));
-            crew = crew.Concat(credits.crew.Where(c => c.job?.ToLower() == "executive producer").Take(max));
+            if (!mainOnly) crew = crew.Concat(credits.crew.Where(c => c.job?.ToLower() == "executive producer").Take(max));
             crew = crew.Concat(credits.crew.Where(c => c.department?.ToLower() == "writing").Take(max));
-            crew = crew.Concat(credits.crew.Where(c => c.job?.ToLower() == "original music composer").Take(max));
+            if (!mainOnly) crew = crew.Concat(credits.crew.Where(c => c.job?.ToLower() == "original music composer").Take(max));
 
             if (withPicOnly) crew = crew.Where(c => !string.IsNullOrEmpty(c.profile_path) && c.profile_path != "/");
             return crew.ToList();

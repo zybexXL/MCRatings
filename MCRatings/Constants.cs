@@ -17,7 +17,7 @@ namespace MCRatings
 
     public enum AppField {
         Movie=0, Selected, Filter, Status, FTitle, FYear,       // non-JR fields
-        Title, Year, Imported, Playlists, Release, Poster, IMDbID, 
+        Title, Year, Imported, Playlists, Release, Poster, IMDbID, TMDbID,
         IMDbRating, IMDbVotes, TMDbScore, RottenTomatoes, Metascore, MPAARating,
         Runtime, OriginalTitle, Series, Collections, Tagline, Description, Genre, Keywords,
         Production, Producer, Director, Writers, Actors, Language, Country, Budget, Revenue,
@@ -30,9 +30,17 @@ namespace MCRatings
     {
         public static string JRFileFilter = "[Media Sub Type]=Movie"; //"[media type]=Video";
 
-        public static string DataFolder = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "MCRatings");
+        static string _dataFolder;
+        public static string DataFolder
+        {
+            get
+            {
+                if (_dataFolder == null) _dataFolder = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "MCRatings");
+                return _dataFolder;
+            }
+        }
 
         // for settings migration due to project name change
         public static string JRatingsFolder = Path.Combine(
@@ -45,10 +53,13 @@ namespace MCRatings
         public static string OMDBCache = Path.Combine(DataFolder, "cache");
         public static string AudioCache = Path.Combine(DataFolder, "audio");
         public static string PosterCache = Path.Combine(DataFolder, "posters");
+        public static string ProfileCache = Path.Combine(DataFolder, "castcrew");
+        public static string AvatarMale = Path.Combine(DataFolder, "AvatarMale.png");
+        public static string AvatarFemale = Path.Combine(DataFolder, "AvatarFemale.png");
 
         public static int MaxCacheDays = 7;      // 1 week
-        public static int MaxDownloadThreads = 4;
-        
+        public static DateTime DummyTimestamp = new DateTime(2020, 1, 1, 0, 0, 0);
+
         public static uint[] CellColors = new uint[]
         {
                 (uint)SystemColors.Window.ToArgb(),         // normal
@@ -79,6 +90,7 @@ namespace MCRatings
             { AppField.Release, new FieldInfo("Release", "Date (release)", true, 75, 1) },
             { AppField.Imported, new FieldInfo("Imported", "Date Imported", false, 120, 1) },
             { AppField.IMDbID, new FieldInfo("IMDbID", "IMDb ID", false, 75, 1) },
+            { AppField.TMDbID, new FieldInfo("TMDbID", "TMDb ID", true, 60, 1) },
             { AppField.Poster, new FieldInfo("Poster", "Image File", true, 75, 1) },
             { AppField.IMDbRating, new FieldInfo("IMDb", "IMDb Rating", true, 50, 1) },
             { AppField.IMDbVotes, new FieldInfo("Votes", "IMDb Votes", true, 75, 2) },

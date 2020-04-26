@@ -113,6 +113,10 @@
             this.lblChanges = new System.Windows.Forms.Label();
             this.lblSelected = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
+            this.menuAdvanced = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuCopyInfo = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuPasteInfo = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuDeleteMovies = new System.Windows.Forms.ToolStripMenuItem();
             this.gridMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgSpinner)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridMovies)).BeginInit();
@@ -131,13 +135,14 @@
             this.menuLockField,
             this.menuCopyField,
             this.menuPaste,
+            this.menuAdvanced,
             this.toolStripSeparator2,
             this.menuCreateShortcuts,
             this.menuPosters,
             this.openToolStripMenuItem});
             this.gridMenu.Name = "contextMenuStrip1";
             this.gridMenu.ShowImageMargin = false;
-            this.gridMenu.Size = new System.Drawing.Size(177, 264);
+            this.gridMenu.Size = new System.Drawing.Size(177, 286);
             this.gridMenu.Opening += new System.ComponentModel.CancelEventHandler(this.gridMenu_Opening);
             // 
             // menuTitle
@@ -763,7 +768,7 @@
             this.btnAbout.Size = new System.Drawing.Size(34, 34);
             this.btnAbout.TabIndex = 7;
             this.btnAbout.TabStop = false;
-            this.toolTip1.SetToolTip(this.btnAbout, "left-click to open About dialog\r\nright-click to open Statistics [ALT-I]");
+            this.toolTip1.SetToolTip(this.btnAbout, "left-click to open About dialog\r\nright-click to open Statistics");
             this.btnAbout.UseVisualStyleBackColor = true;
             this.btnAbout.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btnAbout_MouseDown);
             // 
@@ -940,6 +945,44 @@
             this.lblStatus.TabIndex = 16;
             this.lblStatus.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
+            // menuAdvanced
+            // 
+            this.menuAdvanced.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuCopyInfo,
+            this.menuPasteInfo,
+            this.menuDeleteMovies});
+            this.menuAdvanced.Name = "menuAdvanced";
+            this.menuAdvanced.Size = new System.Drawing.Size(176, 22);
+            this.menuAdvanced.Text = "Advanced...";
+            // 
+            // menuCopyInfo
+            // 
+            this.menuCopyInfo.Name = "menuCopyInfo";
+            this.menuCopyInfo.Size = new System.Drawing.Size(204, 22);
+            this.menuCopyInfo.Text = "Copy Movie Info";
+            this.menuCopyInfo.ToolTipText = "Copy info from selected movies into clipboard";
+            this.menuCopyInfo.Click += new System.EventHandler(this.menuCopyInfo_Click);
+            // 
+            // menuPasteInfo
+            // 
+            this.menuPasteInfo.Name = "menuPasteInfo";
+            this.menuPasteInfo.Size = new System.Drawing.Size(204, 22);
+            this.menuPasteInfo.Text = "Paste Movie Info";
+            this.menuPasteInfo.ToolTipText = "Paste movie info from clipboard into selected movies.\r\nEach movie info will be pa" +
+    "sted to the movie with the same IMDBID only, except\r\nwhen only one movie is sele" +
+    "cted/copied.";
+            this.menuPasteInfo.Click += new System.EventHandler(this.menuPasteInfo_Click);
+            // 
+            // menuDeleteMovies
+            // 
+            this.menuDeleteMovies.Name = "menuDeleteMovies";
+            this.menuDeleteMovies.Size = new System.Drawing.Size(204, 22);
+            this.menuDeleteMovies.Text = "Delete Movie Folders (!!!)";
+            this.menuDeleteMovies.ToolTipText = "WARNING - ENTIRE FOLDER IS DELETED!\r\n\r\nDeletes selected movie files and containin" +
+    "g folders.\r\nIf folder contains more than one movie file, then just the Movie fil" +
+    "e is deleted.\r\n";
+            this.menuDeleteMovies.Click += new System.EventHandler(this.menuDeleteMovies_Click);
+            // 
             // MCRatingsUI
             // 
             this.AllowDrop = true;
@@ -1071,6 +1114,10 @@
         private System.Windows.Forms.ToolStripMenuItem menuOpenTrailer;
         private System.Windows.Forms.ToolStripMenuItem menuOpenStatistics;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
+        private System.Windows.Forms.ToolStripMenuItem menuAdvanced;
+        private System.Windows.Forms.ToolStripMenuItem menuCopyInfo;
+        private System.Windows.Forms.ToolStripMenuItem menuPasteInfo;
+        private System.Windows.Forms.ToolStripMenuItem menuDeleteMovies;
     }
 }
 

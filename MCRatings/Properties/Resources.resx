@@ -133,11 +133,14 @@
   <data name="fullsize64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\fullsize64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="LoadingSpinner" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\LoadingSpinner.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Spinner32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Spinner32.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="close_red_619539" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\close_red_619539.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="male" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\male.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="arrow_right_sm_2a2b2c_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\arrow_right_sm_2a2b2c_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -151,14 +154,20 @@
   <data name="Accept32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Accept32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="LoadingSpinner" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LoadingSpinner.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="AcceptLock32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\AcceptLock32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="speaker_off" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\speaker_off.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="close_win_414445" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\close_win_414445.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ETH_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ETH_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="female" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\female.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="home64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\home64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="cog32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\cog32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -166,14 +175,8 @@
   <data name="arrow_left_sm_2a2b2c_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\arrow_left_sm_2a2b2c_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="dimensions64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\dimensions64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="refresh_2a2b2c" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\refresh_2a2b2c.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="BTC_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\BTC_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="movie_reel" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\movie_reel.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -181,14 +184,17 @@
   <data name="resolution64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\resolution64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="dimensions64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\dimensions64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="thumbsUp64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\thumbsUp64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="height32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\height32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="speaker_on" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\speaker_on.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="speaker_off" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\speaker_off.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="grid9_64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\grid9_64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -199,16 +205,19 @@
   <data name="help32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\help32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="home64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\home64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="BTC_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BTC_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="speaker_on" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\speaker_on.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="width32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\width32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="close_win_414445" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\close_win_414445.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ETH_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ETH_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Spinner32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Spinner32.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="user_414445_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\user_414445_24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

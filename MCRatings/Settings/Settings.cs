@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -37,6 +38,8 @@ namespace MCRatings
         public bool StartMaximized = false;
         public bool AddActorRoles = false;
 
+        public string IgnoredArticles = "a;an;the;ein;eine;das;der;die;el;il;la;las;le;les;los;un;une;de l';de la;des;du;l';la;le;les;un;une";
+        public bool SortIgnoreArticles = false;
         public bool SortByImportedDate = false;
         public bool ShowSmallThumbnails = false;
         public bool SavePosterCommonFolder = false;
@@ -48,6 +51,7 @@ namespace MCRatings
         public bool RunPosterScript = false;
         public string PosterScript;
 
+        public bool ActorPlaceholders = true;
         public bool SaveActorThumbnails = false;
         public string ActorFolder;
         public int ActorThumbnailSize = 1;    // medium
@@ -57,6 +61,7 @@ namespace MCRatings
         public bool AnalyticsEnabled = true;
         public string AnalyticsID = Guid.NewGuid().ToString();
         public int ScriptCommandTimeout = 30;
+        public int ProcessingThreads = 0;
 
         [XmlIgnore]
         public Dictionary<AppField, JRFieldMap> FieldMap = new Dictionary<AppField, JRFieldMap>();
@@ -85,8 +90,24 @@ namespace MCRatings
             }
         }
 
+        [XmlIgnore]
         public bool PostersEnabled { get { return FieldMap.TryGetValue(AppField.Poster, out var map) && map.enabled; } }
 
+        [XmlIgnore]
+        public string PosterFolderPrefix { get { return Macro.GetBaseFolder(PosterFolder); } }
+
+        [XmlIgnore]
+        private string _ignoredArticlesRE;
+
+        [XmlIgnore]
+        public string IgnoredArticlesRE { get
+            {
+                if (!string.IsNullOrEmpty(_ignoredArticlesRE) || string.IsNullOrWhiteSpace(IgnoredArticles))
+                    return _ignoredArticlesRE;
+                _ignoredArticlesRE = string.Join("|", IgnoredArticles.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(a => a.Trim()));
+                return _ignoredArticlesRE;
+            } }
 
         public Settings()
         {
@@ -118,6 +139,7 @@ namespace MCRatings
 
         public static Settings Load()
         {
+            CheckAvatars();
             Settings settings = null;
             try
             {
@@ -172,6 +194,18 @@ namespace MCRatings
             }
             catch { }    // errors are handled by the caller when settings is null
             return false;
+        }
+
+        public static void CheckAvatars()
+        {
+            try
+            {
+                if (!File.Exists(Constants.AvatarMale))
+                    Properties.Resources.male.Save(Constants.AvatarMale, ImageFormat.Png);
+                if (!File.Exists(Constants.AvatarFemale))
+                    Properties.Resources.female.Save(Constants.AvatarFemale, ImageFormat.Png);
+            }
+            catch { }
         }
     }
 

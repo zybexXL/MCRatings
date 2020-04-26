@@ -250,12 +250,24 @@ namespace MCRatings
                     var locked = LockedCells.GetLockedFields(m.JRKey);
                     bool updated = false;
                     foreach (AppField f in Enum.GetValues(typeof(AppField)))
+                    {
                         if (f >= AppField.Title && f != AppField.File && f != AppField.Poster && (locked == null || !locked.Contains(f)))
                         {
-                            overwriteField(m, f, src[f], chkOverwrite.Checked, true);
-                            refresh = true;
-                            updated = true;
+                            if (overwriteField(m, f, src[f], chkOverwrite.Checked, true))
+                                refresh = updated = true;
                         }
+                        else if (f == AppField.Poster && src[AppField.Poster] != null && !string.IsNullOrEmpty(src.currPosterPath))
+                        {
+                            string res = src[AppField.Poster]?.Replace('\u00A0', ' ');
+                            if (overwriteField(m, f, res, chkOverwrite.Checked, forced: true))
+                            {
+                                refresh = updated = true;
+                                int.TryParse(res.Split('x')[0].Trim(), out int w);
+                                int.TryParse(res.Split('x')[1].Trim(), out int h);
+                                m.newPoster = new TMDbMovieImage() { file_path = src.currPosterPath, height = h, width = w };
+                            }
+                        }
+                    }
                     if (updated)
                         setMovieStatus(m, true);
                 }
@@ -563,8 +575,13 @@ namespace MCRatings
                 {
                     row[(int)AppField.Selected] = m.selected;
                     foreach (AppField c in Enum.GetValues(typeof(AppField)))
-                        if ((int)c > 1) row[(int)c] = m[c];     // skip first 2
-
+                        if ((int)c > 1)
+                        {   // skip first 2
+                            string x = m[c];
+                            if (Program.settings.SortIgnoreArticles && (c == AppField.Title || c == AppField.OriginalTitle))
+                                x = MoveArticle(x);
+                            row[(int)c] = x;
+                        }
                     // sortable numeric columns
                     row[(int)AppField.IMDbVotes] = (m[AppField.IMDbVotes] ?? "").PadLeft(10);
                     row[(int)AppField.RottenTomatoes] = (m[AppField.RottenTomatoes] ?? "").PadLeft(3);
@@ -599,8 +616,13 @@ namespace MCRatings
                 values[(int)AppField.Movie] = m;
                 values[(int)AppField.Selected] = m.selected;
                 foreach (AppField c in Enum.GetValues(typeof(AppField)))
-                    if ((int)c > 1) values[(int)c] = m[c];     // skip first 2
-
+                    if ((int)c > 1)
+                    {   // skip first 2
+                        string x = m[c];
+                        if (Program.settings.SortIgnoreArticles && (c == AppField.Title || c == AppField.OriginalTitle))
+                            x = MoveArticle(x);
+                        values[(int)c] = x;
+                    }
                 // sortable numeric columns
                 values[(int)AppField.IMDbVotes] = (m[AppField.IMDbVotes] ?? "").PadLeft(10);
                 values[(int)AppField.RottenTomatoes] = (m[AppField.RottenTomatoes] ?? "").PadLeft(3);
@@ -862,7 +884,7 @@ namespace MCRatings
 
             // queue actor/crew downloads
             int actorCount = 0;
-            if (Program.settings.SaveActorThumbnails && Directory.Exists(Program.settings.ActorFolder))
+            if (Program.settings.SaveActorThumbnails)
                 foreach (var m in movies)
                     actorCount += DownloadActors(m);
 
@@ -1293,10 +1315,11 @@ namespace MCRatings
 
         private void menuSelectCommonPoster_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(Program.settings.PosterFolder))
+            string prefix = Program.settings.PosterFolderPrefix;
+            if (string.IsNullOrWhiteSpace(prefix))
                 return;
             SelectRows(new Predicate<MovieInfo>(m => m.currPosterPath != null
-                && m.currPosterPath.StartsWith(Program.settings.PosterFolder, StringComparison.InvariantCultureIgnoreCase)));
+                && m.currPosterPath.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase)));
         }
 
         private void menuRevertField_Click(object sender, EventArgs e)
@@ -1614,6 +1637,13 @@ namespace MCRatings
                     if (id != null && id.ToLower().StartsWith("tt"))
                         Process.Start($"https://www.imdb.com/title/{id.ToLower()}/");
                 }
+                // handle CTRL+click on TMDB link
+                if (field == AppField.TMDbID && ModifierKeys.HasFlag(Keys.Control))
+                {
+                    string id = gridMovies.CurrentCell.EditedFormattedValue as string;
+                    if (!string.IsNullOrEmpty(id))
+                        Process.Start($"https://www.themoviedb.org/movie/{id}");
+                }
                 // handle CTRL+click on Trailer link
                 if ((field == AppField.Trailer || field == AppField.Website) && ModifierKeys.HasFlag(Keys.Control))
                 {
@@ -1690,8 +1720,8 @@ namespace MCRatings
                         if (m.isModified(AppField.Poster))
                         {
                             // start thumbnail download in another thread (probably already downloaded after GET)
-                            url2 = TMDbAPI.GetPosterUrl(m.newPoster?.file_path, size, out poster2);
-                            if (url2 != null) downloader.QueueDownload(url2, poster2, m, priority: true);
+                            url2 = TMDbAPI.GetImageUrl(m.newPoster?.file_path, size, out poster2);
+                            if (url2 != null) downloader.QueueDownload(url2, poster2, m, priority: true, process: false);
                         }
                         
                         // get current JRiver thumbnail
@@ -1883,6 +1913,7 @@ namespace MCRatings
                     menuOpenTmdb.Enabled = m?.tmdbInfo != null && m.tmdbInfo.id > 0;
                     menuOpenTrailer.Enabled = m?[AppField.Trailer] != null;
                     menuOpenPosterBrowser.Visible = Program.settings.PostersEnabled;
+                    menuAdvanced.Visible = ModifierKeys.HasFlag(Keys.Shift);
                 }
                 else
                     e.Cancel = true;
@@ -2069,12 +2100,12 @@ namespace MCRatings
                     mov[AppField.FTitle] = m.Title == null ? null : HttpUtility.HtmlDecode(m.Title);
                     mov[AppField.FYear] = m.Year;
                     mov.TakeSnapshot();
-
                     mov[AppField.Title] = mov[AppField.FTitle];
                     mov[AppField.Year] = m.Year;
                     mov[AppField.Collections] = $"{collection.Title}; MISSING";
                     mov[AppField.Imported] = now;
                     mov[AppField.IMDbID] = string.IsNullOrEmpty(m.ImdbId) ? null : $"tt{m.ImdbId}";
+                    mov[AppField.File] = jrAPI.getTemplateFilename(mov);
                     mov.selected = true;
                     movies.Add(mov);
 
@@ -2135,9 +2166,9 @@ namespace MCRatings
         private void PosterBrowser_OnPosterSelected(object sender, EventArgs e)
         {
             MovieInfo movie = posterBrowser.currMovie;
+            DateTime start = DateTime.Now;
             if (posterBrowser.selectedPoster != null)
             {
-                DateTime start = DateTime.Now;
                 string res = $"{posterBrowser.selectedPoster.width} x {posterBrowser.selectedPoster.height}";
                 if (overwriteField(movie, AppField.Poster, res, chkOverwrite.Checked, forced: true))
                 {
@@ -2149,12 +2180,24 @@ namespace MCRatings
                     Analytics.Event("Image", "PosterDownload", "PosterDownloads", 1);
                 if (DownloadThumbnail(movie))
                     Analytics.Event("Image", "ThumbDownload", "ThumbnailDownloads", 1);
-
-                UpdateDataGrid(start);
-                gridMovies.Refresh();
-                updateModifiedCount();
-                this.BringToFront();
             }
+            else
+            {
+                // revert poster
+                movie[AppField.Poster] = movie.originalValue(AppField.Poster);
+                movie.newPoster = null;
+                movie.newPosterPath = null;
+                if (posterBrowser.selectAndLock)
+                {
+                    LockedCells.Lock(movie.JRKey, AppField.Poster);
+                    gridMovies.Invalidate();
+                }
+            }
+
+            UpdateDataGrid(start);
+            gridMovies.Refresh();
+            updateModifiedCount();
+            this.BringToFront();
         }
 
         private void ShowPictureBrowser(MovieInfo m, bool bringtoFront, bool reload=false)
@@ -2182,8 +2225,15 @@ namespace MCRatings
             if (poster != null)
             {
                 // poster
-                string url = TMDbAPI.GetPosterUrl(m.newPoster?.file_path, PosterSize.Original, out string path);
-                return (url != null && downloader.QueueDownload(url, path, m));
+                string url = TMDbAPI.GetImageUrl(m.newPoster?.file_path, PosterSize.Original, out string path);
+                if (url == null) return false;
+
+                // delete existing unprocessed poster if post-processing is enabled
+                FileInfo fi = new FileInfo(path);
+                if (fi.Exists && fi.Attributes.HasFlag(FileAttributes.Archive) && Program.settings.RunPosterScript)
+                    try { File.Delete(path); } catch { }
+
+                return downloader.QueueDownload(url, path, m);
             }
             return false;
         }
@@ -2195,8 +2245,8 @@ namespace MCRatings
             {
                 // thumbnail
                 PosterSize size = Program.settings.ShowSmallThumbnails ? PosterSize.Medium : PosterSize.Large;
-                string url = TMDbAPI.GetPosterUrl(m.newPoster?.file_path, size, out string path);
-                return (url != null && downloader.QueueDownload(url, path, m, priority: true));
+                string url = TMDbAPI.GetImageUrl(m.newPoster?.file_path, size, out string path);
+                return (url != null && downloader.QueueDownload(url, path, m, priority: true, process: false));
             }
             return false;
         }
@@ -2208,23 +2258,42 @@ namespace MCRatings
             int items = Program.settings.ListItemsLimit;
             if (items <= 0) items = 100;
 
-            var cast = movie.tmdbInfo.getCast(items);
-            cast.AddRange(movie.tmdbInfo.getCrew(items));
+            var cast = movie.tmdbInfo.getCast(items, !Program.settings.ActorPlaceholders);
+            cast.AddRange(movie.tmdbInfo.getCrew(items, !Program.settings.ActorPlaceholders, true));
 
             PosterSize size = (PosterSize)Program.settings.ActorThumbnailSize;
 
             int count = 0;
             foreach (var c in cast)
             {
-                string url = TMDbAPI.GetCastUrl(c.profile_path, size);
-                if (string.IsNullOrEmpty(url)) continue;
+                // actor pics are NOT cached
+                string url = TMDbAPI.GetImageUrl(c.profile_path, size, out string cached, ImageType.Profile);
+                bool placeholder = false;
+                if (string.IsNullOrEmpty(url))
+                {
+                    if (Program.settings.ActorPlaceholders)
+                        url = c.gender == 1 ? Constants.AvatarFemale : Constants.AvatarMale;
+                    if (string.IsNullOrEmpty(url) || !File.Exists(url))
+                        continue;
+                    placeholder = true;
+                }
 
-                string file = Util.SanitizeFilename(c.name) + Path.GetExtension(url);
-                file = Path.Combine(Program.settings.ActorFolder, file);
-                string pngFile = Program.settings.ActorSaveAsPng ? Path.ChangeExtension(file, ".png") : file;
+                string job = c.job;
+                if (c.department == "Writing") job = "Writer";
+                string file = Util.SanitizeFilename(Program.settings.AddActorRoles? $"{c.name} [{job ?? c.character}]" : c.name) + Path.GetExtension(url);
+                if (Program.settings.ActorSaveAsPng)
+                    file = Path.ChangeExtension(file, ".png");
+                string dest = Macro.resolvePath(Program.settings.ActorFolder, file, movie, c);
+                if (dest == null)
+                    continue;
+                dest = Path.Combine(dest, file);
 
-                if (!File.Exists(pngFile))
-                    if (downloader.QueueDownload(url, file, movie, c, convertToPng: Program.settings.ActorSaveAsPng))
+                FileInfo fi = new FileInfo(dest);
+                bool isProcessed = fi.Exists && !fi.Attributes.HasFlag(FileAttributes.Archive);
+                bool isDummy = fi.Exists && fi.CreationTimeUtc.Equals(Constants.DummyTimestamp);
+                // download if doesn't exist, or is a placeholder but there's a valid one now, or if it needs processing
+                if (!fi.Exists || (isDummy && !placeholder) || (Program.settings.RunThumbnailScript && !isProcessed))
+                    if (downloader.QueueDownload(url, dest, movie, c, overwrite: true))
                         count++;
             }
             return count;
@@ -2238,7 +2307,7 @@ namespace MCRatings
             try
             {
                 // get poster
-                string url = TMDbAPI.GetPosterUrl(movie.newPoster.file_path, PosterSize.Original, out source);
+                string url = TMDbAPI.GetImageUrl(movie.newPoster.file_path, PosterSize.Original, out source);
                 if (url != null && downloader.DownloadWait(url, source, movie))
                 {
                     dest = null;
@@ -2254,8 +2323,10 @@ namespace MCRatings
                     if (Program.settings.SavePosterCommonFolder && !string.IsNullOrWhiteSpace(Program.settings.PosterFolder))
                     {
                         string filename = Path.GetFileNameWithoutExtension(movie[AppField.File]);
-                        dest = Path.Combine(Program.settings.PosterFolder, $"{filename}.{movie.JRKey}{ext}");
-                        Directory.CreateDirectory(Program.settings.PosterFolder);
+                        dest = $"{filename}.{movie.JRKey}{ext}";
+                        string path = Macro.resolvePath(Program.settings.PosterFolder, dest, movie, null);
+                        Directory.CreateDirectory(path);
+                        dest = Path.Combine(path, dest);
                         File.Copy(source, dest, true);
                         FileInfo fi = new FileInfo(dest);
                         fi.LastWriteTime = DateTime.Now;
@@ -2328,7 +2399,7 @@ namespace MCRatings
             {
                 if (m.currPosterPath == null)
                     err++;
-                else if (toCommon == m.currPosterPath.StartsWith(Program.settings.PosterFolder, StringComparison.InvariantCultureIgnoreCase))
+                else if (toCommon == m.currPosterPath.StartsWith(Program.settings.PosterFolderPrefix, StringComparison.InvariantCultureIgnoreCase))
                     skip++;
                 else
                 {
@@ -2349,12 +2420,15 @@ namespace MCRatings
 
             try
             {
-                string common = Program.settings.PosterFolder;
                 string curr = m.currPosterPath;
                 string ext = Path.GetExtension(curr);
                 string filename = Path.GetFileNameWithoutExtension(m[AppField.File]);
+
+                string commonFile = $"{filename}.{m.JRKey}{ext}";
+                string common = Macro.resolvePath(Program.settings.PosterFolder, commonFile, m);
+
                 string posterInMovie = Path.ChangeExtension(m[AppField.File], ext);
-                string posterInCommon = Path.Combine(common, $"{filename}.{m.JRKey}{ext}");
+                string posterInCommon = Path.Combine(common, commonFile);
 
                 newPath = posterInCommon;
                 if (curr.StartsWith(common, StringComparison.InvariantCultureIgnoreCase))
@@ -2441,8 +2515,9 @@ namespace MCRatings
             MovieInfo currmovie = gridMovies.CurrentRow?.Cells[0].Value as MovieInfo;
             try
             {
-                if (currmovie?.tmdbInfo != null && currmovie.tmdbInfo.id > 0)
-                    Process.Start($"https://www.themoviedb.org/movie/{currmovie.tmdbInfo.id}");
+                string id = currmovie?[AppField.TMDbID];
+                if (!string.IsNullOrEmpty(id))
+                    Process.Start($"https://www.themoviedb.org/movie/{id}");
             }
             catch { }
         }
@@ -2462,6 +2537,86 @@ namespace MCRatings
         private void menuOpenStatistics_Click(object sender, EventArgs e)
         {
             new StatsUI().ShowDialog();
+        }
+
+        private string MoveArticle(string title)
+        {
+            if (!Program.settings.SortIgnoreArticles || string.IsNullOrEmpty(Program.settings.IgnoredArticlesRE))
+                return title;
+            
+            return Regex.Replace(title, $"^({Program.settings.IgnoredArticlesRE})\\s(.*)", "$2, $1", RegexOptions.IgnoreCase);
+        }
+
+        private void menuCopyInfo_Click(object sender, EventArgs e)
+        {
+            copiedMovies = GetSelectedMovies();
+        }
+
+        private void menuPasteInfo_Click(object sender, EventArgs e)
+        {
+            // CTRL+SHIFT+V = paste movie Info
+            if (copiedMovies != null)
+            {
+                var destMovies = GetSelectedMovies();
+                PasteSelectedMovies(copiedMovies, destMovies);
+            }
+        }
+
+        private void menuDeleteMovies_Click(object sender, EventArgs e)
+        {
+            var movies = GetSelectedMovies();
+            if (movies == null || movies.Count == 0) return;
+
+            if (DialogResult.Yes != MessageBox.Show($"This will DELETE {movies.Count} movies and their folder contents!\nIt will also delete the movies from JRiver database.\n\nARE YOU SURE?", "DELETE FILES?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
+                return;
+
+            int deleted = 0; int removed = 0;
+            foreach (var movie in movies)
+            {
+                if (deleteMovie(movie[AppField.File]))
+                {
+                    deleted++;
+                    if (jrAPI.DeleteFile(movie)) removed++;
+                }
+            }
+
+            MessageBox.Show($"{deleted} movies deleted\n{removed} removed from JRiver\n\nPlease reload playlist.", "Movies deleted");
+        }
+
+        private bool deleteMovie(string path)
+        {
+            bool result = false;
+            try
+            {
+                // delete main file
+                File.Delete(path);
+                if (!File.Exists(path)) result = true;
+
+                // delete files with same base name
+                bool hasOthers = false;
+                string dir = Path.GetDirectoryName(path);
+                string name = Path.GetFileNameWithoutExtension(path);
+                var files = Directory.GetFiles(dir);
+                var subs = Directory.GetDirectories(dir);
+                foreach (var f in files)
+                {
+                    if (Path.GetFileNameWithoutExtension(f).StartsWith(name))
+                        File.Delete(f);
+
+                    else if (!Regex.IsMatch(f, @"thumbs.db$|(\.(txt|nfo|xml|jpg|png|srt|sub|smi|url))$", RegexOptions.IgnoreCase))
+                        hasOthers = true;
+                }
+
+                if (subs.Any(s=> !Regex.IsMatch(Path.GetFileName(s), @"^(subs?|subtitles?|sample|covers?|screens?|screenshots?)$", RegexOptions.IgnoreCase)))
+                    hasOthers = true;
+
+                // delete entire folder if no other movies are there
+                if (!hasOthers)
+                    Directory.Delete(dir, true);
+
+            }
+            catch { }
+            return result;
         }
     }
 }

@@ -238,7 +238,7 @@ namespace MCRatings
             return "[JRiver Exception!]";
         }
 
-        public IMJFileAutomation CreateMovie(MovieInfo movie)
+        public string getTemplateFilename(MovieInfo movie)
         {
             string template = Program.settings.VideoTemplateFile;
             if (!File.Exists(template)) throw new Exception("VideoTemplateFile not found, please check settings.xml");
@@ -247,6 +247,15 @@ namespace MCRatings
             string name = $"{movie.Title ?? movie.FTitle}.{movie.Year ?? movie.FYear}.{movie.IMDBid}".Trim('.');
             name = string.Join("_", name.Split(Path.GetInvalidFileNameChars(), StringSplitOptions.RemoveEmptyEntries));
             string sample = Path.Combine(Path.GetTempPath(), $"{name}{Path.GetExtension(template)}");
+            return sample;
+        }
+
+        public IMJFileAutomation CreateMovie(MovieInfo movie)
+        {
+            string template = Program.settings.VideoTemplateFile;
+            if (!File.Exists(template)) throw new Exception("VideoTemplateFile not found, please check settings.xml");
+
+            string sample = movie[AppField.File] ?? getTemplateFilename(movie);
             if (!File.Exists(sample))
             {
                 if (lastFile != null && File.Exists(lastFile))
@@ -418,6 +427,17 @@ namespace MCRatings
             }
             catch { }
             return null;
+        }
+
+        internal bool DeleteFile(MovieInfo movie)
+        {
+            try
+            {
+                IMJFileAutomation file = jr.GetFileByKey(movie.JRKey);
+                return file.SilentDeleteFile();
+            }
+            catch { }
+            return false;
         }
 
         internal bool RemovePoster(MovieInfo movie)

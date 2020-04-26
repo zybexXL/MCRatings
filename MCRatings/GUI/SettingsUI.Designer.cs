@@ -60,7 +60,6 @@
             this.maxListLimit = new System.Windows.Forms.NumericUpDown();
             this.lnkResetColors = new System.Windows.Forms.LinkLabel();
             this.chkSmallThumbs = new System.Windows.Forms.CheckBox();
-            this.btnAudio = new System.Windows.Forms.Button();
             this.chkPosterFilterLanguage = new System.Windows.Forms.CheckBox();
             this.chkPosterSortVotes = new System.Windows.Forms.CheckBox();
             this.chkFullSize = new System.Windows.Forms.CheckBox();
@@ -76,6 +75,7 @@
             this.movieYearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.originalTitleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.iMDBIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tMDBIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.imageFullPathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imageFolderPathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -102,6 +102,8 @@
             this.tagMenuRole = new System.Windows.Forms.ToolStripMenuItem();
             this.tagMenuNameRole = new System.Windows.Forms.ToolStripMenuItem();
             this.txtPosterScript = new System.Windows.Forms.TextBox();
+            this.chkIgnoreArticles = new System.Windows.Forms.CheckBox();
+            this.btnAudio = new System.Windows.Forms.Button();
             this.txtTMDBkeys = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
@@ -118,6 +120,7 @@
             this.btnActorPics = new System.Windows.Forms.Button();
             this.lblThumbnail = new System.Windows.Forms.Label();
             this.comboActorSize = new System.Windows.Forms.ComboBox();
+            this.chkThumbPlaceholder = new System.Windows.Forms.CheckBox();
             this.chkSaveThumbPNG = new System.Windows.Forms.CheckBox();
             this.chkRunThumbPP = new System.Windows.Forms.CheckBox();
             this.chkPosterSupport = new System.Windows.Forms.CheckBox();
@@ -385,7 +388,7 @@
             // 
             this.chkFastStart.AutoSize = true;
             this.chkFastStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkFastStart.Location = new System.Drawing.Point(15, 204);
+            this.chkFastStart.Location = new System.Drawing.Point(15, 232);
             this.chkFastStart.Margin = new System.Windows.Forms.Padding(4);
             this.chkFastStart.Name = "chkFastStart";
             this.chkFastStart.Size = new System.Drawing.Size(146, 20);
@@ -466,7 +469,7 @@
             // 
             this.chkWebmedia.AutoSize = true;
             this.chkWebmedia.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkWebmedia.Location = new System.Drawing.Point(15, 176);
+            this.chkWebmedia.Location = new System.Drawing.Point(15, 204);
             this.chkWebmedia.Margin = new System.Windows.Forms.Padding(4);
             this.chkWebmedia.Name = "chkWebmedia";
             this.chkWebmedia.Size = new System.Drawing.Size(236, 20);
@@ -520,21 +523,6 @@
             this.toolTip1.SetToolTip(this.chkSmallThumbs, "Turn off to display larger thumbnails");
             this.chkSmallThumbs.UseVisualStyleBackColor = true;
             this.chkSmallThumbs.CheckedChanged += new System.EventHandler(this.somethingChanged);
-            // 
-            // btnAudio
-            // 
-            this.btnAudio.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAudio.BackColor = System.Drawing.Color.Transparent;
-            this.btnAudio.FlatAppearance.BorderSize = 0;
-            this.btnAudio.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAudio.Image = global::MCRatings.Properties.Resources.speaker_on;
-            this.btnAudio.Location = new System.Drawing.Point(15, 420);
-            this.btnAudio.Name = "btnAudio";
-            this.btnAudio.Size = new System.Drawing.Size(26, 26);
-            this.btnAudio.TabIndex = 14;
-            this.toolTip1.SetToolTip(this.btnAudio, "Mute sound effects");
-            this.btnAudio.UseVisualStyleBackColor = false;
-            this.btnAudio.Click += new System.EventHandler(this.btnAudio_Click);
             // 
             // chkPosterFilterLanguage
             // 
@@ -644,13 +632,12 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtThumbScript.ContextMenuStrip = this.scriptTagMenu;
             this.txtThumbScript.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtThumbScript.Location = new System.Drawing.Point(32, 104);
+            this.txtThumbScript.Location = new System.Drawing.Point(32, 125);
             this.txtThumbScript.Margin = new System.Windows.Forms.Padding(2);
             this.txtThumbScript.Name = "txtThumbScript";
             this.txtThumbScript.Size = new System.Drawing.Size(483, 22);
             this.txtThumbScript.TabIndex = 27;
-            this.toolTip1.SetToolTip(this.txtThumbScript, "Example: \r\nc:\\tools\\addLabels.bat $type $image $person $role $job $department\r\n\r\n" +
-        "Right-click on the textbox to insert valid $Tags via a menu");
+            this.toolTip1.SetToolTip(this.txtThumbScript, resources.GetString("txtThumbScript.ToolTip"));
             this.txtThumbScript.TextChanged += new System.EventHandler(this.somethingChanged);
             // 
             // scriptTagMenu
@@ -662,6 +649,7 @@
             this.movieYearToolStripMenuItem,
             this.originalTitleToolStripMenuItem,
             this.iMDBIdToolStripMenuItem,
+            this.tMDBIdToolStripMenuItem,
             this.toolStripSeparator1,
             this.imageFullPathToolStripMenuItem,
             this.imageFolderPathToolStripMenuItem,
@@ -688,7 +676,7 @@
             this.tagMenuRole,
             this.tagMenuNameRole});
             this.scriptTagMenu.Name = "scriptTagMenu";
-            this.scriptTagMenu.Size = new System.Drawing.Size(275, 622);
+            this.scriptTagMenu.Size = new System.Drawing.Size(275, 644);
             this.scriptTagMenu.Opening += new System.ComponentModel.CancelEventHandler(this.scriptTagMenu_Opening);
             // 
             // tagMenuHeader
@@ -738,6 +726,14 @@
             this.iMDBIdToolStripMenuItem.Tag = "$imdb";
             this.iMDBIdToolStripMenuItem.Text = "IMDB id";
             this.iMDBIdToolStripMenuItem.Click += new System.EventHandler(this.tagMenuItem_Click);
+            // 
+            // tMDBIdToolStripMenuItem
+            // 
+            this.tMDBIdToolStripMenuItem.Name = "tMDBIdToolStripMenuItem";
+            this.tMDBIdToolStripMenuItem.Size = new System.Drawing.Size(274, 22);
+            this.tMDBIdToolStripMenuItem.Tag = "$tmdb";
+            this.tMDBIdToolStripMenuItem.Text = "TMDB id";
+            this.tMDBIdToolStripMenuItem.Click += new System.EventHandler(this.tagMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
@@ -939,9 +935,37 @@
             this.txtPosterScript.Name = "txtPosterScript";
             this.txtPosterScript.Size = new System.Drawing.Size(483, 22);
             this.txtPosterScript.TabIndex = 10;
-            this.toolTip1.SetToolTip(this.txtPosterScript, "Example:\r\nc:\\tools\\roundCorners.bat $image\r\n\r\nRight-click on the textbox to inser" +
-        "t valid $Tags via a menu");
+            this.toolTip1.SetToolTip(this.txtPosterScript, resources.GetString("txtPosterScript.ToolTip"));
             this.txtPosterScript.TextChanged += new System.EventHandler(this.somethingChanged);
+            // 
+            // chkIgnoreArticles
+            // 
+            this.chkIgnoreArticles.AutoSize = true;
+            this.chkIgnoreArticles.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkIgnoreArticles.Location = new System.Drawing.Point(15, 176);
+            this.chkIgnoreArticles.Margin = new System.Windows.Forms.Padding(4);
+            this.chkIgnoreArticles.Name = "chkIgnoreArticles";
+            this.chkIgnoreArticles.Size = new System.Drawing.Size(235, 20);
+            this.chkIgnoreArticles.TabIndex = 7;
+            this.chkIgnoreArticles.Text = "Ignore articles when sorting by Title";
+            this.toolTip1.SetToolTip(this.chkIgnoreArticles, resources.GetString("chkIgnoreArticles.ToolTip"));
+            this.chkIgnoreArticles.UseVisualStyleBackColor = true;
+            this.chkIgnoreArticles.CheckedChanged += new System.EventHandler(this.somethingChanged);
+            // 
+            // btnAudio
+            // 
+            this.btnAudio.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnAudio.BackColor = System.Drawing.Color.Transparent;
+            this.btnAudio.FlatAppearance.BorderSize = 0;
+            this.btnAudio.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAudio.Image = global::MCRatings.Properties.Resources.speaker_on;
+            this.btnAudio.Location = new System.Drawing.Point(15, 420);
+            this.btnAudio.Name = "btnAudio";
+            this.btnAudio.Size = new System.Drawing.Size(26, 26);
+            this.btnAudio.TabIndex = 14;
+            this.toolTip1.SetToolTip(this.btnAudio, "Mute sound effects");
+            this.btnAudio.UseVisualStyleBackColor = false;
+            this.btnAudio.Click += new System.EventHandler(this.btnAudio_Click);
             // 
             // txtTMDBkeys
             // 
@@ -1100,11 +1124,12 @@
             this.groupThumbs.Controls.Add(this.btnActorPics);
             this.groupThumbs.Controls.Add(this.lblThumbnail);
             this.groupThumbs.Controls.Add(this.comboActorSize);
+            this.groupThumbs.Controls.Add(this.chkThumbPlaceholder);
             this.groupThumbs.Controls.Add(this.chkSaveThumbPNG);
             this.groupThumbs.Controls.Add(this.chkRunThumbPP);
             this.groupThumbs.Location = new System.Drawing.Point(12, 291);
             this.groupThumbs.Name = "groupThumbs";
-            this.groupThumbs.Size = new System.Drawing.Size(550, 138);
+            this.groupThumbs.Size = new System.Drawing.Size(550, 158);
             this.groupThumbs.TabIndex = 13;
             this.groupThumbs.TabStop = false;
             // 
@@ -1112,12 +1137,15 @@
             // 
             this.txtActorPicsPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtActorPicsPath.ContextMenuStrip = this.scriptTagMenu;
             this.txtActorPicsPath.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtActorPicsPath.Location = new System.Drawing.Point(32, 21);
             this.txtActorPicsPath.Margin = new System.Windows.Forms.Padding(2);
             this.txtActorPicsPath.Name = "txtActorPicsPath";
             this.txtActorPicsPath.Size = new System.Drawing.Size(483, 22);
             this.txtActorPicsPath.TabIndex = 22;
+            this.txtActorPicsPath.Tag = "path";
+            this.toolTip1.SetToolTip(this.txtActorPicsPath, resources.GetString("txtActorPicsPath.ToolTip"));
             this.txtActorPicsPath.TextChanged += new System.EventHandler(this.somethingChanged);
             // 
             // btnActorPics
@@ -1161,6 +1189,21 @@
             this.comboActorSize.TextChanged += new System.EventHandler(this.somethingChanged);
             this.comboActorSize.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.comboActorSize_KeyPress);
             // 
+            // chkThumbPlaceholder
+            // 
+            this.chkThumbPlaceholder.AutoSize = true;
+            this.chkThumbPlaceholder.Checked = true;
+            this.chkThumbPlaceholder.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkThumbPlaceholder.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkThumbPlaceholder.Location = new System.Drawing.Point(13, 77);
+            this.chkThumbPlaceholder.Margin = new System.Windows.Forms.Padding(2);
+            this.chkThumbPlaceholder.Name = "chkThumbPlaceholder";
+            this.chkThumbPlaceholder.Size = new System.Drawing.Size(261, 20);
+            this.chkThumbPlaceholder.TabIndex = 24;
+            this.chkThumbPlaceholder.Text = "Use placeholder for missing thumbnails";
+            this.chkThumbPlaceholder.UseVisualStyleBackColor = true;
+            this.chkThumbPlaceholder.CheckedChanged += new System.EventHandler(this.somethingChanged);
+            // 
             // chkSaveThumbPNG
             // 
             this.chkSaveThumbPNG.AutoSize = true;
@@ -1180,7 +1223,7 @@
             // 
             this.chkRunThumbPP.AutoSize = true;
             this.chkRunThumbPP.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkRunThumbPP.Location = new System.Drawing.Point(13, 80);
+            this.chkRunThumbPP.Location = new System.Drawing.Point(13, 101);
             this.chkRunThumbPP.Margin = new System.Windows.Forms.Padding(2);
             this.chkRunThumbPP.Name = "chkRunThumbPP";
             this.chkRunThumbPP.Size = new System.Drawing.Size(380, 20);
@@ -1240,12 +1283,15 @@
             // 
             this.txtPosterPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtPosterPath.ContextMenuStrip = this.scriptTagMenu;
             this.txtPosterPath.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtPosterPath.Location = new System.Drawing.Point(32, 49);
             this.txtPosterPath.Margin = new System.Windows.Forms.Padding(2);
             this.txtPosterPath.Name = "txtPosterPath";
             this.txtPosterPath.Size = new System.Drawing.Size(483, 22);
             this.txtPosterPath.TabIndex = 2;
+            this.txtPosterPath.Tag = "path";
+            this.toolTip1.SetToolTip(this.txtPosterPath, resources.GetString("txtPosterPath.ToolTip"));
             this.txtPosterPath.TextChanged += new System.EventHandler(this.somethingChanged);
             // 
             // chkRunPosterPP
@@ -1263,14 +1309,15 @@
             // 
             // tabGeneral
             // 
+            this.tabGeneral.Controls.Add(this.chkIgnoreArticles);
             this.tabGeneral.Controls.Add(this.chkActorRoles);
-            this.tabGeneral.Controls.Add(this.btnAudio);
             this.tabGeneral.Controls.Add(this.label1);
             this.tabGeneral.Controls.Add(this.chkMaximized);
             this.tabGeneral.Controls.Add(this.chkFastStart);
             this.tabGeneral.Controls.Add(this.txtCleanup);
             this.tabGeneral.Controls.Add(this.chkWebmedia);
             this.tabGeneral.Controls.Add(this.label4);
+            this.tabGeneral.Controls.Add(this.btnAudio);
             this.tabGeneral.Location = new System.Drawing.Point(4, 25);
             this.tabGeneral.Name = "tabGeneral";
             this.tabGeneral.Padding = new System.Windows.Forms.Padding(3);
@@ -1284,7 +1331,7 @@
             // 
             this.chkMaximized.AutoSize = true;
             this.chkMaximized.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkMaximized.Location = new System.Drawing.Point(15, 232);
+            this.chkMaximized.Location = new System.Drawing.Point(15, 260);
             this.chkMaximized.Margin = new System.Windows.Forms.Padding(4);
             this.chkMaximized.Name = "chkMaximized";
             this.chkMaximized.Size = new System.Drawing.Size(121, 20);
@@ -1735,5 +1782,8 @@
         private System.Windows.Forms.ToolStripMenuItem tagMenuRole;
         private System.Windows.Forms.ToolStripMenuItem tagMenuNameRole;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem tMDBIdToolStripMenuItem;
+        private System.Windows.Forms.CheckBox chkIgnoreArticles;
+        private System.Windows.Forms.CheckBox chkThumbPlaceholder;
     }
 }

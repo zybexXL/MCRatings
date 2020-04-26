@@ -11,6 +11,7 @@ namespace MCRatings
     {
         static string logFile;
         public static bool Enabled = true;
+        public static object syncObj = new object();
 
         public static void Init()
         {
@@ -31,7 +32,8 @@ namespace MCRatings
             try
             {
                 string msg = $"{DateTime.Now.ToString("HH:mm:ss.fff")}  {message}\n";
-                File.AppendAllText(logFile, msg);
+                lock(syncObj)
+                    File.AppendAllText(logFile, msg);
             }
             catch { }
         }
@@ -43,7 +45,8 @@ namespace MCRatings
             try
             {  
                 string msg = $"{DateTime.Now.ToString("HH:mm:ss.fff")}  EXCEPTION: {message}\n   {ex.ToString()}\n\n";
-                File.AppendAllText(logFile, msg);
+                lock (syncObj)
+                    File.AppendAllText(logFile, msg);
             }
             catch { }
         }

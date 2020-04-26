@@ -9,3 +9,6 @@ Main:
 - GET after collection drop
 - toolbar (context menu options as buttons)
 - auto-update: request elevation
+
+- download exception - file in use in %temp%
+- fanart.tv support

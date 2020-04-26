@@ -125,6 +125,21 @@ namespace MCRatings
             return ok;
         }
 
+        private bool isValidFolder(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path)) return false;
+            try
+            {
+                path = Macro.GetBaseFolder(path);
+                Directory.CreateDirectory(path);
+                string test = Path.Combine(path, "~mcratings_test~.tmp");
+                File.WriteAllText(test, "write permission test");
+                File.Delete(test);
+                return true;
+            }
+            catch { }
+            return false;
+        }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
@@ -133,7 +148,7 @@ namespace MCRatings
                 if (!checkFieldNames())
                     return;
 
-                if (chkPosterSupport.Checked && chkPosterFolder.Checked && (string.IsNullOrWhiteSpace(txtPosterPath.Text) || !Directory.Exists(txtPosterPath.Text)))
+                if (chkPosterSupport.Checked && chkPosterFolder.Checked && !isValidFolder(txtPosterPath.Text))
                 {
                     tabSettings.SelectedTab = tabPosters;
                     MessageBox.Show($"Can't access selected Poster folder, please check.",
@@ -142,7 +157,7 @@ namespace MCRatings
                 }
 
 
-                if (chkGetActorPics.Checked && (string.IsNullOrWhiteSpace(txtActorPicsPath.Text) || !Directory.Exists(txtActorPicsPath.Text)))
+                if (chkGetActorPics.Checked && !isValidFolder(txtActorPicsPath.Text))
                 {
                     tabSettings.SelectedTab = tabPosters;
                     MessageBox.Show($"Can't access selected Actor Thumbnail folder, please check.",
@@ -186,6 +201,8 @@ namespace MCRatings
                 Program.settings.RunPosterScript = chkRunPosterPP.Checked;
                 Program.settings.RunThumbnailScript = chkRunThumbPP.Checked;
                 Program.settings.ActorSaveAsPng = chkSaveThumbPNG.Checked;
+                Program.settings.SortIgnoreArticles = chkIgnoreArticles.Checked;
+                Program.settings.ActorPlaceholders = chkThumbPlaceholder.Checked;
 
                 Program.settings.Save();
                 dirty = false;
@@ -234,11 +251,13 @@ namespace MCRatings
             chkRunPosterPP.Checked = settings.RunPosterScript;
             chkRunThumbPP.Checked = settings.RunThumbnailScript;
             chkSaveThumbPNG.Checked = settings.ActorSaveAsPng;
+            chkIgnoreArticles.Checked = settings.SortIgnoreArticles;
+            chkThumbPlaceholder.Checked = settings.ActorPlaceholders;
 
             audio = !settings.Silent;
             btnAudio.Image = audio ? Properties.Resources.speaker_on : Properties.Resources.speaker_off;
 
-            LoadColors(Program.settings.CellColors ?? Constants.CellColors);
+            LoadColors(settings.CellColors ?? Constants.CellColors);
 
             UpdateUI();
             loading = false;
@@ -451,11 +470,12 @@ namespace MCRatings
             var item = sender as ToolStripMenuItem;
             ContextMenuStrip menu = (sender as ToolStripMenuItem)?.Owner as ContextMenuStrip;
             TextBox box = menu.SourceControl as TextBox;
+            bool addSpace = "path" != box.Tag as string;
             string tag = item?.Tag as string;
 
             if (box == null || tag == null) return;
             if (shift) tag = tag.Replace("$", "%");
-            box.SelectedText = tag + " ";
+            box.SelectedText = tag + (addSpace ? " " : "");
         }
 
         private void scriptTagMenu_Opening(object sender, CancelEventArgs e)

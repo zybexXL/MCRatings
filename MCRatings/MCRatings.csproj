@@ -193,6 +193,7 @@
     </Compile>
     <Compile Include="Sound\SoundBite.cs" />
     <Compile Include="Util\Logger.cs" />
+    <Compile Include="Util\Macros.cs" />
     <Compile Include="Util\Native.cs" />
     <Compile Include="Util\NetVersion.cs" />
     <Compile Include="Util\OpenFolderEx.cs" />
@@ -258,6 +259,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="MCRatings.ico" />
+    <None Include="Resources\user_414445_24.png" />
+    <None Include="Resources\male.png" />
+    <None Include="Resources\female.png" />
     <None Include="Resources\Spinner32.gif" />
     <None Include="Resources\oscar32.png" />
     <None Include="Resources\AcceptLock32.png" />

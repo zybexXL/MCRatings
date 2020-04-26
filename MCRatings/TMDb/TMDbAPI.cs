@@ -170,23 +170,30 @@ namespace MCRatings
             return new Tuple<int, int>(w, h);
         }
 
-        public static string GetPosterUrl(string uri, PosterSize size, out string cachePath)
+        public static string GetImageUrl(string uri, PosterSize size, out string cachePath, ImageType imageType = ImageType.Poster, bool addLetterSub = false)
         {
+            if (uri != null && uri.StartsWith("\\\\"))
+            { 
+                cachePath = uri;
+                return $"file:///{uri.Replace('\\','/')}";
+            }
             cachePath = null;
             uri = uri?.Trim(new char[] { '/', '\\' });
             if (string.IsNullOrEmpty(uri)) return null;
-            string res = size == PosterSize.Large ? "w342" : size == PosterSize.Medium ? "w185" : size == PosterSize.Small ? "w92" : "original";
 
-            cachePath = Path.Combine(Constants.PosterCache, res, uri);
-            return $"http://image.tmdb.org/t/p/{res}/{uri}";
-        }
+            string cacheRoot = imageType == ImageType.Poster ? Constants.PosterCache : Constants.ProfileCache;
+            if (addLetterSub)
+            {
+                char char1 = Char.ToLowerInvariant(uri[0]);
+                if (Char.IsDigit(char1)) char1 = '#';
+                else if (char1 < 'a' || char1 > 'z') char1 = '@';
+                cacheRoot = Path.Combine(cacheRoot, $"{char1}");
+            }
 
-        public static string GetCastUrl(string uri, PosterSize size)
-        {
-            uri = uri?.Trim(new char[] { '/', '\\' });
-            if (string.IsNullOrEmpty(uri)) return null;
-            string res = size == PosterSize.Large ? "h632" : size == PosterSize.Medium ? "w185" : size == PosterSize.Small ? "w92" : "original";
+            string large = imageType == ImageType.Poster ? "w342" : "h632";
+            string res = size == PosterSize.Large ? large : size == PosterSize.Medium ? "w185" : size == PosterSize.Small ? "w92" : "original";
 
+            cachePath = Path.Combine(cacheRoot, res, uri);
             return $"http://image.tmdb.org/t/p/{res}/{uri}";
         }
     }
