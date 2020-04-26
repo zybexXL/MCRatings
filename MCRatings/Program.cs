@@ -13,7 +13,7 @@ namespace MCRatings
     static class Program
     {
         public static Version version = new Version(3, 1);    // major, minor, revision
-        public static string tagline = "\"Nothing spreads like fear\" - Contagion (2001)";        // changes on every major or minor release
+        public static string tagline = "\"An offer you can't refuse\" - The Godfather (1972)";        // changes on every major or minor release
         public static Settings settings;
 
         /// <summary>
