@@ -146,7 +146,7 @@ namespace MCRatings
         {
             int maxThreads = Program.settings.ProcessingThreads;
 #if DEBUG
-            //maxThreads = 4;
+            maxThreads = 1;
 #endif
             if (maxThreads <= 0 || maxThreads > 2 * Environment.ProcessorCount) maxThreads = Environment.ProcessorCount;
 
@@ -204,20 +204,23 @@ namespace MCRatings
             bool ok = false;
             try
             {
+                bool pngConvert = item.destPath.ToLower().EndsWith(".png") && !item.url.ToLower().EndsWith(".png");
                 if (!item.url.ToLower().StartsWith("http:"))
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(item.destPath));
-                    File.Copy(item.url, item.destPath, true);
+                    if (pngConvert)
+                        Util.ConvertToPng(item.url, item.destPath, false);
+                    else
+                        File.Copy(item.url, item.destPath, true);
                     ok = true;
                 }
                 else
-                    ok = DownloadUrl(item.url, item.destPath);
+                    ok = DownloadUrl(item.url, item.destPath, pngConvert);
 
                 if (!ok)
                     Interlocked.Increment(ref Stats.Session.ImageDownloadError);
                 else
                 {
-                    convertPNG(item);
                     if (item.postProcess)
                         ok = PostProcess(item);
                     if (item.isPlaceholder)
@@ -230,7 +233,7 @@ namespace MCRatings
             return ok;
         }
 
-        internal static bool DownloadUrl(string url, string destpath)
+        internal static bool DownloadUrl(string url, string destpath, bool pngConvert = false)
         {
             try
             {
@@ -257,7 +260,10 @@ namespace MCRatings
                                 File.Delete(destpath);
 
                             Directory.CreateDirectory(Path.GetDirectoryName(destpath));
-                            File.Move(temp, destpath);
+                            if (pngConvert)
+                                Util.ConvertToPng(temp, destpath, true);
+                            else
+                                File.Move(temp, destpath);
                             return true;
                         }
                         else
@@ -273,24 +279,7 @@ namespace MCRatings
                 Logger.Log(ex, $"Exception downloading image\n\tsource: {url}\n\ttarget: {destpath}"); }
 
             return false;
-        }
-
-        bool convertPNG(DownloadItem item)
-        {
-            try
-            {
-                bool convertPNG = item.destPath.ToLower().EndsWith(".png") && !item.url.ToLower().EndsWith(".png");
-                if (convertPNG)
-                {
-                    string original = Path.ChangeExtension(item.destPath, Path.GetExtension(item.url));
-                    File.Move(item.destPath, original);
-                    Util.ConvertToPng(original); 
-                }
-                return true;
-            }
-            catch (Exception ex) { Logger.Log(ex, $"convertPNG({item.destPath})"); }
-            return false;
-        }
+        } 
 
         bool PostProcess(DownloadItem item)
         {

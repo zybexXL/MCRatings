@@ -149,16 +149,8 @@ namespace MCRatings
             return credits?.cast?
                 .OrderBy(c => c.order)
                 .Take(max)
-                .Select(c => fixBadChars(includeRole ? $"{c.name} [{c.character}]" : c.name))
+                .Select(c => Util.SanitizeFilename(includeRole ? $"{c.name} [{c.character}]" : c.name))
                 .ToList();
-        }
-
-        // remove double-quotes and slashes
-        private string fixBadChars(string str)
-        {
-            str = Regex.Replace(str, @" ?[\\/]", ",");
-            str = str.Replace('"', '\'');
-            return str;
         }
 
         private List<string> getCrewNames(int max, string job, bool byDepartment = false)
@@ -167,7 +159,7 @@ namespace MCRatings
             return credits?.crew?
                 .Where(c => byDepartment ? c.department?.ToLower() == filter : c.job?.ToLower() == filter)
                 .Take(max)
-                .Select(c => fixBadChars(c.name)).ToList();  
+                .Select(c => Util.SanitizeFilename(c.name)).ToList();  
         }
 
         internal List<TMDbMoviePerson> getCast(int max, bool withPicOnly = false)

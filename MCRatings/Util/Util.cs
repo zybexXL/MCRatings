@@ -15,9 +15,14 @@ namespace MCRatings
 {
     public static class Util
     {
-        public static string SanitizeFilename(string name)
+        public static string SanitizeFilename(string name, bool fixQuotes = true)
         {
-            return string.Join("_", name.Split(Path.GetInvalidFileNameChars(), StringSplitOptions.RemoveEmptyEntries));
+            if (fixQuotes)
+            {
+                name = Regex.Replace(name, @" ?[\\/;]", ",");
+                name = name.Replace('"', '\'');
+            }
+            return string.Join(" ", name.Split(Path.GetInvalidFileNameChars(), StringSplitOptions.RemoveEmptyEntries));
         }
 
         // download image to temp folder
@@ -55,24 +60,23 @@ namespace MCRatings
         }
 
         // does what is says
-        public static string ConvertToPng(string file, bool deleteOriginal = true)
+        public static bool ConvertToPng(string file, string dest, bool deleteOriginal = true)
         {
             try
             {
                 if (Path.GetExtension(file)?.ToLower() == ".png")
-                    return file;
-
-                string dest = Path.ChangeExtension(file, ".png");
-                using (var image = Image.FromFile(file))
-                    image.Save(dest, ImageFormat.Png);
+                    File.Copy(file, dest, true);
+                else
+                    using (var image = Image.FromFile(file))
+                        image.Save(dest, ImageFormat.Png);
 
                 if (deleteOriginal)
                     try { File.Delete(file); } catch { }
 
-                return dest;
+                return true;
             }
             catch { }
-            return file;
+            return false;
         }
 
         public static int[] IdentityArray(int size)
