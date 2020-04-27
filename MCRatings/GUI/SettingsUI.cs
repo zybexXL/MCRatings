@@ -186,7 +186,7 @@ namespace MCRatings
                 Program.settings.TMDbAPIKeys = txtTMDBkeys.Text?.Trim();
                 Program.settings.ListItemsLimit = (int)maxListLimit.Value;
                 Program.settings.Language = string.IsNullOrWhiteSpace(txtLanguage.Text) ? "EN" : txtLanguage.Text;
-                Program.settings.PosterFolder = txtPosterPath.Text;
+                Program.settings.PosterFolder = txtPosterPath.Text.Trim();
                 Program.settings.PosterFilterLanguage = chkPosterFilterLanguage.Checked;
                 Program.settings.PosterSortVotes = chkPosterSortVotes.Checked;
                 Program.settings.SavePosterCommonFolder = chkPosterFolder.Checked;
@@ -195,9 +195,9 @@ namespace MCRatings
                 Program.settings.AddActorRoles = chkActorRoles.Checked;
                 Program.settings.ActorThumbnailSize = comboActorSize.SelectedIndex;
                 Program.settings.SaveActorThumbnails = chkGetActorPics.Checked;
-                Program.settings.ActorFolder = txtActorPicsPath.Text;
-                Program.settings.PosterScript = txtPosterScript.Text;
-                Program.settings.ThumbnailScript = txtThumbScript.Text;
+                Program.settings.ActorFolder = txtActorPicsPath.Text.Trim();
+                Program.settings.PosterScript = txtPosterScript.Text.Trim();
+                Program.settings.ThumbnailScript = txtThumbScript.Text.Trim();
                 Program.settings.RunPosterScript = chkRunPosterPP.Checked;
                 Program.settings.RunThumbnailScript = chkRunThumbPP.Checked;
                 Program.settings.ActorSaveAsPng = chkSaveThumbPNG.Checked;

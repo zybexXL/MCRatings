@@ -235,6 +235,7 @@ namespace MCRatings
 
         internal static bool DownloadUrl(string url, string destpath, bool pngConvert = false)
         {
+            string temp = null;
             try
             {
                 var handler = new HttpClientHandler() { 
@@ -248,7 +249,7 @@ namespace MCRatings
                     {
                         int counter = Interlocked.Increment(ref count);
 
-                        string temp = Path.Combine(Path.GetTempPath(), "MCRatings", $"{counter.ToString("D4")}_{Path.GetFileName(url)}");
+                        temp = Path.Combine(Path.GetTempPath(), "MCRatings", $"{counter.ToString("D4")}_{Path.GetFileName(url)}");
                         Directory.CreateDirectory(Path.GetDirectoryName(temp));
 
                         using (FileStream sw = new FileStream(temp, FileMode.Create, FileAccess.Write, FileShare.Read))
@@ -266,18 +267,21 @@ namespace MCRatings
                                 File.Move(temp, destpath);
                             return true;
                         }
-                        else
-                        {
-                            File.Delete(temp);
-                            return false;
-                        }
                     }
                     else Logger.Log($"Error {response.StatusCode} downloading image: {url}");
                 }
             }
             catch (Exception ex) {
                 Logger.Log(ex, $"Exception downloading image\n\tsource: {url}\n\ttarget: {destpath}"); }
-
+            finally
+            {
+                try
+                {
+                    if (temp != null && File.Exists(temp))
+                        File.Delete(temp);
+                }
+                catch { }
+            }
             return false;
         } 
 
