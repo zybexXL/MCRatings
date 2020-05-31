@@ -1,10 +1,10 @@
 
-About MCRatings
+About ZRatings
 ------
 
 <img align="right" src="https://github.com/zybexXL/MCRatings/blob/master/Screenshots/MCRatings.png">
 
-MCRatings is a companion tool for JRiver Media Center to help tag a movie collection. It retrieves IMDb, TMDb, Metacritic and Rotten Tomatoes movie ratings, along with other movie metadata such as Tagline, Actors, Director, Studios, etc from Open Movie Database (OMDb) and The Movie Database (TMDb). You can decide what changes to keep/skip, and which JRiver fields to update.
+ZRatings is a companion tool for JRiver Media Center to help tag a movie collection. It retrieves IMDb, TMDb, Metacritic and Rotten Tomatoes movie ratings, along with other movie metadata such as Tagline, Actors, Director, Studios, etc from Open Movie Database (OMDb) and The Movie Database (TMDb). You can decide what changes to keep/skip, and which JRiver fields to update.
 
 [Features](#Features)<br>
 [Requirements](#Requirements)<br>
@@ -13,13 +13,13 @@ MCRatings is a companion tool for JRiver Media Center to help tag a movie collec
 [Screenshots](https://github.com/zybexXL/MCRatings/wiki/Screenshots)<br>
 [Download](https://github.com/zybexXL/MCRatings/releases/latest)<br>
 
-*Note: MCRatings was previously called JRatings*
+*Note: ZRatings was previously called MCRatings*
 
 <br>
 
 Features
 ------
-This is what **MCRatings** can do for you:
+This is what **ZRatings** can do for you:
 
 - Get movie metadata including IMDb Rating, TMDb, Rotten Tomatoes, Metacritic scores ...
 - ... Actors, Director, Writers, Awards, Plot, Tagline, Trailer, Website... and a few more!
@@ -47,8 +47,8 @@ Quick Start
 ------
 1. Backup your JRiver library.
 2. Go back to step 1 and really do it this time.  
-3. Start MCRatings - at first run time, the [Settings UI](#Configuration) will automatically open
-   * Check the MCRatings<->JRiver field mapping. For any fields marked RED you need to:
+3. Start ZRatings - at first run time, the [Settings UI](#Configuration) will automatically open
+   * Check the ZRatings<->JRiver field mapping. For any fields marked RED you need to:
      * create the missing fields in JRiver (with type = string)
      * disable them if you are not interested in the information they provide.  
    * Register for an [OMDb Key](http://www.omdbapi.com/apikey.aspx) and enter it on "OMDb API Keys"
