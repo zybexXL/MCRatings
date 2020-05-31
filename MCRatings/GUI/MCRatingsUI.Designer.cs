@@ -63,14 +63,26 @@
             this.menuRevert = new System.Windows.Forms.ToolStripMenuItem();
             this.menuRevertField = new System.Windows.Forms.ToolStripMenuItem();
             this.menuRevertThisColumn = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuRevertOtherColumns = new System.Windows.Forms.ToolStripMenuItem();
             this.menuRevertRow = new System.Windows.Forms.ToolStripMenuItem();
             this.menuRevertSelectedRows = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuSaveSelected = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuSaveRow = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuSaveColumn = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuSaveField = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuSaveAll = new System.Windows.Forms.ToolStripMenuItem();
             this.menuDiscardChanges = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.menuLockField = new System.Windows.Forms.ToolStripMenuItem();
             this.menuCopyField = new System.Windows.Forms.ToolStripMenuItem();
             this.menuPaste = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuAdvanced = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuCopyInfo = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuPasteInfo = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuDeleteMovies = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.menuCreateShortcuts = new System.Windows.Forms.ToolStripMenuItem();
             this.menuShortcutFilename = new System.Windows.Forms.ToolStripMenuItem();
@@ -83,6 +95,7 @@
             this.menuRebuildThumbs = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.menuRemovePoster = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuDeleteThumbs = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuOpenPosterBrowser = new System.Windows.Forms.ToolStripMenuItem();
             this.menuOpenFolder = new System.Windows.Forms.ToolStripMenuItem();
@@ -113,10 +126,6 @@
             this.lblChanges = new System.Windows.Forms.Label();
             this.lblSelected = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
-            this.menuAdvanced = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuCopyInfo = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuPasteInfo = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuDeleteMovies = new System.Windows.Forms.ToolStripMenuItem();
             this.gridMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgSpinner)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridMovies)).BeginInit();
@@ -130,6 +139,7 @@
             this.menuSelect,
             this.menuRevert,
             this.toolStripSeparator1,
+            this.menuSave,
             this.menuDiscardChanges,
             this.toolStripSeparator7,
             this.menuLockField,
@@ -369,6 +379,7 @@
             this.menuRevert.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuRevertField,
             this.menuRevertThisColumn,
+            this.menuRevertOtherColumns,
             this.menuRevertRow,
             this.menuRevertSelectedRows});
             this.menuRevert.Name = "menuRevert";
@@ -378,35 +389,95 @@
             // menuRevertField
             // 
             this.menuRevertField.Name = "menuRevertField";
-            this.menuRevertField.Size = new System.Drawing.Size(181, 22);
+            this.menuRevertField.Size = new System.Drawing.Size(202, 22);
             this.menuRevertField.Text = "Revert this field";
             this.menuRevertField.Click += new System.EventHandler(this.menuRevertField_Click);
             // 
             // menuRevertThisColumn
             // 
             this.menuRevertThisColumn.Name = "menuRevertThisColumn";
-            this.menuRevertThisColumn.Size = new System.Drawing.Size(181, 22);
+            this.menuRevertThisColumn.Size = new System.Drawing.Size(202, 22);
             this.menuRevertThisColumn.Text = "Revert this column";
             this.menuRevertThisColumn.Click += new System.EventHandler(this.menuRevertThisColumn_Click);
+            // 
+            // menuRevertOtherColumns
+            // 
+            this.menuRevertOtherColumns.Name = "menuRevertOtherColumns";
+            this.menuRevertOtherColumns.Size = new System.Drawing.Size(202, 22);
+            this.menuRevertOtherColumns.Text = "Revert all other columns";
+            this.menuRevertOtherColumns.Click += new System.EventHandler(this.menuRevertOtherColumns_Click);
             // 
             // menuRevertRow
             // 
             this.menuRevertRow.Name = "menuRevertRow";
-            this.menuRevertRow.Size = new System.Drawing.Size(181, 22);
-            this.menuRevertRow.Text = "Revert this row";
+            this.menuRevertRow.Size = new System.Drawing.Size(202, 22);
+            this.menuRevertRow.Text = "Revert this movie";
             this.menuRevertRow.Click += new System.EventHandler(this.menuRevertRow_Click);
             // 
             // menuRevertSelectedRows
             // 
             this.menuRevertSelectedRows.Name = "menuRevertSelectedRows";
-            this.menuRevertSelectedRows.Size = new System.Drawing.Size(181, 22);
-            this.menuRevertSelectedRows.Text = "Revert selected rows";
+            this.menuRevertSelectedRows.Size = new System.Drawing.Size(202, 22);
+            this.menuRevertSelectedRows.Text = "Revert selected movies";
             this.menuRevertSelectedRows.Click += new System.EventHandler(this.menuRevertSelectedRows_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(173, 6);
+            // 
+            // menuSave
+            // 
+            this.menuSave.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuSaveSelected,
+            this.menuSaveRow,
+            this.menuSaveColumn,
+            this.menuSaveField,
+            this.toolStripSeparator11,
+            this.menuSaveAll});
+            this.menuSave.Name = "menuSave";
+            this.menuSave.Size = new System.Drawing.Size(176, 22);
+            this.menuSave.Text = "Save to JRiver...";
+            // 
+            // menuSaveSelected
+            // 
+            this.menuSaveSelected.Name = "menuSaveSelected";
+            this.menuSaveSelected.Size = new System.Drawing.Size(185, 22);
+            this.menuSaveSelected.Text = "Save selected movies";
+            this.menuSaveSelected.Click += new System.EventHandler(this.menuSaveSelected_Click);
+            // 
+            // menuSaveRow
+            // 
+            this.menuSaveRow.Name = "menuSaveRow";
+            this.menuSaveRow.Size = new System.Drawing.Size(185, 22);
+            this.menuSaveRow.Text = "Save this movie";
+            this.menuSaveRow.Click += new System.EventHandler(this.menuSaveRow_Click);
+            // 
+            // menuSaveColumn
+            // 
+            this.menuSaveColumn.Name = "menuSaveColumn";
+            this.menuSaveColumn.Size = new System.Drawing.Size(185, 22);
+            this.menuSaveColumn.Text = "Save this column";
+            this.menuSaveColumn.Click += new System.EventHandler(this.menuSaveColumn_Click);
+            // 
+            // menuSaveField
+            // 
+            this.menuSaveField.Name = "menuSaveField";
+            this.menuSaveField.Size = new System.Drawing.Size(185, 22);
+            this.menuSaveField.Text = "Save this field";
+            this.menuSaveField.Click += new System.EventHandler(this.menuSaveField_Click);
+            // 
+            // toolStripSeparator11
+            // 
+            this.toolStripSeparator11.Name = "toolStripSeparator11";
+            this.toolStripSeparator11.Size = new System.Drawing.Size(182, 6);
+            // 
+            // menuSaveAll
+            // 
+            this.menuSaveAll.Name = "menuSaveAll";
+            this.menuSaveAll.Size = new System.Drawing.Size(185, 22);
+            this.menuSaveAll.Text = "Save all changes";
+            this.menuSaveAll.Click += new System.EventHandler(this.menuSaveAll_Click);
             // 
             // menuDiscardChanges
             // 
@@ -425,7 +496,8 @@
             this.menuLockField.Name = "menuLockField";
             this.menuLockField.Size = new System.Drawing.Size(176, 22);
             this.menuLockField.Text = "Lock field value";
-            this.menuLockField.ToolTipText = "Lock/unlock a field to prevent changes to that field value";
+            this.menuLockField.ToolTipText = "Lock/unlock a field to prevent changes to that field value.\r\nUae SHIFT+Click to l" +
+    "ock/unlock this cell on all selected movies.";
             this.menuLockField.Click += new System.EventHandler(this.menuLockField_Click);
             // 
             // menuCopyField
@@ -443,6 +515,44 @@
             this.menuPaste.Text = "Paste field";
             this.menuPaste.ToolTipText = "You can only paste into fields on the Yellow columns.";
             this.menuPaste.Click += new System.EventHandler(this.menuPaste_Click);
+            // 
+            // menuAdvanced
+            // 
+            this.menuAdvanced.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuCopyInfo,
+            this.menuPasteInfo,
+            this.menuDeleteMovies});
+            this.menuAdvanced.Name = "menuAdvanced";
+            this.menuAdvanced.Size = new System.Drawing.Size(176, 22);
+            this.menuAdvanced.Text = "Advanced...";
+            // 
+            // menuCopyInfo
+            // 
+            this.menuCopyInfo.Name = "menuCopyInfo";
+            this.menuCopyInfo.Size = new System.Drawing.Size(204, 22);
+            this.menuCopyInfo.Text = "Copy Movie Info";
+            this.menuCopyInfo.ToolTipText = "Copy info from selected movies into clipboard";
+            this.menuCopyInfo.Click += new System.EventHandler(this.menuCopyInfo_Click);
+            // 
+            // menuPasteInfo
+            // 
+            this.menuPasteInfo.Name = "menuPasteInfo";
+            this.menuPasteInfo.Size = new System.Drawing.Size(204, 22);
+            this.menuPasteInfo.Text = "Paste Movie Info";
+            this.menuPasteInfo.ToolTipText = "Paste movie info from clipboard into selected movies.\r\nEach movie info will be pa" +
+    "sted to the movie with the same IMDBID only, except\r\nwhen only one movie is sele" +
+    "cted/copied.";
+            this.menuPasteInfo.Click += new System.EventHandler(this.menuPasteInfo_Click);
+            // 
+            // menuDeleteMovies
+            // 
+            this.menuDeleteMovies.Name = "menuDeleteMovies";
+            this.menuDeleteMovies.Size = new System.Drawing.Size(204, 22);
+            this.menuDeleteMovies.Text = "Delete Movie Folders (!!!)";
+            this.menuDeleteMovies.ToolTipText = "WARNING - ENTIRE FOLDER IS DELETED!\r\n\r\nDeletes selected movie files and containin" +
+    "g folders.\r\nIf folder contains more than one movie file, then just the Movie fil" +
+    "e is deleted.\r\n";
+            this.menuDeleteMovies.Click += new System.EventHandler(this.menuDeleteMovies_Click);
             // 
             // toolStripSeparator2
             // 
@@ -488,7 +598,8 @@
             this.menuPosterSync,
             this.menuRebuildThumbs,
             this.toolStripSeparator10,
-            this.menuRemovePoster});
+            this.menuRemovePoster,
+            this.menuDeleteThumbs});
             this.menuPosters.Name = "menuPosters";
             this.menuPosters.Size = new System.Drawing.Size(176, 22);
             this.menuPosters.Text = "Posters...";
@@ -540,6 +651,14 @@
             this.menuRemovePoster.ToolTipText = "Removes the current movie poster.\r\nChanges are only effective after you click \"Sa" +
     "ve to JRiver\"";
             this.menuRemovePoster.Click += new System.EventHandler(this.menuRemovePoster_Click);
+            // 
+            // menuDeleteThumbs
+            // 
+            this.menuDeleteThumbs.Name = "menuDeleteThumbs";
+            this.menuDeleteThumbs.Size = new System.Drawing.Size(233, 22);
+            this.menuDeleteThumbs.Text = "Delete Cast/Crew thumbnails";
+            this.menuDeleteThumbs.Visible = false;
+            this.menuDeleteThumbs.Click += new System.EventHandler(this.menuDeleteThumbs_Click);
             // 
             // openToolStripMenuItem
             // 
@@ -663,7 +782,8 @@
             this.btnSave.Size = new System.Drawing.Size(150, 25);
             this.btnSave.TabIndex = 6;
             this.btnSave.Text = "&Save to JRiver";
-            this.toolTip1.SetToolTip(this.btnSave, "[ALT-S]\r\nSave changes back to JRiver database");
+            this.toolTip1.SetToolTip(this.btnSave, "[ALT-S] \r\nSave changes to JRiver database (selected/current movie)\r\nUse SHIFT+Cli" +
+        "ck to save changes of ALL movies, regardless of selection.");
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
@@ -945,44 +1065,6 @@
             this.lblStatus.TabIndex = 16;
             this.lblStatus.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
-            // menuAdvanced
-            // 
-            this.menuAdvanced.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menuCopyInfo,
-            this.menuPasteInfo,
-            this.menuDeleteMovies});
-            this.menuAdvanced.Name = "menuAdvanced";
-            this.menuAdvanced.Size = new System.Drawing.Size(176, 22);
-            this.menuAdvanced.Text = "Advanced...";
-            // 
-            // menuCopyInfo
-            // 
-            this.menuCopyInfo.Name = "menuCopyInfo";
-            this.menuCopyInfo.Size = new System.Drawing.Size(204, 22);
-            this.menuCopyInfo.Text = "Copy Movie Info";
-            this.menuCopyInfo.ToolTipText = "Copy info from selected movies into clipboard";
-            this.menuCopyInfo.Click += new System.EventHandler(this.menuCopyInfo_Click);
-            // 
-            // menuPasteInfo
-            // 
-            this.menuPasteInfo.Name = "menuPasteInfo";
-            this.menuPasteInfo.Size = new System.Drawing.Size(204, 22);
-            this.menuPasteInfo.Text = "Paste Movie Info";
-            this.menuPasteInfo.ToolTipText = "Paste movie info from clipboard into selected movies.\r\nEach movie info will be pa" +
-    "sted to the movie with the same IMDBID only, except\r\nwhen only one movie is sele" +
-    "cted/copied.";
-            this.menuPasteInfo.Click += new System.EventHandler(this.menuPasteInfo_Click);
-            // 
-            // menuDeleteMovies
-            // 
-            this.menuDeleteMovies.Name = "menuDeleteMovies";
-            this.menuDeleteMovies.Size = new System.Drawing.Size(204, 22);
-            this.menuDeleteMovies.Text = "Delete Movie Folders (!!!)";
-            this.menuDeleteMovies.ToolTipText = "WARNING - ENTIRE FOLDER IS DELETED!\r\n\r\nDeletes selected movie files and containin" +
-    "g folders.\r\nIf folder contains more than one movie file, then just the Movie fil" +
-    "e is deleted.\r\n";
-            this.menuDeleteMovies.Click += new System.EventHandler(this.menuDeleteMovies_Click);
-            // 
             // MCRatingsUI
             // 
             this.AllowDrop = true;
@@ -1015,7 +1097,7 @@
             this.KeyPreview = true;
             this.MinimumSize = new System.Drawing.Size(1000, 487);
             this.Name = "MCRatingsUI";
-            this.Text = "MCRatings - JRiver Ratings Updater";
+            this.Text = "ZRatings - JRiver Ratings Updater";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MCRatingsUI_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Shown += new System.EventHandler(this.MCRatingsUI_Shown);
@@ -1118,6 +1200,15 @@
         private System.Windows.Forms.ToolStripMenuItem menuCopyInfo;
         private System.Windows.Forms.ToolStripMenuItem menuPasteInfo;
         private System.Windows.Forms.ToolStripMenuItem menuDeleteMovies;
+        private System.Windows.Forms.ToolStripMenuItem menuRevertOtherColumns;
+        private System.Windows.Forms.ToolStripMenuItem menuSave;
+        private System.Windows.Forms.ToolStripMenuItem menuSaveSelected;
+        private System.Windows.Forms.ToolStripMenuItem menuSaveRow;
+        private System.Windows.Forms.ToolStripMenuItem menuSaveColumn;
+        private System.Windows.Forms.ToolStripMenuItem menuSaveField;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
+        private System.Windows.Forms.ToolStripMenuItem menuSaveAll;
+        private System.Windows.Forms.ToolStripMenuItem menuDeleteThumbs;
     }
 }
 

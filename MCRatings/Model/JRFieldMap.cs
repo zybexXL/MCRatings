@@ -37,7 +37,6 @@ namespace MCRatings
                 case AppField.IMDbVotes:
                 case AppField.RottenTomatoes:
                 case AppField.Metascore:
-                case AppField.Production:
                 case AppField.Awards:
                     return new List<Sources>() { Sources.OMDb };
 
@@ -65,6 +64,7 @@ namespace MCRatings
                 case AppField.Writers:
                 case AppField.Actors:
                 case AppField.Language:
+                case AppField.Production:
                 case AppField.Country:
                 case AppField.Revenue:
                 case AppField.Website:

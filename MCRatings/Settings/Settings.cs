@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml.Serialization;
 
 namespace MCRatings
@@ -109,6 +110,9 @@ namespace MCRatings
                 return _ignoredArticlesRE;
             } }
 
+        [XmlIgnore]
+        public static bool isMigrated { get; private set; } = false;
+
         public Settings()
         {
         }
@@ -206,6 +210,40 @@ namespace MCRatings
                     Properties.Resources.female.Save(Constants.AvatarFemale, ImageFormat.Png);
             }
             catch { }
+        }
+
+        public static bool MigrationNeeded { get {
+            return !Directory.Exists(Constants.DataFolder) && Directory.Exists(Constants.MCRatingsFolder);
+        } }
+
+        // migrate MCRatings settings to ZRatings (project name change)
+        // return true if migration happened
+        public static bool MigrateSettings()
+        {
+            if (MigrationNeeded)
+            {
+                isMigrated = true;
+                try
+                {
+                    Directory.Move(Constants.MCRatingsFolder, Constants.DataFolder);
+                    return isMigrated;
+                }
+                catch { }
+
+                // rename failed, copy settings files
+                try
+                {
+                    Directory.CreateDirectory(Constants.DataFolder);
+                    var files = Directory.GetFiles(Constants.MCRatingsFolder, "*.*", SearchOption.TopDirectoryOnly);
+                    foreach (var file in files)
+                    {
+                        string f = Path.GetFileName(file);
+                        File.Copy(f, Path.Combine(Constants.DataFolder, f));
+                    }
+                }
+                catch { return false; }
+            }
+            return isMigrated;
         }
     }
 

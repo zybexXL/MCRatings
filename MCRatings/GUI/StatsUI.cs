@@ -29,9 +29,9 @@ namespace MCRatings
             Stats total = Stats.Total;
 
             dgStats.Rows.Clear();
-            dgStats.Rows.Add("MCRatings Start Date", current.StartDate.ToString(), total.StartDate.ToString());
-            dgStats.Rows.Add("MCRatings Runtime", TimeSpan.FromSeconds(current.AppRuntime).ToString(), TimeSpan.FromSeconds(total.AppRuntime).ToString());
-            dgStats.Rows.Add("MCRatings Executions", current.AppRuns, total.AppRuns);
+            dgStats.Rows.Add("ZRatings Start Date", current.StartDate.ToString(), total.StartDate.ToString());
+            dgStats.Rows.Add("ZRatings Runtime", TimeSpan.FromSeconds(current.AppRuntime).ToString(), TimeSpan.FromSeconds(total.AppRuntime).ToString());
+            dgStats.Rows.Add("ZRatings Executions", current.AppRuns, total.AppRuns);
 
             dgStats.Rows.Add("OMDb Get by ID", current.OMDbGet, total.OMDbGet);
             dgStats.Rows.Add("OMDb Get by Title", current.OMDbSearch, total.OMDbSearch);

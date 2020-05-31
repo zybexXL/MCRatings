@@ -68,7 +68,6 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.picPaypal = new System.Windows.Forms.PictureBox();
             this.label15 = new System.Windows.Forms.Label();
-            this.btnStats = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
@@ -82,18 +81,18 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Segoe UI", 39.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.label1.Location = new System.Drawing.Point(142, 1);
+            this.label1.Location = new System.Drawing.Point(142, -1);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(302, 71);
+            this.label1.Size = new System.Drawing.Size(250, 71);
             this.label1.TabIndex = 0;
-            this.label1.Text = "MCRatings";
+            this.label1.Text = "ZRatings";
             this.label1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MouseDown_Drag);
             // 
             // lblVersion
             // 
             this.lblVersion.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblVersion.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.lblVersion.Location = new System.Drawing.Point(154, 92);
+            this.lblVersion.Location = new System.Drawing.Point(153, 62);
             this.lblVersion.Margin = new System.Windows.Forms.Padding(3);
             this.lblVersion.Name = "lblVersion";
             this.lblVersion.Size = new System.Drawing.Size(103, 17);
@@ -116,7 +115,7 @@
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.label7.Location = new System.Drawing.Point(153, 63);
+            this.label7.Location = new System.Drawing.Point(153, 85);
             this.label7.Margin = new System.Windows.Forms.Padding(3);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(128, 15);
@@ -128,7 +127,7 @@
             this.btnUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnUpdate.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnUpdate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.btnUpdate.Location = new System.Drawing.Point(401, 89);
+            this.btnUpdate.Location = new System.Drawing.Point(154, 117);
             this.btnUpdate.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.Size = new System.Drawing.Size(116, 24);
@@ -159,8 +158,8 @@
             // 
             this.linkLabel2.AutoSize = true;
             this.linkLabel2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.linkLabel2.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.linkLabel2.Location = new System.Drawing.Point(287, 63);
+            this.linkLabel2.LinkColor = System.Drawing.Color.Teal;
+            this.linkLabel2.Location = new System.Drawing.Point(435, 105);
             this.linkLabel2.Margin = new System.Windows.Forms.Padding(3, 1, 3, 1);
             this.linkLabel2.Name = "linkLabel2";
             this.linkLabel2.Size = new System.Drawing.Size(82, 15);
@@ -175,7 +174,7 @@
             this.linkLabel3.AutoSize = true;
             this.linkLabel3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkLabel3.LinkColor = System.Drawing.Color.Teal;
-            this.linkLabel3.Location = new System.Drawing.Point(362, 126);
+            this.linkLabel3.Location = new System.Drawing.Point(432, 84);
             this.linkLabel3.Margin = new System.Windows.Forms.Padding(3);
             this.linkLabel3.Name = "linkLabel3";
             this.linkLabel3.Size = new System.Drawing.Size(85, 15);
@@ -191,7 +190,7 @@
             this.linkLabel1.AutoSize = true;
             this.linkLabel1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkLabel1.LinkColor = System.Drawing.Color.Teal;
-            this.linkLabel1.Location = new System.Drawing.Point(154, 126);
+            this.linkLabel1.Location = new System.Drawing.Point(427, 42);
             this.linkLabel1.Margin = new System.Windows.Forms.Padding(3);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(90, 15);
@@ -319,9 +318,9 @@
             this.label11.Location = new System.Drawing.Point(7, 533);
             this.label11.Margin = new System.Windows.Forms.Padding(3);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(222, 25);
+            this.label11.Size = new System.Drawing.Size(204, 25);
             this.label11.TabIndex = 0;
-            this.label11.Text = "Do you like MCRatings?";
+            this.label11.Text = "Do you like ZRatings?";
             // 
             // label12
             // 
@@ -357,7 +356,7 @@
             this.linkLabel4.AutoSize = true;
             this.linkLabel4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkLabel4.LinkColor = System.Drawing.Color.Teal;
-            this.linkLabel4.Location = new System.Drawing.Point(266, 126);
+            this.linkLabel4.Location = new System.Drawing.Point(444, 63);
             this.linkLabel4.Margin = new System.Windows.Forms.Padding(3);
             this.linkLabel4.Name = "linkLabel4";
             this.linkLabel4.Size = new System.Drawing.Size(73, 15);
@@ -420,7 +419,7 @@
             this.lblDebug.AutoSize = true;
             this.lblDebug.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblDebug.ForeColor = System.Drawing.Color.Red;
-            this.lblDebug.Location = new System.Drawing.Point(260, 93);
+            this.lblDebug.Location = new System.Drawing.Point(310, 122);
             this.lblDebug.Margin = new System.Windows.Forms.Padding(3);
             this.lblDebug.Name = "lblDebug";
             this.lblDebug.Size = new System.Drawing.Size(82, 15);
@@ -507,7 +506,7 @@
             // 
             // pictureBox5
             // 
-            this.pictureBox5.Image = global::MCRatings.Properties.Resources.MCRatings;
+            this.pictureBox5.Image = global::MCRatings.Properties.Resources.logo;
             this.pictureBox5.Location = new System.Drawing.Point(12, 13);
             this.pictureBox5.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pictureBox5.Name = "pictureBox5";
@@ -570,23 +569,6 @@
             this.label15.Size = new System.Drawing.Size(509, 2);
             this.label15.TabIndex = 0;
             // 
-            // btnStats
-            // 
-            this.btnStats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnStats.FlatAppearance.BorderSize = 0;
-            this.btnStats.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnStats.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnStats.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.btnStats.Location = new System.Drawing.Point(480, -1);
-            this.btnStats.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.btnStats.Name = "btnStats";
-            this.btnStats.Size = new System.Drawing.Size(26, 26);
-            this.btnStats.TabIndex = 1;
-            this.btnStats.Text = "∑";
-            this.btnStats.UseVisualStyleBackColor = true;
-            this.btnStats.Visible = false;
-            this.btnStats.Click += new System.EventHandler(this.btnStats_Click);
-            // 
             // About
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -612,7 +594,6 @@
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.picPaypal);
             this.Controls.Add(this.btnClose);
-            this.Controls.Add(this.btnStats);
             this.Controls.Add(this.btnUpdate);
             this.Controls.Add(this.label15);
             this.Controls.Add(this.label5);
@@ -692,6 +673,5 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.Button btnStats;
     }
 }

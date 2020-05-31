@@ -96,7 +96,7 @@ namespace MCRatings
                 case AppField.Genre: return genres == null ? null : fixList(genres.Select(c => c.name.Replace("Science Fiction","Sci-Fi")), listItems);
                 case AppField.OriginalTitle: return original_title;
                 case AppField.Series: return Regex.Replace(belongs_to_collection?.name ?? "", @"\s*(collection)\s*$", "", RegexOptions.IgnoreCase);
-                //case AppField.Production: return production_companies == null ? null : string.Join("; ", production_companies.Select(c => c.name).Take(listItems));
+                case AppField.Production: return production_companies == null ? null : fixList(production_companies.Select(c => c.name), listItems);
                 case AppField.Director: return credits?.crew == null ? null : fixList(getCrewNames(listItems, "director"));
                 case AppField.Writers: return credits?.crew == null ? null : fixList(getCrewNames(listItems, "writing", true));
                 case AppField.Producer: return credits?.crew == null ? null : fixList(getCrewNames(listItems, "producer"));
@@ -302,7 +302,7 @@ namespace MCRatings
 
     public class TMDbMovieImage
     {
-        public int index;               // not part of the API, used by MCRatings
+        public int index;               // not part of the API, used by ZRatings
         public string file_path;
         public double aspect_ratio;
         public int height;

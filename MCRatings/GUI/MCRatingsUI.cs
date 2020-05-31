@@ -37,7 +37,7 @@ namespace MCRatings
         bool spacePressed = false;
         Point ContextMenuPosition;
         private SoundPlayer Player = new SoundPlayer();
-        string clipPlaylists = "MCRatings.Playlists";
+        string clipPlaylists = "ZRatings.Playlists";
         List<MovieInfo> copiedMovies = null;       // last CTRL+C
         ImageTooltip imgTooltip;
         PosterBrowser posterBrowser;
@@ -61,7 +61,7 @@ namespace MCRatings
             downloader.OnDownloadComplete += imgTooltip.OnImageDownloaded;
             downloader.OnQueueChanged += (sender, count) => UpdateTaskCount(count);
 
-            this.Text = $"MCRatings v{Program.version} - {Program.tagline}";
+            this.Text = $"ZRatings v{Program.version} - {Program.tagline}";
             Stats.Init();
         }
 
@@ -69,6 +69,7 @@ namespace MCRatings
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            //new GetInfo().Show();
             // fill current monitor (with border)
             this.Width = Screen.FromControl(this).Bounds.Width - 200;
             this.Height = Screen.FromControl(this).Bounds.Height - 100;
@@ -87,7 +88,7 @@ namespace MCRatings
             Task.Run(() =>
             {
                 if (AutoUpgrade.CheckUpgrade(checkOnly: true))
-                    SetStatus($"MCRatings v{AutoUpgrade.LatestVersion.version} is available! Click there to update  \u27a4 \u27a4 \u27a4", true);
+                    SetStatus($"ZRatings v{AutoUpgrade.LatestVersion.version} is available! Click there to update  \u27a4 \u27a4 \u27a4", true);
             });
         }
 
@@ -972,10 +973,22 @@ namespace MCRatings
         #region JRiver Save
         private void btnSave_Click(object sender, EventArgs e)
         {
-            var changed = movies.Where(m => m.isDirty).ToList();
+            var movieList = ModifierKeys.HasFlag(Keys.Shift) ? movies : GetSelectedMovies();
+            if (movieList.Count == 0)
+            {
+                if (DialogResult.Yes != MessageBox.Show("No movies selected. Do you want to save ALL changes?", "Save everything?", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                    return;
+                movieList = movies;
+            }
+            SaveChanges(movieList);
+        }
+
+        private void SaveChanges(List<MovieInfo> movieList, AppField appField = AppField.Movie)
+        {
+            var changed = movieList.Where(m => m.isDirty).ToList();
             if (changed.Count == 0)
             {
-                MessageBox.Show("No modified movies, nothing to save.", "Nothing changed", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("No modified movies selected, nothing to save.", "Nothing changed", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -986,6 +999,7 @@ namespace MCRatings
             }
 
             var bar = new ProgressUI("Saving changes", SaveChanges, changed);
+            bar.progress.field = appField;
             bar.progress.totalItems = changed.Count;
             bar.ShowDialog();
 
@@ -1034,7 +1048,7 @@ namespace MCRatings
                 if (hasPoster) 
                     movie.newPosterPath = SavePoster(movie);
 
-                if (jrAPI.SaveMovie(movie))
+                if (jrAPI.SaveMovie(movie, progress.field))
                 {
                     //movie.clearUpdates();
                     movie[AppField.Status] = "saved";
@@ -2617,6 +2631,107 @@ namespace MCRatings
             }
             catch { }
             return result;
+        }
+
+        private void menuRevertOtherColumns_Click(object sender, EventArgs e)
+        {
+            DataGridView.HitTestInfo hit = gridMovies.HitTest(ContextMenuPosition.X, ContextMenuPosition.Y);
+            if (hit.RowIndex >= 0 && hit.ColumnIndex > (int)AppField.Status)
+            {
+                for (int i = 0; i < gridMovies.RowCount; i++)
+                {
+                    var row = gridMovies.Rows[i];
+                    MovieInfo m = row.Cells[0].Value as MovieInfo;
+                    if (!m.isDirty) continue;
+                    string curr = m[(AppField)hit.ColumnIndex];
+                    bool isposterlocked = m.lockPoster;
+                    m.restoreSnapshot();
+                    row.Cells[hit.ColumnIndex].Value = curr;
+                    m[(AppField)hit.ColumnIndex] = curr;
+                    if (hit.ColumnIndex == (int)AppField.Poster)
+                        m.lockPoster = isposterlocked;
+                }
+            }
+            gridMovies.Invalidate();
+            gridMovies.Refresh();
+            updateModifiedCount();
+        }
+
+        private void menuSaveSelected_Click(object sender, EventArgs e)
+        {
+            SaveChanges(GetSelectedMovies());
+        }
+
+        private void menuSaveRow_Click(object sender, EventArgs e)
+        {
+            DataGridView.HitTestInfo hit = gridMovies.HitTest(ContextMenuPosition.X, ContextMenuPosition.Y);
+            if (hit.RowIndex >= 0 && hit.ColumnIndex > 1 && hit.Type == DataGridViewHitTestType.Cell)
+            {
+                MovieInfo m = gridMovies.Rows[hit.RowIndex].Cells[0].Value as MovieInfo;
+                SaveChanges(new List<MovieInfo>() { m });
+            }
+        }
+
+        private void menuSaveColumn_Click(object sender, EventArgs e)
+        {
+            DataGridView.HitTestInfo hit = gridMovies.HitTest(ContextMenuPosition.X, ContextMenuPosition.Y);
+            if (hit.RowIndex >= 0 && hit.ColumnIndex > 1 && hit.Type == DataGridViewHitTestType.Cell)
+            {
+                MovieInfo m = gridMovies.Rows[hit.RowIndex].Cells[0].Value as MovieInfo;
+                SaveChanges(movies, (AppField)hit.ColumnIndex);
+            }
+        }
+
+        private void menuSaveField_Click(object sender, EventArgs e)
+        {
+            DataGridView.HitTestInfo hit = gridMovies.HitTest(ContextMenuPosition.X, ContextMenuPosition.Y);
+            if (hit.RowIndex >= 0 && hit.ColumnIndex > 1 && hit.Type == DataGridViewHitTestType.Cell)
+            {
+                MovieInfo m = gridMovies.Rows[hit.RowIndex].Cells[0].Value as MovieInfo;
+                SaveChanges(new List<MovieInfo>() { m }, (AppField)hit.ColumnIndex);
+            }
+        }
+
+        private void menuSaveAll_Click(object sender, EventArgs e)
+        {
+            SaveChanges(movies);
+        }
+
+        private void menuDeleteThumbs_Click(object sender, EventArgs e)
+        {
+            // TODO: this doesn't work when the ActorFolder contains macros
+            //
+            //    string dir = Program.settings.ActorFolder;
+            //    if (string.IsNullOrEmpty(dir) || !Directory.Exists(dir))
+            //        return;
+
+            //    var movies = GetSelectedMovies();
+            //    string names = "";
+            //    foreach (var m in movies)
+            //        names += $";{m[AppField.Actors]}";
+
+            //    var files = names.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Select(a => a.Trim())
+            //        .Distinct(StringComparer.InvariantCultureIgnoreCase).ToList();
+            //    if (files.Count == 0)
+            //        MessageBox.Show("Selected movies have no listed actors.");
+            //    else
+            //    {
+            //        string plural = movies.Count == 1 ? "" : "s";
+            //        if (DialogResult.OK == MessageBox.Show($"This will {files.Count} Actor thumbnail file(s) of {movies.Count} movie{plural}!\nThumbnail folder:\n{dir}\n\nPress OK to confirm!",
+            //            "Delete thumbnails", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning))
+            //        {
+            //            int deleted = 0;
+            //            foreach (var m in movies)
+            //                foreach (var f in files)
+            //            {
+            //                string file = Path.Combine(dir, $"{f}.png");
+            //                string dest = Macro.resolvePath(Program.settings.ActorFolder, file, m, null);
+            //                if (File.Exists(file)) { try { File.Delete(file); deleted++; } catch { }; }
+            //            }
+
+            //            MessageBox.Show("{deleted} files deleted.", "Delete thumbnails", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //        }
+            //    }
         }
     }
 }

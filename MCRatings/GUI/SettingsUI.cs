@@ -80,10 +80,10 @@ namespace MCRatings
             badFields = !checkFieldNames(Program.settings.valid);
             if (!Program.settings.valid)
             {
-                MessageBox.Show("Please review the JRiver fields to be updated by MCRatings.\n" +
+                MessageBox.Show("Please review the JRiver fields to be updated by ZRatings.\n" +
                     "Fields in red don't exist in JRiver - you need to create them (type=String), or specify an alternative field.\n" +
                     "If you don't want a field to be updated, you can disable it.\n\n" +
-                    "To get OMDb/TMDb information, you need to register for API keys using the provided links.", "Welcome to MCRatings!",
+                    "To get OMDb/TMDb information, you need to register for API keys using the provided links.", "Welcome to ZRatings!",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 tabSettings.SelectedTab = tabFields;
             }
@@ -132,7 +132,7 @@ namespace MCRatings
             {
                 path = Macro.GetBaseFolder(path);
                 Directory.CreateDirectory(path);
-                string test = Path.Combine(path, "~mcratings_test~.tmp");
+                string test = Path.Combine(path, "~zratings_test~.tmp");
                 File.WriteAllText(test, "write permission test");
                 File.Delete(test);
                 return true;
@@ -351,7 +351,7 @@ namespace MCRatings
 
             if (!Program.settings.valid)
             {
-                if (DialogResult.No == MessageBox.Show("You need to complete first time configuration.\nCancelling will exit MCRatings.\n\nAre you sure you want to CANCEL?",
+                if (DialogResult.No == MessageBox.Show("You need to complete first time configuration.\nCancelling will exit ZRatings.\n\nAre you sure you want to CANCEL?",
                     "Invalid settings", MessageBoxButtons.YesNo, MessageBoxIcon.Stop))
                     e.Cancel = true;
             }
@@ -445,7 +445,7 @@ namespace MCRatings
 
         private void btnPosterFolder_Click(object sender, EventArgs e)
         {
-            using (var dialog = new MCRatings.OpenFolderEx())
+            using (var dialog = new OpenFolderEx())
                 if (dialog.ShowDialog(this) == DialogResult.OK)
                     if (sender as Button == btnPosterFolder)
                         txtPosterPath.Text = dialog.SelectedFolder;

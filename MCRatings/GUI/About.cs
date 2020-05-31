@@ -95,7 +95,7 @@ namespace MCRatings
         {
             try
             {
-                string url = $"mailto:{email}?subject=MCRatings%20v{Program.version.ToString()}";
+                string url = $"mailto:{email}?subject=ZRatings%20v{Program.version.ToString()}";
                 Process.Start(url);
             }
             catch { }

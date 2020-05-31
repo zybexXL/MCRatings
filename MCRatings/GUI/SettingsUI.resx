@@ -136,9 +136,9 @@
     <value>17, 17</value>
   </metadata>
   <data name="chkFastStart.ToolTip" xml:space="preserve">
-    <value>Enable this option to make MCRatings start faster.
+    <value>Enable this option to make ZRatings start faster.
 
-When enabled, MCRatings will just load the JRiver Playlist names without checking how many movies are in each playlist.
+When enabled, ZRatings will just load the JRiver Playlist names without checking how many movies are in each playlist.
 The playlist selector will not show the movie counts and empty playlists will also be displayed.</value>
   </data>
   <data name="txtLanguage.ToolTip" xml:space="preserve">
@@ -214,7 +214,7 @@ Titles will still be written correctly to JRiver.
 
 Example: "The Shining" will display as "Shining, The"
 
-The full list of ignored articles can be edited on MCRatings' Settings.xml.
+The full list of ignored articles can be edited on ZRatings' Settings.xml.
 </value>
   </data>
   <data name="txtActorPicsPath.ToolTip" xml:space="preserve">

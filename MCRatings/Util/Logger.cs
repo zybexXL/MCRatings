@@ -18,9 +18,9 @@ namespace MCRatings
             if (!Enabled) return;
             try
             {
-                string folder = Path.Combine(Path.GetTempPath(), "MCRatings");
+                string folder = Path.Combine(Path.GetTempPath(), "ZRatings");
                 Directory.CreateDirectory(folder);
-                logFile = Path.Combine(folder, $"MCRatings.{DateTime.Now.ToString("yyyyMMdd")}.log");
+                logFile = Path.Combine(folder, $"ZRatings.{DateTime.Now.ToString("yyyyMMdd")}.log");
             }
             catch { }
         }

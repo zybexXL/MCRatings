@@ -7,11 +7,12 @@
     <ProjectGuid>{F5A18A28-807B-4DF6-9E48-F5150D0BD14E}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>MCRatings</RootNamespace>
-    <AssemblyName>MCRatings</AssemblyName>
+    <AssemblyName>ZRatings</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -24,7 +25,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -109,11 +109,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collection\PtpCollection.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
+    <Compile Include="GUI\GetInfo.cs">
+      <SubType>Form</SubType>
     </Compile>
+    <Compile Include="GUI\GetInfo.Designer.cs">
+      <DependentUpon>GetInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\AppRenamed.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\AppRenamed.Designer.cs">
+      <DependentUpon>AppRenamed.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs" />
     <Compile Include="Util\Analytics.cs" />
     <Compile Include="GUI\About.cs">
       <SubType>Form</SubType>
@@ -158,7 +166,7 @@
     <Compile Include="TMDb\TMDbAPI.cs" />
     <Compile Include="TMDb\TMDbSearch.cs" />
     <Compile Include="TMDb\TMDbMovie.cs" />
-    <Compile Include="Settings\JRFieldMap.cs" />
+    <Compile Include="Model\JRFieldMap.cs" />
     <Compile Include="Upgrade\AutoUpgrade.cs" />
     <Compile Include="Sound\SoundPlayer.cs" />
     <Compile Include="Upgrade\VersionInfo.cs" />
@@ -202,11 +210,17 @@
     <EmbeddedResource Include="GUI\About.resx">
       <DependentUpon>About.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\GetInfo.resx">
+      <DependentUpon>GetInfo.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\ImageTooltip.resx">
       <DependentUpon>ImageTooltip.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\MCRatingsUI.resx">
       <DependentUpon>MCRatingsUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\AppRenamed.resx">
+      <DependentUpon>AppRenamed.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\PosterBrowser.resx">
       <DependentUpon>PosterBrowser.cs</DependentUpon>
@@ -218,7 +232,6 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\SettingsUI.resx">
       <DependentUpon>SettingsUI.cs</DependentUpon>
@@ -249,7 +262,7 @@
   <ItemGroup>
     <None Include="Resources\speaker_off.png" />
     <None Include="Resources\speaker_on.png" />
-    <None Include="Resources\MCRatings.png" />
+    <None Include="Resources\logo.png" />
     <None Include="Resources\ETH_icon.png" />
     <None Include="Resources\BTC_icon.png" />
     <None Include="Resources\paypal.png" />

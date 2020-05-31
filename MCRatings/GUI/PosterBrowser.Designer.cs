@@ -215,7 +215,7 @@
             this.btnSelectLockOriginal.Size = new System.Drawing.Size(24, 24);
             this.btnSelectLockOriginal.TabIndex = 9;
             this.btnSelectLockOriginal.TabStop = false;
-            this.toolTip1.SetToolTip(this.btnSelectLockOriginal, "Select the current poster and lock the cell.\r\nLocking will prevent MCRatings from" +
+            this.toolTip1.SetToolTip(this.btnSelectLockOriginal, "Select the current poster and lock the cell.\r\nLocking will prevent ZRatings from" +
         " suggesting a different poster next time.");
             this.btnSelectLockOriginal.UseVisualStyleBackColor = true;
             this.btnSelectLockOriginal.Click += new System.EventHandler(this.btnSelectLockOriginal_Click);
@@ -320,7 +320,7 @@
             this.btnSelectLock.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSelectLock.Name = "btnSelectLock";
             this.btnSelectLock.Size = new System.Drawing.Size(36, 36);
-            this.btnSelectLock.ToolTipText = "Select this poster and lock the cell.\r\nLocking will prevent MCRatings from sugges" +
+            this.btnSelectLock.ToolTipText = "Select this poster and lock the cell.\r\nLocking will prevent ZRatings from sugges" +
     "ting a different poster next time.";
             this.btnSelectLock.Click += new System.EventHandler(this.btnSelectLock_Click);
             // 

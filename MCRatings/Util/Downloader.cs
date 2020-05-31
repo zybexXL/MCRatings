@@ -249,7 +249,7 @@ namespace MCRatings
                     {
                         int counter = Interlocked.Increment(ref count);
 
-                        temp = Path.Combine(Path.GetTempPath(), "MCRatings", $"{counter.ToString("D4")}_{Path.GetFileName(url)}");
+                        temp = Path.Combine(Path.GetTempPath(), "ZRatings", $"{counter.ToString("D4")}_{Path.GetFileName(url)}");
                         Directory.CreateDirectory(Path.GetDirectoryName(temp));
 
                         using (FileStream sw = new FileStream(temp, FileMode.Create, FileAccess.Write, FileShare.Read))

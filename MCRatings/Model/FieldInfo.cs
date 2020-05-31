@@ -34,7 +34,7 @@ namespace MCRatings
         }
 
         public FieldInfo(string header, bool readOnly, int width, int alignment, Type type)
-    : this(header, readOnly, width, alignment)
+            : this(header, readOnly, width, alignment)
         {
             dataType = type;
         }

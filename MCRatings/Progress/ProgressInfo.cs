@@ -23,6 +23,7 @@ namespace MCRatings
         public bool canCancel = true;
         public bool canOverwrite = false;
         public bool useAltTitle = false;
+        public AppField field = AppField.Movie;
 
         public Action RefreshHandler;
 

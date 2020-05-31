@@ -212,7 +212,7 @@
             this.dgSetting.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dgSetting.DefaultCellStyle = dataGridViewCellStyle2;
-            this.dgSetting.HeaderText = "MCRatings field";
+            this.dgSetting.HeaderText = "ZRatings field";
             this.dgSetting.Name = "dgSetting";
             this.dgSetting.ReadOnly = true;
             this.dgSetting.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
@@ -356,7 +356,7 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(251, 16);
             this.label5.TabIndex = 8;
-            this.label5.Text = "MCRatings to JRiver field mapping:";
+            this.label5.Text = "ZRatings to JRiver field mapping:";
             // 
             // btnDiscard
             // 

@@ -21,7 +21,7 @@ namespace MCRatings
         public ImageTooltip()
         {
             InitializeComponent();
-            Icon = Icon.FromHandle(Properties.Resources.MCRatings.GetHicon());
+            Icon = Icon.FromHandle(Properties.Resources.logo.GetHicon());
         }
 
         // Updated Image might be null on this call, since it might still be downloading

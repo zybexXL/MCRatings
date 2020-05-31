@@ -285,7 +285,7 @@ namespace MCRatings
             return null;
         }
 
-        public bool SaveMovie(MovieInfo movie)
+        public bool SaveMovie(MovieInfo movie, AppField filter)
         {
             bool ok = true;
             lastException = null;
@@ -304,6 +304,9 @@ namespace MCRatings
 
                 foreach (AppField f in Enum.GetValues(typeof(AppField)))
                 {
+                    if (filter != AppField.Movie && f != filter)
+                        continue;
+
                     JRFieldMap map = null;
                     if (movie.isModified(f) && (f == AppField.Playlists
                         || (Constants.ViewColumnInfo[f].isJRField && Program.settings.FieldMap.TryGetValue(f, out map) && map.enabled)))

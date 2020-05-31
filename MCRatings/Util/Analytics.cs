@@ -11,7 +11,7 @@ using System.Windows.Forms;
 namespace MCRatings
 {
     // Google Analytics tracking
-    // MCRatings tracks the following info anonymously:
+    // ZRatings tracks the following info anonymously:
     // - Number of calls to OMDB/TMDB APIs
     // - Number of movies updated with GET Info, and saved back to JRiver
     // - Number of posters and thumbnails downloaded
@@ -19,7 +19,7 @@ namespace MCRatings
 
     public class Analytics
     {
-        // Google Analytics property code - tied to MCRatings developer account
+        // Google Analytics property code - tied to ZRatings developer account
         internal static string property = "VUEtMTM1MzU2MDM4LTE=";
         private static HttpClient client;
 
@@ -30,7 +30,7 @@ namespace MCRatings
             client.BaseAddress = new Uri("https://www.google-analytics.com");
 
             string x64 = Environment.Is64BitOperatingSystem ? "; x64; AMD64" : "";
-            client.DefaultRequestHeaders.UserAgent.TryParseAdd($"MCRatings/{Program.version.ToString()} (compatible; Windows; {Util.OSName()}{x64})");
+            client.DefaultRequestHeaders.UserAgent.TryParseAdd($"ZRatings/{Program.version.ToString()} (compatible; Windows; {Util.OSName()}{x64})");
         }
 
         public static void AppStart(string app, string version, bool startSession = true)
@@ -59,7 +59,7 @@ namespace MCRatings
         {
             AnalyticsArgs args = new AnalyticsArgs("screenview");
             args.Add("cd", screen);                                          // screen name
-            args.Add("an", app ?? "MCRatings");                              // app name
+            args.Add("an", app ?? "ZRatings");                               // app name
             args.Add("av", version ?? Program.version.ToString());           // app version
             sendAsync(args);
         }

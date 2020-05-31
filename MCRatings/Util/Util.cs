@@ -32,7 +32,7 @@ namespace MCRatings
             if (!url.StartsWith("http"))
                 return LoadImage(url);
 
-            string tmp = Path.Combine(Path.GetTempPath(), "MCRatings", $"tmpImage_{id}.jpg");
+            string tmp = Path.Combine(Path.GetTempPath(), "ZRatings", $"tmpImage_{id}.jpg");
             try
             {
                 if (Downloader.DownloadUrl(url, tmp))

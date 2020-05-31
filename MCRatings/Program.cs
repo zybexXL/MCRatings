@@ -12,8 +12,8 @@ namespace MCRatings
 {
     static class Program
     {
-        public static Version version = new Version(3, 1, 1);    // major, minor, revision
-        public static string tagline = "\"An offer you can't refuse\" - The Godfather (1972)";        // changes on every major or minor release
+        public static Version version = new Version(3, 2, 0);    // major, minor, revision
+        public static string tagline = "\"The One Name They All Fear\" - Van Helsing (2004)";        // changes on every major or minor release
         public static Settings settings;
 
         /// <summary>
@@ -25,41 +25,48 @@ namespace MCRatings
             Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
-            Logger.Log($"MCRatings v{version}{(Environment.Is64BitProcess ? " x64" : "")} started");
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
+            // project renamed - migrate MCRatings settings
+            if (Settings.MigrationNeeded)
+            {
+                new AppRenamed().ShowDialog();
+                if (!Settings.MigrateSettings())
+                { 
+                    MessageBox.Show("Failed to migrate settings to new folder!\n\nPlease manually rename the folder:\n" +
+                        $"    {Constants.MCRatingsFolder}\nto:\n    {Constants.DataFolder}", "Rename/Move failed",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
+            Logger.Log($"ZRatings v{version}{(Environment.Is64BitProcess ? " x64" : "")} started");
             Logger.Log($"NetFramework version {SysVersions.NetVersion()} on {SysVersions.OSVersion()}");
 
             // load settings
-            AutoUpgrade.MigrateSettings();      // project renamed - migrate JRatings settings
+            Directory.CreateDirectory(Constants.DataFolder);
             settings = Settings.Load();
 
             // start analytics
             Analytics.Init();
-            Analytics.AppStart("MCRatings", version.ToString(), true);
+            Analytics.AppStart("ZRatings", version.ToString(), true);
 
-            // delete .bak file from previous upgrade
-            string currEXE = Assembly.GetEntryAssembly().Location;
-            string bakFile = Path.ChangeExtension(currEXE, ".bak");
-            if (File.Exists(bakFile)) try { File.Delete(bakFile); } catch { }
-            // cleanup old JRatings binaries
-            string jratings = Path.Combine(Path.GetDirectoryName(currEXE), "JRatings.exe");
-            if (File.Exists(jratings)) try { File.Delete(jratings); } catch { }
-            bakFile = Path.ChangeExtension(jratings, ".bak");
-            if (File.Exists(bakFile)) try { File.Delete(bakFile); } catch { }
+            // remove previous version after upgrading
+            AutoUpgrade.Cleanup();
 
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
             try
             {
                 Application.Run(new MCRatingsUI());
             }
             catch (Exception ex) {
                 Analytics.Exception(ex, true);
-                MessageBox.Show($"Oops! An unhandled exception crashed MCRatings! Please send this info to the developer:\n\n{ex.ToString()}", "He's gone, baby", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Oops! An unhandled exception crashed ZRatings! Please send this info to the developer:\n\n{ex.ToString()}", "He's gone, baby", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Logger.Log(ex, "Fatal Exception!");
             }
 
             Analytics.AppClose();
-            Logger.Log($"MCRatings closed.\n\n");
+            Logger.Log($"ZRatings closed.\n\n");
         }
 
         static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)

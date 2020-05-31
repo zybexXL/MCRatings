@@ -51,7 +51,7 @@ namespace MCRatings
         public PosterBrowser()
         {
             InitializeComponent();
-            Icon = Icon.FromHandle(Properties.Resources.MCRatings.GetHicon());
+            Icon = Icon.FromHandle(Properties.Resources.logo.GetHicon());
             toolStrip1.Renderer = new ToolStripBorderFix();
 
             comboLanguage.ComboBox.DrawMode = DrawMode.OwnerDrawFixed;

@@ -82,7 +82,7 @@ namespace MCRatings
         public static bool UpgradeNow()
         {
             Analytics.Event("GUI", "Upgrading");
-            ProgressUI bar = new ProgressUI($"Updating MCRatings to v{LatestVersion.version}", DoUpgrade, false);
+            ProgressUI bar = new ProgressUI($"Updating ZRatings to v{LatestVersion.version}", DoUpgrade, false);
             return (bar.ShowDialog() == DialogResult.OK && bar.progress.result == true);
         }
 
@@ -90,7 +90,7 @@ namespace MCRatings
         {
             try
             {
-                string tmpFile = Path.Combine(Path.GetTempPath(), $"MCRatings.{LatestVersion.version}.tmp");
+                string tmpFile = Path.Combine(Path.GetTempPath(), $"ZRatings.{LatestVersion.version}.tmp");
                 if (File.Exists(tmpFile)) File.Delete(tmpFile);
 
                 using (var client = new WebClient())
@@ -115,22 +115,19 @@ namespace MCRatings
             }
             catch { }
             progress.result = false;
-        }
+        }  
 
-        // migrate JRatings settings to MCRatings (project name change)
-        public static void MigrateSettings()
+        public static void Cleanup()
         {
-            if (!Directory.Exists(Constants.DataFolder) && Directory.Exists(Constants.JRatingsFolder))
-            {
-                try
-                {
-                    Directory.CreateDirectory(Constants.DataFolder);
-                    File.Copy(Path.Combine(Constants.JRatingsFolder, "settings.xml"), Constants.SettingsFile);
-                    Directory.Move(Path.Combine(Constants.JRatingsFolder, "audio"), Constants.AudioCache);
-                    Directory.Move(Path.Combine(Constants.JRatingsFolder, "cache"), Constants.OMDBCache);
-                }
-                catch { } 
-            }
+            // delete .bak file from previous upgrade
+            string currEXE = Assembly.GetEntryAssembly().Location;
+            string bakFile = Path.ChangeExtension(currEXE, ".bak");
+            if (File.Exists(bakFile)) try { File.Delete(bakFile); } catch { }
+            // cleanup old MCRatings binaries
+            string mcratings = Path.Combine(Path.GetDirectoryName(currEXE), "MCRatings.exe");
+            if (File.Exists(mcratings)) try { File.Delete(mcratings); } catch { }
+            bakFile = Path.ChangeExtension(mcratings, ".bak");
+            if (File.Exists(bakFile)) try { File.Delete(bakFile); } catch { }
         }
     }
 }

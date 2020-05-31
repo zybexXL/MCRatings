@@ -37,15 +37,15 @@ namespace MCRatings
             {
                 if (_dataFolder == null) _dataFolder = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "MCRatings");
+                    "ZRatings");
                 return _dataFolder;
             }
         }
 
         // for settings migration due to project name change
-        public static string JRatingsFolder = Path.Combine(
+        public static string MCRatingsFolder = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "JRatings");
+            "MCRatings");
 
         public static string SettingsFile = Path.Combine(DataFolder, "settings.xml");       // TOOD: move to JSON
         public static string LockedCellsFile = Path.Combine(DataFolder, "lockedFields.json");
