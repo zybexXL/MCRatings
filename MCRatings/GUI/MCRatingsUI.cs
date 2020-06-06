@@ -42,6 +42,7 @@ namespace MCRatings
         ImageTooltip imgTooltip;
         PosterBrowser posterBrowser;
         Downloader downloader;
+        MovieInfo currentMovie;
         bool inEvent = false;
 
         public MCRatingsUI()
@@ -1724,51 +1725,7 @@ namespace MCRatings
             if (Program.settings.PostersEnabled && e.ColumnIndex == (int)AppField.Poster && e.RowIndex >= 0)
             {
                 MovieInfo m = gridMovies.Rows[e.RowIndex].Cells[0].Value as MovieInfo;
-                Task.Run(() =>
-                {
-                    try
-                    {
-                        DateTime start = DateTime.Now;
-                        string url2 = null, poster2 = null;
-                        PosterSize size = Program.settings.ShowSmallThumbnails ? PosterSize.Medium : PosterSize.Large;
-                        if (m.isModified(AppField.Poster))
-                        {
-                            // start thumbnail download in another thread (probably already downloaded after GET)
-                            url2 = TMDbAPI.GetImageUrl(m.newPoster?.file_path, size, out poster2);
-                            if (url2 != null) downloader.QueueDownload(url2, poster2, m, priority: true, process: false);
-                        }
-                        
-                        // get current JRiver thumbnail
-                        string poster1 = jrAPI.GetThumbnail(m, Program.settings.ShowSmallThumbnails);
-                        
-                        //imgTooltip.hide(true);  // dispose previous images
-
-                        // load new images (img2 might not yet exist)
-                        var img1 = Util.LoadImage(poster1); 
-                        var img2 = Util.LoadImage(poster2);
-
-                        bool locked = LockedCells.isLocked(m.JRKey, AppField.Poster);
-                        string label = !locked ? "current" : Program.settings.ShowSmallThumbnails ? "LOCKED" : "current [LOCKED]";
-                        string lbl1 = poster1 == null ? "no poster" : $"{label}: {(m.originalValue(AppField.Poster)?.Replace(" ","").Replace("\u00A0", "") ?? "no poster")}";
-                        string lbl2 = poster2 == null ? null : $"new: {m.newPoster?.width}x{m.newPoster?.height}";
-
-                        // image2 thumbnail size
-                        Size thumbSize = img2 == null ? new Size(0, 0) : new Size(img2.Width, img2.Height);
-                        if (m.newPoster != null && img2 == null && url2 != null)
-                        {
-                            var sz = TMDbAPI.GetThumbnailSize(size, m.newPoster.width, m.newPoster.height);
-                            thumbSize = new Size(sz.Item1, sz.Item2);
-                        }
-
-                        // only show if cursor is on same cell for more than X miliseconds
-                        var ellapsed = DateTime.Now - start;
-                        if (!imgTooltip.Visible && ellapsed.TotalMilliseconds < 100)
-                           Thread.Sleep(101 - (int)ellapsed.TotalMilliseconds);
-
-                        ShowPosterToolTip(m, img1, lbl1, img2, lbl2, poster2, thumbSize, e.RowIndex, e.ColumnIndex);
-                    }
-                    catch { imgTooltip.Hide(); }
-                });
+                posterTooltipNeeded(m, e.RowIndex, e.ColumnIndex);
             }
             else
             {
@@ -1794,6 +1751,55 @@ namespace MCRatings
                     e.ToolTipText = locked + txt.WordWrap(100);
                 }
             }
+        }
+
+        private void posterTooltipNeeded(MovieInfo m, int row, int col)
+        {
+            Task.Run(() =>
+            {
+                try
+                {
+                    DateTime start = DateTime.Now;
+                    string url2 = null, poster2 = null;
+                    PosterSize size = Program.settings.ShowSmallThumbnails ? PosterSize.Medium : PosterSize.Large;
+                    if (m.isModified(AppField.Poster))
+                    {
+                        // start thumbnail download in another thread (probably already downloaded after GET)
+                        url2 = TMDbAPI.GetImageUrl(m.newPoster?.file_path, size, out poster2);
+                        if (url2 != null) downloader.QueueDownload(url2, poster2, m, priority: true, process: false);
+                    }
+
+                    // get current JRiver thumbnail
+                    string poster1 = jrAPI.GetThumbnail(m, Program.settings.ShowSmallThumbnails);
+
+                    //imgTooltip.hide(true);  // dispose previous images
+
+                    // load new images (img2 might not yet exist)
+                    var img1 = Util.LoadImage(poster1);
+                    var img2 = Util.LoadImage(poster2);
+
+                    bool locked = LockedCells.isLocked(m.JRKey, AppField.Poster);
+                    string label = !locked ? "current" : Program.settings.ShowSmallThumbnails ? "LOCKED" : "current [LOCKED]";
+                    string lbl1 = poster1 == null ? "no poster" : $"{label}: {(m.originalValue(AppField.Poster)?.Replace(" ", "").Replace("\u00A0", "") ?? "no poster")}";
+                    string lbl2 = poster2 == null ? null : $"new: {m.newPoster?.width}x{m.newPoster?.height}";
+
+                    // image2 thumbnail size
+                    Size thumbSize = img2 == null ? new Size(0, 0) : new Size(img2.Width, img2.Height);
+                    if (m.newPoster != null && img2 == null && url2 != null)
+                    {
+                        var sz = TMDbAPI.GetThumbnailSize(size, m.newPoster.width, m.newPoster.height);
+                        thumbSize = new Size(sz.Item1, sz.Item2);
+                    }
+
+                    // only show if cursor is on same cell for more than X miliseconds
+                    var ellapsed = DateTime.Now - start;
+                    if (!imgTooltip.Visible && ellapsed.TotalMilliseconds < 100)
+                        Thread.Sleep(101 - (int)ellapsed.TotalMilliseconds);
+
+                    ShowPosterToolTip(m, img1, lbl1, img2, lbl2, poster2, thumbSize, row, col);
+                }
+                catch { imgTooltip.Hide(); }
+            });
         }
 
         // Mouse Down event can be the start of a Mouse-drag select
@@ -2361,20 +2367,24 @@ namespace MCRatings
 
         private void gridMovies_SelectionChanged(object sender, EventArgs e)
         {
-            if (!Program.settings.PostersEnabled || posterBrowser == null || !posterBrowser.Visible) return;
             if (!inEvent && gridMovies.SelectedRows.Count == 1)
             {
                 var row = gridMovies.SelectedRows[0];
                 MovieInfo m = row.Cells[0].Value as MovieInfo;
                 if (m != null)
                 {
-                    menuOpenImdb.Enabled = m?.IMDBid != null;
-                    menuOpenTmdb.Enabled = m?.tmdbInfo != null && m.tmdbInfo.id > 0;
-                    menuOpenTrailer.Enabled = m?[AppField.Trailer] != null;
-                    menuOpenPosterBrowser.Visible = Program.settings.PostersEnabled;
-                    ShowPictureBrowser(m, false);
+                    currentMovie = m;
+                    if (!Program.settings.PostersEnabled || posterBrowser == null || !posterBrowser.Visible) return;
+                    {
+                        menuOpenImdb.Enabled = m?.IMDBid != null;
+                        menuOpenTmdb.Enabled = m?.tmdbInfo != null && m.tmdbInfo.id > 0;
+                        menuOpenTrailer.Enabled = m?[AppField.Trailer] != null;
+                        menuOpenPosterBrowser.Visible = Program.settings.PostersEnabled;
+                        ShowPictureBrowser(m, false);
+                    }
                 }
             }
+            else currentMovie = null;
         }
 
         private void menuRebuildThumbs_Click(object sender, EventArgs e)

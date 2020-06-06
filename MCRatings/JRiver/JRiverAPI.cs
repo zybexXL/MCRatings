@@ -36,7 +36,7 @@ namespace MCRatings
         { }
 
         ~JRiverAPI()
-        {   try
+        { try
             {
                 Disconnect();
                 if (lastFile != null && File.Exists(lastFile))
@@ -90,7 +90,7 @@ namespace MCRatings
                 Version = jr.GetVersion().Version;
                 APIlevel = jr.IVersion;
                 Logger.Log($"JRiver version {Version}, APILevel={APIlevel}");
-                string path=null;
+                string path = null;
                 jr.GetLibrary(ref Library, ref path);
                 Logger.Log($"JRiver library is '{Library}', path={path}");
                 return true;
@@ -167,7 +167,7 @@ namespace MCRatings
             files.Filter(Constants.JRFileFilter);
             int num = files.GetNumberFiles();
             playlist.Filecount = num;
-            for (int i = start; i < num; i+=step)
+            for (int i = start; i < num; i += step)
                 yield return getMovieInfo(files.GetFile(i));
         }
 
@@ -186,19 +186,22 @@ namespace MCRatings
                     if (pl.Get("type") == "0")      // 0 = playlist, 1 = playlist group, 2 = smartlist
                         lists[pl.GetID()] = pl.Name;
                 }
-                
+
                 // get fields
                 Dictionary<AppField, string> JRfields = new Dictionary<AppField, string>();
                 foreach (AppField f in Enum.GetValues(typeof(AppField)))
                     if (Constants.ViewColumnInfo[f].isJRField)
-                        JRfields[f] = getFieldValue(movie, f);
+                    {
+                        string value = getFieldValue(movie, f);
+                        JRfields[f] = fixList(value, f);
+                    }
 
                 string imageH = movie.Get("Image Height", true);
                 string imageW = movie.Get("Image Width", true);
                 string imageFile = movie.Get("Image File", false);
                 bool hasPoster = !string.IsNullOrEmpty(imageFile) && !string.IsNullOrEmpty(imageW);
                 // \u00A0 = nbsp; using nbsp for original poster and Spaces for new Poster to track the cell change
-                JRfields[AppField.Poster] = !hasPoster ? null : $"{imageW}\u00A0x\u00A0{imageH}"; 
+                JRfields[AppField.Poster] = !hasPoster ? null : $"{imageW}\u00A0x\u00A0{imageH}";
 
                 JRfields[AppField.File] = movie.Get("Filename", true);
                 JRfields[AppField.Imported] = movie.Get("Date Imported", false);         //epoch
@@ -222,6 +225,14 @@ namespace MCRatings
             return null;
         }
 
+        
+        private string fixList(string value, AppField field)
+        {
+            if (!string.IsNullOrEmpty(value) && Constants.listFields.Contains(field))
+                value = string.Join("; ", value.Split(';').Select(a => a.Trim()));
+            return value;
+        }
+
         private string getFieldValue(IMJFileAutomation file, AppField field)
         {
             try
@@ -235,6 +246,28 @@ namespace MCRatings
                 return "[invalid field name]";
             }
             catch (Exception ex) { Logger.Log(ex, "JRiverAPI.getFieldValue()"); }
+            return "[JRiver Exception!]";
+        }
+
+        public string getFieldValue(MovieInfo movie, string field, bool formatted = true)
+        {
+            try
+            {
+                IMJFileAutomation file = jr.GetFileByKey(movie.JRKey);
+                return file.Get(field, formatted);
+            }
+            catch (Exception ex) { Logger.Log(ex, "JRiverAPI.getFieldValue()"); }
+            return "[JRiver Exception!]";
+        }
+
+        public string resolveExpression(MovieInfo movie, string expression)
+        {
+            try
+            {
+                IMJFileAutomation file = jr.GetFileByKey(movie.JRKey);
+                return file.GetFilledTemplate(expression);
+            }
+            catch (Exception ex) { Logger.Log(ex, "JRiverAPI.resolveExpression()"); }
             return "[JRiver Exception!]";
         }
 

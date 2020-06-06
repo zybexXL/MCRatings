@@ -76,6 +76,11 @@ namespace MCRatings
                 (uint)Color.Red.ToArgb(),                   // locked (foreground)
         };
 
+        // fields which are semicolon-separated lists
+        public static List<AppField> listFields = new List<AppField>() {
+            AppField.Actors, AppField.Collections, AppField.Country, AppField.Director, AppField.Genre,
+            AppField.Keywords, AppField.Language, AppField.Producer, AppField.Production, AppField.Writers };
+
         // datagrid column names
         // datagrid name, settings name, JR field name (default)
         public static Dictionary<AppField, FieldInfo> ViewColumnInfo = new Dictionary<AppField, FieldInfo>()
