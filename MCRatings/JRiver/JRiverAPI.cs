@@ -305,6 +305,7 @@ namespace MCRatings
                 {
                     file.Set("Media Sub Type", "Movie");
                     movie.JRKey = file.GetKey();
+                    movie.UpdateSnapshot(AppField.File);
                     Interlocked.Increment(ref Stats.Session.JRMovieCreate);
                 }
                 return file;

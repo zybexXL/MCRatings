@@ -121,7 +121,17 @@
     <Compile Include="GUI\AppRenamed.Designer.cs">
       <DependentUpon>AppRenamed.cs</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Resources.Designer.cs" />
+    <Compile Include="GUI\CollectionImporter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\CollectionImporter.Designer.cs">
+      <DependentUpon>CollectionImporter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Util\Analytics.cs" />
     <Compile Include="GUI\About.cs">
       <SubType>Form</SubType>
@@ -216,6 +226,9 @@
     <EmbeddedResource Include="GUI\ImageTooltip.resx">
       <DependentUpon>ImageTooltip.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\CollectionImporter.resx">
+      <DependentUpon>CollectionImporter.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\MCRatingsUI.resx">
       <DependentUpon>MCRatingsUI.cs</DependentUpon>
     </EmbeddedResource>
@@ -232,6 +245,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\SettingsUI.resx">
       <DependentUpon>SettingsUI.cs</DependentUpon>
@@ -272,6 +286,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="MCRatings.ico" />
+    <None Include="Resources\back_fff_24.png" />
+    <None Include="Resources\save-as_fff_24.png" />
+    <None Include="Resources\save_fff_24.png" />
+    <None Include="Resources\home_fff_24.png" />
+    <None Include="Resources\refresh_fff_24.png" />
     <None Include="Resources\user_414445_24.png" />
     <None Include="Resources\male.png" />
     <None Include="Resources\female.png" />

@@ -41,6 +41,7 @@ namespace MCRatings
         List<MovieInfo> copiedMovies = null;       // last CTRL+C
         ImageTooltip imgTooltip;
         PosterBrowser posterBrowser;
+        CollectionImporter collectionImporter;
         Downloader downloader;
         MovieInfo currentMovie;
         bool inEvent = false;
@@ -61,6 +62,11 @@ namespace MCRatings
             downloader = new Downloader();
             downloader.OnDownloadComplete += imgTooltip.OnImageDownloaded;
             downloader.OnQueueChanged += (sender, count) => UpdateTaskCount(count);
+            if (Program.settings.Collections)
+            {
+                collectionImporter = new CollectionImporter();
+                collectionImporter.CollectionLoaded += CollectionImporter_CollectionLoaded;
+            }
 
             this.Text = $"ZRatings v{Program.version} - {Program.tagline}";
             Stats.Init();
@@ -136,6 +142,7 @@ namespace MCRatings
 
             downloader.Stop();
             posterBrowser?.Exit();
+            collectionImporter?.Exit();
             LockedCells.Save();
             Stats.Save();
         }
@@ -569,7 +576,9 @@ namespace MCRatings
         private void UpdateDataGrid(DateTime minTime)
         {
             BindingSource bs = gridMovies.DataSource as BindingSource;
-            DataTable dt = bs.DataSource as DataTable;
+            DataTable dt = bs?.DataSource as DataTable;
+            if (dt == null) return;
+
             foreach (DataRow row in dt.Rows)
             {
                 MovieInfo m = row[(int)AppField.Movie] as MovieInfo;
@@ -1357,10 +1366,19 @@ namespace MCRatings
             {
                 var row = gridMovies.Rows[hit.RowIndex];
                 MovieInfo m = row.Cells[0].Value as MovieInfo;
-                m.restoreSnapshot();
-                foreach (AppField f in Enum.GetValues(typeof(AppField)))
-                    if (f >= AppField.Status)
-                        row.Cells[(int)f].Value = m[f];
+
+                if (m.JRKey < 0)    // NEW movie
+                {
+                    movies.Remove(m);
+                    gridMovies.Rows.Remove(row);
+                }
+                else
+                {
+                    m.restoreSnapshot();
+                    foreach (AppField f in Enum.GetValues(typeof(AppField)))
+                        if (f >= AppField.Status)
+                            row.Cells[(int)f].Value = m[f];
+                }
             }
             gridMovies.Refresh();
             updateModifiedCount();
@@ -1386,22 +1404,37 @@ namespace MCRatings
         private void menuDiscardChanges_Click(object sender, EventArgs e)
         {
             this.Cursor = Cursors.WaitCursor;
+            List<DataGridViewRow> removeRows = new List<DataGridViewRow>();
             for (int i = 0; i < gridMovies.RowCount; i++)
             {
                 var row = gridMovies.Rows[i];
                 MovieInfo m = row.Cells[0].Value as MovieInfo;
-                if (m.isDirty)
+
+                if (m.JRKey < 0)    // NEW movie
                 {
-                    m.restoreSnapshot();
-                    foreach (AppField f in Enum.GetValues(typeof(AppField)))
-                        if (f >= AppField.Status)
-                            row.Cells[(int)f].Value = m.originalValue(f);
+                    movies.Remove(m);
+                    removeRows.Add(row);
                 }
-                else {
-                    row.Cells[(int)AppField.Status].Value = null;
-                    m[AppField.Status] = null;
+                else
+                {
+                    if (m.isDirty)
+                    {
+                        m.restoreSnapshot();
+                        foreach (AppField f in Enum.GetValues(typeof(AppField)))
+                            if (f >= AppField.Status)
+                                row.Cells[(int)f].Value = m.originalValue(f);
+                    }
+                    else
+                    {
+                        row.Cells[(int)AppField.Status].Value = null;
+                        m[AppField.Status] = null;
+                    }
                 }
             }
+
+            foreach (var row in removeRows)
+                gridMovies.Rows.Remove(row);
+
             gridMovies.Refresh();
             updateModifiedCount();
             this.Cursor = Cursors.Default;
@@ -1409,18 +1442,29 @@ namespace MCRatings
 
         private void menuRevertSelectedRows_Click(object sender, EventArgs e)
         {
+            List<DataGridViewRow> removeRows = new List<DataGridViewRow>();
             for (int i = 0; i < gridMovies.RowCount; i++)
             {
                 var row = gridMovies.Rows[i];
                 MovieInfo m = row.Cells[0].Value as MovieInfo;
                 if (m.selected)
-                {
-                    m.restoreSnapshot();
-                    foreach (AppField f in Enum.GetValues(typeof(AppField)))
-                        if (f >= AppField.Status)
-                            row.Cells[(int)f].Value = m.originalValue(f);
-                }
+                    if (m.JRKey < 0)    // NEW movie
+                    {
+                        movies.Remove(m);
+                        removeRows.Add(row);
+                    }
+                    else
+                    {
+                        m.restoreSnapshot();
+                        foreach (AppField f in Enum.GetValues(typeof(AppField)))
+                            if (f >= AppField.Status)
+                                row.Cells[(int)f].Value = m.originalValue(f);
+                    }
             }
+
+            foreach (var row in removeRows)
+                gridMovies.Rows.Remove(row);
+
             gridMovies.Refresh();
             updateModifiedCount();
         }
@@ -1933,6 +1977,7 @@ namespace MCRatings
                     menuOpenTmdb.Enabled = m?.tmdbInfo != null && m.tmdbInfo.id > 0;
                     menuOpenTrailer.Enabled = m?[AppField.Trailer] != null;
                     menuOpenPosterBrowser.Visible = Program.settings.PostersEnabled;
+                    menuOpenImporter.Visible = Program.settings.Collections;
                     menuAdvanced.Visible = ModifierKeys.HasFlag(Keys.Shift);
                 }
                 else
@@ -2028,6 +2073,12 @@ namespace MCRatings
 
         #region Collections
 
+        private void CollectionImporter_CollectionLoaded(object sender, PtpCollection e)
+        {
+            if (!CanImportCollection()) return;
+            ImportCollection(e);
+        }
+
         private void MCRatingsUI_DragEnter(object sender, DragEventArgs e)
         {
             string[] files = (string[])(e.Data.GetData(DataFormats.FileDrop, false));
@@ -2035,38 +2086,48 @@ namespace MCRatings
                 e.Effect = DragDropEffects.Copy;
         }
 
+        private bool CanImportCollection()
+        {
+            if (!Program.settings.Collections)
+            {
+                MessageBox.Show("Please enable 'Collections' in Settings.xml");
+                return false;
+            }
+
+            string template = Program.settings.VideoTemplateFile;
+            if (string.IsNullOrEmpty(template) || !File.Exists(template))
+            {
+                MessageBox.Show("VideoTemplateFile not found, please check settings.xml");
+                return false;
+            }
+
+            BindingSource bs = gridMovies.DataSource as BindingSource;
+            DataTable dt = bs?.DataSource as DataTable;
+            if (dt == null)
+            {
+                MessageBox.Show("Please load a playlist first");
+                return false;
+            }
+
+            return true;
+        }
+
         private void MCRatingsUI_DragDrop(object sender, DragEventArgs e)
         {
             string[] files = (string[])(e.Data.GetData(DataFormats.FileDrop, false));
             if (files.Length == 0) return;
 
-            if (!Program.settings.Collections)
-            {
-                MessageBox.Show("Please enable 'Collections' in Settings.xml");
-                return;
-            }
+            if (!CanImportCollection()) return;
 
             string html = File.ReadAllText(files[0]);
-            string title = null;
-            var m = Regex.Match(html, @"<title>(.+?)</title>");
-            if (m.Success)
-                title = HttpUtility.HtmlDecode(m.Groups[1].Value.Trim());
-
-            m = Regex.Match(html, @"coverViewJsonData\[ 0 \] = ({.+});\n");
-            if (m.Success)
-            {
-                string json = m.Groups[1].Value;
-                PtpCollection col = PtpCollection.Parse(json, title);
-                if (col != null)
-                {
-                    ParseCollection(col);
-                    return;
-                }
-            }
-            MessageBox.Show("Invalid collection file - could not parse JSON data");
+            PtpCollection col = PtpCollection.Parse(html); 
+            if (col != null)
+                ImportCollection(col);
+            else
+                MessageBox.Show("Invalid collection file - could not parse JSON data");
         }
 
-        private void ParseCollection(PtpCollection collection)
+        private void ImportCollection(PtpCollection collection)
         {
             DateTime start = DateTime.Now;
 
@@ -2511,7 +2572,7 @@ namespace MCRatings
             MovieInfo currmovie = gridMovies.CurrentRow?.Cells[0].Value as MovieInfo;
             ShowPictureBrowser(currmovie, true);
         }
-
+        
         private void menuOpenFolder_Click(object sender, EventArgs e)
         {
             MovieInfo currmovie = gridMovies.CurrentRow?.Cells[0].Value as MovieInfo;
@@ -2561,6 +2622,18 @@ namespace MCRatings
         private void menuOpenStatistics_Click(object sender, EventArgs e)
         {
             new StatsUI().ShowDialog();
+        }
+
+        private void menuOpenImporter_Click(object sender, EventArgs e)
+        {
+            if (!Program.settings.Collections)
+            {
+                MessageBox.Show("Please enable 'Collections' in Settings.xml");
+                return;
+            }
+
+            collectionImporter.Show();
+            collectionImporter.BringToFront();
         }
 
         private string MoveArticle(string title)

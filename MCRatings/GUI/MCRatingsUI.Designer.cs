@@ -126,6 +126,7 @@
             this.lblChanges = new System.Windows.Forms.Label();
             this.lblSelected = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
+            this.menuOpenImporter = new System.Windows.Forms.ToolStripMenuItem();
             this.gridMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgSpinner)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridMovies)).BeginInit();
@@ -152,7 +153,7 @@
             this.openToolStripMenuItem});
             this.gridMenu.Name = "contextMenuStrip1";
             this.gridMenu.ShowImageMargin = false;
-            this.gridMenu.Size = new System.Drawing.Size(177, 286);
+            this.gridMenu.Size = new System.Drawing.Size(177, 308);
             this.gridMenu.Opening += new System.ComponentModel.CancelEventHandler(this.gridMenu_Opening);
             // 
             // menuTitle
@@ -572,21 +573,21 @@
             // menuShortcutFilename
             // 
             this.menuShortcutFilename.Name = "menuShortcutFilename";
-            this.menuShortcutFilename.Size = new System.Drawing.Size(169, 22);
+            this.menuShortcutFilename.Size = new System.Drawing.Size(180, 22);
             this.menuShortcutFilename.Text = "Filename.url";
             this.menuShortcutFilename.Click += new System.EventHandler(this.menuShortcutFilename_Click);
             // 
             // menuShortcutTitle
             // 
             this.menuShortcutTitle.Name = "menuShortcutTitle";
-            this.menuShortcutTitle.Size = new System.Drawing.Size(169, 22);
+            this.menuShortcutTitle.Size = new System.Drawing.Size(180, 22);
             this.menuShortcutTitle.Text = "Title [Year].url";
             this.menuShortcutTitle.Click += new System.EventHandler(this.menuShortcutTitle_Click);
             // 
             // menuShortcutID
             // 
             this.menuShortcutID.Name = "menuShortcutID";
-            this.menuShortcutID.Size = new System.Drawing.Size(169, 22);
+            this.menuShortcutID.Size = new System.Drawing.Size(180, 22);
             this.menuShortcutID.Text = "IMDB_tt000000.url";
             this.menuShortcutID.Click += new System.EventHandler(this.menuShortcutID_Click);
             // 
@@ -669,7 +670,8 @@
             this.menuOpenTmdb,
             this.menuOpenTrailer,
             this.toolStripSeparator12,
-            this.menuOpenStatistics});
+            this.menuOpenStatistics,
+            this.menuOpenImporter});
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
             this.openToolStripMenuItem.Text = "Open...";
@@ -679,7 +681,7 @@
             this.menuOpenPosterBrowser.Name = "menuOpenPosterBrowser";
             this.menuOpenPosterBrowser.ShortcutKeyDisplayString = "";
             this.menuOpenPosterBrowser.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.B)));
-            this.menuOpenPosterBrowser.Size = new System.Drawing.Size(193, 22);
+            this.menuOpenPosterBrowser.Size = new System.Drawing.Size(218, 22);
             this.menuOpenPosterBrowser.Text = "Poster Browser";
             this.menuOpenPosterBrowser.ToolTipText = "You can also just click on the \"Poster\" cell for the movie";
             this.menuOpenPosterBrowser.Click += new System.EventHandler(this.menuOpenPosterBrowser_Click);
@@ -688,7 +690,7 @@
             // 
             this.menuOpenFolder.Name = "menuOpenFolder";
             this.menuOpenFolder.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M)));
-            this.menuOpenFolder.Size = new System.Drawing.Size(193, 22);
+            this.menuOpenFolder.Size = new System.Drawing.Size(218, 22);
             this.menuOpenFolder.Text = "Movie Folder";
             this.menuOpenFolder.ToolTipText = "CTRL+click on the \"File path\" cell also works";
             this.menuOpenFolder.Click += new System.EventHandler(this.menuOpenFolder_Click);
@@ -697,7 +699,7 @@
             // 
             this.menuOpenImdb.Name = "menuOpenImdb";
             this.menuOpenImdb.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
-            this.menuOpenImdb.Size = new System.Drawing.Size(193, 22);
+            this.menuOpenImdb.Size = new System.Drawing.Size(218, 22);
             this.menuOpenImdb.Text = "IMDb page";
             this.menuOpenImdb.ToolTipText = "CTRL+click on the IMDB cell also works";
             this.menuOpenImdb.Click += new System.EventHandler(this.menuOpenImdb_Click);
@@ -706,7 +708,7 @@
             // 
             this.menuOpenTmdb.Name = "menuOpenTmdb";
             this.menuOpenTmdb.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.U)));
-            this.menuOpenTmdb.Size = new System.Drawing.Size(193, 22);
+            this.menuOpenTmdb.Size = new System.Drawing.Size(218, 22);
             this.menuOpenTmdb.Text = "TMDb page";
             this.menuOpenTmdb.ToolTipText = "This one is only available after you \"Get Movie Info\"";
             this.menuOpenTmdb.Click += new System.EventHandler(this.menuOpenTmdb_Click);
@@ -715,7 +717,7 @@
             // 
             this.menuOpenTrailer.Name = "menuOpenTrailer";
             this.menuOpenTrailer.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.T)));
-            this.menuOpenTrailer.Size = new System.Drawing.Size(193, 22);
+            this.menuOpenTrailer.Size = new System.Drawing.Size(218, 22);
             this.menuOpenTrailer.Text = "Movie Trailer";
             this.menuOpenTrailer.ToolTipText = "CTRL+click on the Trailer cell also works";
             this.menuOpenTrailer.Click += new System.EventHandler(this.menuOpenTrailer_Click);
@@ -723,13 +725,13 @@
             // toolStripSeparator12
             // 
             this.toolStripSeparator12.Name = "toolStripSeparator12";
-            this.toolStripSeparator12.Size = new System.Drawing.Size(190, 6);
+            this.toolStripSeparator12.Size = new System.Drawing.Size(215, 6);
             // 
             // menuOpenStatistics
             // 
             this.menuOpenStatistics.Name = "menuOpenStatistics";
             this.menuOpenStatistics.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.K)));
-            this.menuOpenStatistics.Size = new System.Drawing.Size(193, 22);
+            this.menuOpenStatistics.Size = new System.Drawing.Size(218, 22);
             this.menuOpenStatistics.Text = "Statistics";
             this.menuOpenStatistics.ToolTipText = "Right-click on the \"Help\" icon also opens Statistics";
             this.menuOpenStatistics.Click += new System.EventHandler(this.menuOpenStatistics_Click);
@@ -1065,6 +1067,14 @@
             this.lblStatus.TabIndex = 16;
             this.lblStatus.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
+            // menuOpenImporter
+            // 
+            this.menuOpenImporter.Name = "menuOpenImporter";
+            this.menuOpenImporter.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+            this.menuOpenImporter.Size = new System.Drawing.Size(218, 22);
+            this.menuOpenImporter.Text = "Collection Importer";
+            this.menuOpenImporter.Click += new System.EventHandler(this.menuOpenImporter_Click);
+            // 
             // MCRatingsUI
             // 
             this.AllowDrop = true;
@@ -1209,6 +1219,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
         private System.Windows.Forms.ToolStripMenuItem menuSaveAll;
         private System.Windows.Forms.ToolStripMenuItem menuDeleteThumbs;
+        private System.Windows.Forms.ToolStripMenuItem menuOpenImporter;
     }
 }
 

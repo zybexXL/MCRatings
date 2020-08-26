@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -14,6 +15,8 @@ namespace MCRatings
 
         public static VersionInfo LatestVersion;
         public static DateTime lastCheck;
+        public static bool restartNeeded = false;
+
         public static bool hasUpgrade { get { return LatestVersion != null && LatestVersion.version > Program.version; } }
 
 
@@ -104,10 +107,13 @@ namespace MCRatings
                     string currEXE = Assembly.GetEntryAssembly().Location;
                     string bakFile = Path.ChangeExtension(currEXE, ".bak");
                     if (File.Exists(bakFile)) File.Delete(bakFile);
+
                     File.Move(currEXE, bakFile);
+                    if (currEXE.ToLower() == "mcratings.exe") currEXE = "ZRatings.exe";
                     File.Move(tmpFile, currEXE);
 
                     progress.result = true;
+                    restartNeeded = true;
                     progress.subtitle = "starting new version";
                     Application.Restart();
                     return;
