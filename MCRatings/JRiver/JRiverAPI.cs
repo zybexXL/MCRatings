@@ -142,7 +142,7 @@ namespace MCRatings
                     if (!Program.settings.FastStart)
                     {
                         IMJFilesAutomation iFiles = list.GetFiles();
-                        iFiles.Filter(Constants.JRFileFilter);
+                        iFiles.Filter(Program.settings.FileFilter);
                         fcount = iFiles.GetNumberFiles();
                     }
 
@@ -164,7 +164,7 @@ namespace MCRatings
         {
             IMJPlaylistAutomation pl = jr.GetPlaylistByID(playlist.ID);
             IMJFilesAutomation files = pl.GetFiles();
-            files.Filter(Constants.JRFileFilter);
+            files.Filter(Program.settings.FileFilter);
             int num = files.GetNumberFiles();
             playlist.Filecount = num;
             for (int i = start; i < num; i += step)

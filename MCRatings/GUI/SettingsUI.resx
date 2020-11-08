@@ -217,6 +217,15 @@ Example: "The Shining" will display as "Shining, The"
 The full list of ignored articles can be edited on ZRatings' Settings.xml.
 </value>
   </data>
+  <data name="txtFileFilter.ToolTip" xml:space="preserve">
+    <value>File Filter for playlist files. Only files matching this filter will be loaded.
+You can test the expression on MC's search/filter box.
+Leave the field empty to use the default value.
+
+Example: [Media Sub Type]=Movie,Concert,[Music Video]
+
+</value>
+  </data>
   <data name="txtActorPicsPath.ToolTip" xml:space="preserve">
     <value>Path to store the Cast/Crew thumbnails.
 

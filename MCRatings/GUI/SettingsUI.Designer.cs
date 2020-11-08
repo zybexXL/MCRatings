@@ -104,6 +104,9 @@
             this.txtPosterScript = new System.Windows.Forms.TextBox();
             this.chkIgnoreArticles = new System.Windows.Forms.CheckBox();
             this.btnAudio = new System.Windows.Forms.Button();
+            this.txtFileFilter = new System.Windows.Forms.TextBox();
+            this.txtActorPicsPath = new System.Windows.Forms.TextBox();
+            this.txtPosterPath = new System.Windows.Forms.TextBox();
             this.txtTMDBkeys = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
@@ -116,7 +119,6 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.tabPosters = new System.Windows.Forms.TabPage();
             this.groupThumbs = new System.Windows.Forms.GroupBox();
-            this.txtActorPicsPath = new System.Windows.Forms.TextBox();
             this.btnActorPics = new System.Windows.Forms.Button();
             this.lblThumbnail = new System.Windows.Forms.Label();
             this.comboActorSize = new System.Windows.Forms.ComboBox();
@@ -126,9 +128,9 @@
             this.chkPosterSupport = new System.Windows.Forms.CheckBox();
             this.groupPoster = new System.Windows.Forms.GroupBox();
             this.btnPosterFolder = new System.Windows.Forms.Button();
-            this.txtPosterPath = new System.Windows.Forms.TextBox();
             this.chkRunPosterPP = new System.Windows.Forms.CheckBox();
             this.tabGeneral = new System.Windows.Forms.TabPage();
+            this.label11 = new System.Windows.Forms.Label();
             this.chkMaximized = new System.Windows.Forms.CheckBox();
             this.tabColors = new System.Windows.Forms.TabPage();
             this.label10 = new System.Windows.Forms.Label();
@@ -354,7 +356,7 @@
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.Location = new System.Drawing.Point(8, 15);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(251, 16);
+            this.label5.Size = new System.Drawing.Size(238, 16);
             this.label5.TabIndex = 8;
             this.label5.Text = "ZRatings to JRiver field mapping:";
             // 
@@ -388,7 +390,7 @@
             // 
             this.chkFastStart.AutoSize = true;
             this.chkFastStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkFastStart.Location = new System.Drawing.Point(15, 232);
+            this.chkFastStart.Location = new System.Drawing.Point(15, 273);
             this.chkFastStart.Margin = new System.Windows.Forms.Padding(4);
             this.chkFastStart.Name = "chkFastStart";
             this.chkFastStart.Size = new System.Drawing.Size(146, 20);
@@ -469,7 +471,7 @@
             // 
             this.chkWebmedia.AutoSize = true;
             this.chkWebmedia.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkWebmedia.Location = new System.Drawing.Point(15, 204);
+            this.chkWebmedia.Location = new System.Drawing.Point(15, 245);
             this.chkWebmedia.Margin = new System.Windows.Forms.Padding(4);
             this.chkWebmedia.Name = "chkWebmedia";
             this.chkWebmedia.Size = new System.Drawing.Size(236, 20);
@@ -601,7 +603,7 @@
             // 
             this.chkActorRoles.AutoSize = true;
             this.chkActorRoles.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkActorRoles.Location = new System.Drawing.Point(15, 148);
+            this.chkActorRoles.Location = new System.Drawing.Point(15, 189);
             this.chkActorRoles.Margin = new System.Windows.Forms.Padding(4);
             this.chkActorRoles.Name = "chkActorRoles";
             this.chkActorRoles.Size = new System.Drawing.Size(300, 20);
@@ -942,7 +944,7 @@
             // 
             this.chkIgnoreArticles.AutoSize = true;
             this.chkIgnoreArticles.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkIgnoreArticles.Location = new System.Drawing.Point(15, 176);
+            this.chkIgnoreArticles.Location = new System.Drawing.Point(15, 217);
             this.chkIgnoreArticles.Margin = new System.Windows.Forms.Padding(4);
             this.chkIgnoreArticles.Name = "chkIgnoreArticles";
             this.chkIgnoreArticles.Size = new System.Drawing.Size(235, 20);
@@ -966,6 +968,47 @@
             this.toolTip1.SetToolTip(this.btnAudio, "Mute sound effects");
             this.btnAudio.UseVisualStyleBackColor = false;
             this.btnAudio.Click += new System.EventHandler(this.btnAudio_Click);
+            // 
+            // txtFileFilter
+            // 
+            this.txtFileFilter.Location = new System.Drawing.Point(108, 140);
+            this.txtFileFilter.Margin = new System.Windows.Forms.Padding(2);
+            this.txtFileFilter.Name = "txtFileFilter";
+            this.txtFileFilter.Size = new System.Drawing.Size(454, 22);
+            this.txtFileFilter.TabIndex = 15;
+            this.txtFileFilter.Text = "[Media Sub Type]=Movie";
+            this.toolTip1.SetToolTip(this.txtFileFilter, resources.GetString("txtFileFilter.ToolTip"));
+            this.txtFileFilter.TextChanged += new System.EventHandler(this.somethingChanged);
+            // 
+            // txtActorPicsPath
+            // 
+            this.txtActorPicsPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtActorPicsPath.ContextMenuStrip = this.scriptTagMenu;
+            this.txtActorPicsPath.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtActorPicsPath.Location = new System.Drawing.Point(32, 21);
+            this.txtActorPicsPath.Margin = new System.Windows.Forms.Padding(2);
+            this.txtActorPicsPath.Name = "txtActorPicsPath";
+            this.txtActorPicsPath.Size = new System.Drawing.Size(483, 22);
+            this.txtActorPicsPath.TabIndex = 22;
+            this.txtActorPicsPath.Tag = "path";
+            this.toolTip1.SetToolTip(this.txtActorPicsPath, resources.GetString("txtActorPicsPath.ToolTip"));
+            this.txtActorPicsPath.TextChanged += new System.EventHandler(this.somethingChanged);
+            // 
+            // txtPosterPath
+            // 
+            this.txtPosterPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtPosterPath.ContextMenuStrip = this.scriptTagMenu;
+            this.txtPosterPath.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPosterPath.Location = new System.Drawing.Point(32, 49);
+            this.txtPosterPath.Margin = new System.Windows.Forms.Padding(2);
+            this.txtPosterPath.Name = "txtPosterPath";
+            this.txtPosterPath.Size = new System.Drawing.Size(483, 22);
+            this.txtPosterPath.TabIndex = 2;
+            this.txtPosterPath.Tag = "path";
+            this.toolTip1.SetToolTip(this.txtPosterPath, resources.GetString("txtPosterPath.ToolTip"));
+            this.txtPosterPath.TextChanged += new System.EventHandler(this.somethingChanged);
             // 
             // txtTMDBkeys
             // 
@@ -1133,21 +1176,6 @@
             this.groupThumbs.TabIndex = 13;
             this.groupThumbs.TabStop = false;
             // 
-            // txtActorPicsPath
-            // 
-            this.txtActorPicsPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtActorPicsPath.ContextMenuStrip = this.scriptTagMenu;
-            this.txtActorPicsPath.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtActorPicsPath.Location = new System.Drawing.Point(32, 21);
-            this.txtActorPicsPath.Margin = new System.Windows.Forms.Padding(2);
-            this.txtActorPicsPath.Name = "txtActorPicsPath";
-            this.txtActorPicsPath.Size = new System.Drawing.Size(483, 22);
-            this.txtActorPicsPath.TabIndex = 22;
-            this.txtActorPicsPath.Tag = "path";
-            this.toolTip1.SetToolTip(this.txtActorPicsPath, resources.GetString("txtActorPicsPath.ToolTip"));
-            this.txtActorPicsPath.TextChanged += new System.EventHandler(this.somethingChanged);
-            // 
             // btnActorPics
             // 
             this.btnActorPics.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -1279,21 +1307,6 @@
             this.btnPosterFolder.UseVisualStyleBackColor = true;
             this.btnPosterFolder.Click += new System.EventHandler(this.btnPosterFolder_Click);
             // 
-            // txtPosterPath
-            // 
-            this.txtPosterPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtPosterPath.ContextMenuStrip = this.scriptTagMenu;
-            this.txtPosterPath.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPosterPath.Location = new System.Drawing.Point(32, 49);
-            this.txtPosterPath.Margin = new System.Windows.Forms.Padding(2);
-            this.txtPosterPath.Name = "txtPosterPath";
-            this.txtPosterPath.Size = new System.Drawing.Size(483, 22);
-            this.txtPosterPath.TabIndex = 2;
-            this.txtPosterPath.Tag = "path";
-            this.toolTip1.SetToolTip(this.txtPosterPath, resources.GetString("txtPosterPath.ToolTip"));
-            this.txtPosterPath.TextChanged += new System.EventHandler(this.somethingChanged);
-            // 
             // chkRunPosterPP
             // 
             this.chkRunPosterPP.AutoSize = true;
@@ -1309,6 +1322,8 @@
             // 
             // tabGeneral
             // 
+            this.tabGeneral.Controls.Add(this.label11);
+            this.tabGeneral.Controls.Add(this.txtFileFilter);
             this.tabGeneral.Controls.Add(this.chkIgnoreArticles);
             this.tabGeneral.Controls.Add(this.chkActorRoles);
             this.tabGeneral.Controls.Add(this.label1);
@@ -1327,11 +1342,22 @@
             this.tabGeneral.UseVisualStyleBackColor = true;
             this.tabGeneral.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MouseDown_Drag);
             // 
+            // label11
+            // 
+            this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(12, 142);
+            this.label11.Margin = new System.Windows.Forms.Padding(2);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(88, 16);
+            this.label11.TabIndex = 16;
+            this.label11.Text = "MC File Filter:";
+            // 
             // chkMaximized
             // 
             this.chkMaximized.AutoSize = true;
             this.chkMaximized.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkMaximized.Location = new System.Drawing.Point(15, 260);
+            this.chkMaximized.Location = new System.Drawing.Point(15, 301);
             this.chkMaximized.Margin = new System.Windows.Forms.Padding(4);
             this.chkMaximized.Name = "chkMaximized";
             this.chkMaximized.Size = new System.Drawing.Size(121, 20);
@@ -1785,5 +1811,7 @@
         private System.Windows.Forms.ToolStripMenuItem tMDBIdToolStripMenuItem;
         private System.Windows.Forms.CheckBox chkIgnoreArticles;
         private System.Windows.Forms.CheckBox chkThumbPlaceholder;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox txtFileFilter;
     }
 }

@@ -148,6 +148,7 @@ namespace MCRatings
                 if (!checkFieldNames())
                     return;
 
+                // validate Poster folder path
                 if (chkPosterSupport.Checked && chkPosterFolder.Checked && !isValidFolder(txtPosterPath.Text))
                 {
                     tabSettings.SelectedTab = tabPosters;
@@ -156,7 +157,7 @@ namespace MCRatings
                     return;   
                 }
 
-
+                // validate Actors folder path
                 if (chkGetActorPics.Checked && !isValidFolder(txtActorPicsPath.Text))
                 {
                     tabSettings.SelectedTab = tabPosters;
@@ -164,6 +165,10 @@ namespace MCRatings
                      "Inaccessible Actor Thumbnail folder", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
+
+                // validate Media subtype list (file filter)
+                if (string.IsNullOrWhiteSpace(txtFileFilter.Text))
+                    txtFileFilter.Text = "[Media Sub Type]=Movie";
 
                 // save mappings
                 foreach (DataGridViewRow row in gridFields.Rows)
@@ -198,6 +203,7 @@ namespace MCRatings
                 Program.settings.ActorFolder = txtActorPicsPath.Text.Trim();
                 Program.settings.PosterScript = txtPosterScript.Text.Trim();
                 Program.settings.ThumbnailScript = txtThumbScript.Text.Trim();
+                Program.settings.FileFilter = txtFileFilter.Text.Trim();
                 Program.settings.RunPosterScript = chkRunPosterPP.Checked;
                 Program.settings.RunThumbnailScript = chkRunThumbPP.Checked;
                 Program.settings.ActorSaveAsPng = chkSaveThumbPNG.Checked;
@@ -248,6 +254,7 @@ namespace MCRatings
             txtActorPicsPath.Text = settings.ActorFolder;
             txtPosterScript.Text = settings.PosterScript;
             txtThumbScript.Text = settings.ThumbnailScript;
+            txtFileFilter.Text = settings.FileFilter;
             chkRunPosterPP.Checked = settings.RunPosterScript;
             chkRunThumbPP.Checked = settings.RunThumbnailScript;
             chkSaveThumbPNG.Checked = settings.ActorSaveAsPng;

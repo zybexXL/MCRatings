@@ -28,8 +28,6 @@ namespace MCRatings
 
     public class Constants
     {
-        public static string JRFileFilter = "[Media Sub Type]=Movie"; //"[media type]=Video";
-
         static string _dataFolder;
         public static string DataFolder
         {

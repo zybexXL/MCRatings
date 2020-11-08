@@ -51,6 +51,7 @@ namespace MCRatings
         public string PosterFolder;
         public bool RunPosterScript = false;
         public string PosterScript;
+        public string FileFilter = "[Media Sub Type]=Movie";
 
         public bool ActorPlaceholders = true;
         public bool SaveActorThumbnails = false;
