@@ -2501,11 +2501,12 @@ namespace MCRatings
         private bool syncPoster(MovieInfo m, out string newPath)
         {
             newPath = null;
+            string curr = null;
             if (m.JRKey < 0 || m.currPosterPath == null) return false;
 
             try
             {
-                string curr = m.currPosterPath;
+                curr = m.currPosterPath;
                 string ext = Path.GetExtension(curr);
                 string filename = Path.GetFileNameWithoutExtension(m[AppField.File]);
 
@@ -2524,7 +2525,11 @@ namespace MCRatings
                 File.Copy(curr, newPath, true);
                 return true;
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Logger.Log(ex, $"syncPoster: Exception copying poster file!\nSource: {curr}\nTarget: {newPath}");
+            }
+
             return false;
         }
 
