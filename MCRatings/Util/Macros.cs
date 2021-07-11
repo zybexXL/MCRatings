@@ -13,7 +13,7 @@ namespace MCRatings
         public static string resolvePath(string path, string file, MovieInfo movie, TMDbMoviePerson person = null)
         {
             // no quotes added to args
-            return new Macro(true).resolve(path, file, movie, person);
+            return new Macro(true).resolve(path, file, movie, person, true);
         }
 
         public static string resolveScript(string script, string file, MovieInfo movie, TMDbMoviePerson person)
@@ -29,7 +29,7 @@ namespace MCRatings
             noQuotes = pathMode;
         }
 
-        string resolve(string path, string filename, MovieInfo movie, TMDbMoviePerson person = null)
+        string resolve(string path, string filename, MovieInfo movie, TMDbMoviePerson person = null, bool isPathElement = false)
         {
             if (path == null) return null;
             try
@@ -55,8 +55,8 @@ namespace MCRatings
                 path = replace(path, "country", movie[AppField.Country]);
                 path = replace(path, "awards?", movie[AppField.Awards]);
 
-                path = replace(path, "title", movie.Title);
-                path = replace(path, "originaltitle", movie[AppField.OriginalTitle]);
+                path = replace(path, "title", isPathElement ? Util.SanitizeFilename(movie.Title, false) : movie.Title);
+                path = replace(path, "originaltitle", isPathElement ? Util.SanitizeFilename(movie[AppField.OriginalTitle], false) : movie[AppField.OriginalTitle]);
                 path = replace(path, "year", movie.Year);
                 path = replace(path, "imdb(id)?", movie.IMDBid);
                 path = replace(path, "tmdb(id)?", movie[AppField.TMDbID]);
@@ -77,7 +77,7 @@ namespace MCRatings
         }
 
 
-        string replace(string text, string tag, string replacement, bool fixChars = false)
+        string replace(string text, string tag, string replacement, bool fixChars = false, bool fixPath = false)
         {
             // replace slashes by commas, double quotes by single quotes
             if (fixChars && replacement != null)
@@ -125,6 +125,7 @@ namespace MCRatings
                 //text = Regex.Replace(text, $@"\${tag}", quote(replacement), RegexOptions.IgnoreCase);
                 //return text;
             }
+            if (fixPath && text != null) text = Util.SanitizeFilename(text, false);
             return text;
         }
 
@@ -143,7 +144,7 @@ namespace MCRatings
         {
             if (string.IsNullOrEmpty(path)) return null;
             int split = path.IndexOfAny(new char[] { '$', '%' });
-            if (split > 0)
+            if (split >= 0)
                 return Path.GetDirectoryName(path.Substring(0, split) + "dummy");
             return path;
         }

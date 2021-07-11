@@ -2058,8 +2058,12 @@ namespace MCRatings
                 try
                 {
                     string text = $"[InternetShortcut]\r\nURL=https://www.imdb.com/title/{imdb}/\r\n";
-                    File.WriteAllText(Path.Combine(dir, imdbfile), text);
-                    progress.success++;
+                    string fname = Path.Combine(dir, imdbfile);
+                    if (!File.Exists(fname))
+                    {
+                        File.WriteAllText(fname, text);
+                        progress.success++;
+                    }
                 }
                 catch
                 {

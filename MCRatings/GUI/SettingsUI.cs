@@ -131,6 +131,7 @@ namespace MCRatings
             try
             {
                 path = Macro.GetBaseFolder(path);
+                if (string.IsNullOrEmpty(path)) return true; // can't check, path starts with $var
                 Directory.CreateDirectory(path);
                 string test = Path.Combine(path, "~zratings_test~.tmp");
                 File.WriteAllText(test, "write permission test");
