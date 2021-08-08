@@ -42,7 +42,7 @@ namespace MCRatings
         public string IgnoredArticles = "a;an;the;ein;eine;das;der;die;el;il;la;las;le;les;los;un;une;de l';de la;des;du;l';la;le;les;un;une";
         public bool SortIgnoreArticles = false;
         public bool SortByImportedDate = false;
-        public bool ShowSmallThumbnails = false;
+        public bool ShowSmallThumbnails = true;
         public bool SavePosterCommonFolder = false;
         public bool SavePosterMovieFolder = true;
         public bool PosterFilterLanguage = true;

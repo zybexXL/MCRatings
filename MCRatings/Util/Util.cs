@@ -17,6 +17,7 @@ namespace MCRatings
     {
         public static string SanitizeFilename(string name, bool fixQuotes = true)
         {
+            if (string.IsNullOrEmpty(name)) return string.Empty;
             if (fixQuotes)
             {
                 name = Regex.Replace(name, @" ?[\\/;]", ",");

@@ -55,8 +55,9 @@ namespace MCRatings
                 path = replace(path, "country", movie[AppField.Country]);
                 path = replace(path, "awards?", movie[AppField.Awards]);
 
+                string oTitle = string.IsNullOrEmpty(movie[AppField.OriginalTitle]) ? movie.Title : movie[AppField.OriginalTitle];
                 path = replace(path, "title", isPathElement ? Util.SanitizeFilename(movie.Title, false) : movie.Title);
-                path = replace(path, "originaltitle", isPathElement ? Util.SanitizeFilename(movie[AppField.OriginalTitle], false) : movie[AppField.OriginalTitle]);
+                path = replace(path, "originaltitle", isPathElement ? Util.SanitizeFilename(oTitle, false) : oTitle);
                 path = replace(path, "year", movie.Year);
                 path = replace(path, "imdb(id)?", movie.IMDBid);
                 path = replace(path, "tmdb(id)?", movie[AppField.TMDbID]);
@@ -72,7 +73,9 @@ namespace MCRatings
 
                 return path;
             }
-            catch { }
+            catch (Exception ex) {
+                Logger.Log(ex, $"Macros.Resolve: Exception!\n{ex}");
+            }
             return null;
         }
 
