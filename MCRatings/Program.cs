@@ -12,8 +12,8 @@ namespace MCRatings
 {
     static class Program
     {
-        public static Version version = new Version(3, 2, 5);    // major, minor, revision
-        public static string tagline = "\"The One Name They All Fear\" - Van Helsing (2004)";        // changes on every major or minor release
+        public static Version version = new Version(3, 3, 0);    // major, minor, revision
+        public static string tagline = "\"Nothing Is Random\" - Riders of Justice (2020)";        // changes on every major or minor release
         public static Settings settings;
 
         /// <summary>

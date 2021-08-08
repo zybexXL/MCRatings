@@ -136,7 +136,10 @@ namespace MCRatings
                     if (curr != null && curr.TryGetValue(f, out var map))
                         FieldMap[f] = map;
                     else
+                    {
                         FieldMap[f] = new JRFieldMap(f, Constants.ViewColumnInfo[f].JRField);
+                        if (f == AppField.Roles) FieldMap[f].enabled = false;
+                    }
                 }
 
             Fields = FieldMap.Values.ToList();

@@ -20,7 +20,7 @@ namespace MCRatings
         Title, Year, Imported, Playlists, Release, Poster, IMDbID, TMDbID,
         IMDbRating, IMDbVotes, TMDbScore, RottenTomatoes, Metascore, MPAARating,
         Runtime, OriginalTitle, Series, Collections, Tagline, Description, Genre, Keywords,
-        Production, Producer, Director, Writers, Actors, Language, Country, Budget, Revenue,
+        Production, Producer, Director, Writers, Actors, Roles, Language, Country, Budget, Revenue,
         Awards, Trailer, Website, File
     }
 
@@ -76,7 +76,7 @@ namespace MCRatings
 
         // fields which are semicolon-separated lists
         public static List<AppField> listFields = new List<AppField>() {
-            AppField.Actors, AppField.Collections, AppField.Country, AppField.Director, AppField.Genre,
+            AppField.Actors, AppField.Roles, AppField.Collections, AppField.Country, AppField.Director, AppField.Genre,
             AppField.Keywords, AppField.Language, AppField.Producer, AppField.Production, AppField.Writers };
 
         // datagrid column names
@@ -110,6 +110,7 @@ namespace MCRatings
             { AppField.Producer, new FieldInfo("Producer", "Producer", true, 100, 0) },
             { AppField.Director, new FieldInfo("Director", "Director", true, 100, 0) },
             { AppField.Actors, new FieldInfo("Actors", "Actors", true, 100, 0) },
+            { AppField.Roles, new FieldInfo("Roles", "Actor Roles", true, 100, 0) },
             { AppField.Tagline, new FieldInfo("Tagline", "Tag Line", true, 200, 0) },
             { AppField.Description, new FieldInfo("Description", "Description", true, 200, 0) },
             { AppField.Keywords, new FieldInfo("Keywords", "Keywords", true, 100, 0) },

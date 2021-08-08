@@ -296,6 +296,7 @@ namespace MCRatings
                 if (field == AppField.Writers) name = "Writers";
                 if (field == AppField.Revenue) name = "Revenue";
                 if (field == AppField.Release) name = "Release Date";
+                if (field == AppField.Roles) name = "Actor Roles";
                 bool enabled = map.enabled;
                 bool overwrite = map.overwrite;
 

@@ -146,7 +146,7 @@ namespace MCRatings
                 }
 
                 if (field == AppField.FTitle || field == AppField.FYear || field == AppField.Title || field == AppField.Year
-                    || field == AppField.IMDbID || field == AppField.Actors || field == AppField.Director
+                    || field == AppField.IMDbID || field == AppField.Actors || field == AppField.Roles || field == AppField.Director
                     || field == AppField.Keywords || field == AppField.OriginalTitle || field == AppField.Series)
                 {
                     SetFilterString();
@@ -226,7 +226,7 @@ namespace MCRatings
 
         public void SetFilterString()
         {
-            string filter = $"{this[AppField.FTitle]}|{this[AppField.FYear]}|{this[AppField.Title]}|{this[AppField.Year]}|{this[AppField.IMDbID]}|{this[AppField.Actors]}|{this[AppField.Director]}|{this[AppField.Keywords]}|{this[AppField.OriginalTitle]}|{this[AppField.Series]}";
+            string filter = $"{this[AppField.FTitle]}|{this[AppField.FYear]}|{this[AppField.Title]}|{this[AppField.Year]}|{this[AppField.IMDbID]}|{this[AppField.Actors]}|{this[AppField.Roles]}|{this[AppField.Director]}|{this[AppField.Keywords]}|{this[AppField.OriginalTitle]}|{this[AppField.Series]}";
             fields[AppField.Filter] = filter.ToLower().Trim('|');
         }
 

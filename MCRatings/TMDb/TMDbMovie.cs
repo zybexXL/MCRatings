@@ -101,6 +101,7 @@ namespace MCRatings
                 case AppField.Writers: return credits?.crew == null ? null : fixList(getCrewNames(listItems, "writing", true));
                 case AppField.Producer: return credits?.crew == null ? null : fixList(getCrewNames(listItems, "producer"));
                 case AppField.Actors: return fixList(getCastNames(listItems, Program.settings.AddActorRoles));
+                case AppField.Roles: return fixList(getRoles(listItems));
                 case AppField.Keywords: return keywords?.keywords == null ? null : fixCase(fixList(keywords?.keywords.Select(c => c.name), removeCJK: true));
                 case AppField.Tagline: return tagline;
                 case AppField.Description: return overview;
@@ -160,6 +161,15 @@ namespace MCRatings
                 .Where(c => byDepartment ? c.department?.ToLower() == filter : c.job?.ToLower() == filter)
                 .Take(max)
                 .Select(c => Util.SanitizeFilename(c.name)).ToList();  
+        }
+
+        private List<string> getRoles(int max)
+        {
+            return credits?.cast?
+                .OrderBy(c => c.order)
+                .Take(max)
+                .Select(c => Util.SanitizeFilename(c.character))
+                .ToList();
         }
 
         internal List<TMDbMoviePerson> getCast(int max, bool withPicOnly = false)
