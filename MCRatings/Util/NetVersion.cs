@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Win32;
 
-namespace MCRatings
+namespace ZRatings
 {
     public class SysVersions
     {

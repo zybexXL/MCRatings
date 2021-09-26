@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MCRatings
+namespace ZRatings
 {
     // this fixes the rendering of ToolStrip GUI element, removing the 1-pixel gray underline/border
     public class ToolStripBorderFix : ToolStripSystemRenderer

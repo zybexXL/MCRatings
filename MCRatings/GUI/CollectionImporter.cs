@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
 
-namespace MCRatings
+namespace ZRatings
 {
     public partial class CollectionImporter : Form
     {
@@ -30,7 +30,7 @@ namespace MCRatings
 
         private void CollectionImporter_Load(object sender, EventArgs e)
         {
-            Navigate(txtURL.Tag as string, false);
+            Navigate($"{Constants.https}{Util.NoSpaces(txtURL.Tag as string)}", false);
         }
 
         private void CollectionImporter_FormClosing(object sender, FormClosingEventArgs e)

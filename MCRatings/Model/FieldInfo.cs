@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MCRatings
+namespace ZRatings
 {
     // mapping and UI info for fields - JRating name, JRiver name, Display size, flags
     public class FieldInfo

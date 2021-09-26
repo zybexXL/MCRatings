@@ -11,7 +11,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MCRatings
+#if SOUNDFX
+namespace ZRatings
 {
     // uses Windows MCI API to play WAVs and MP3
     public class SoundPlayer
@@ -132,3 +133,4 @@ namespace MCRatings
         }
     }
 }
+#endif

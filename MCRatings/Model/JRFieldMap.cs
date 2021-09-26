@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MCRatings
+namespace ZRatings
 {
     // stores info about a JRiver field mapping
     [Serializable]
@@ -38,6 +38,7 @@ namespace MCRatings
                 case AppField.RottenTomatoes:
                 case AppField.Metascore:
                 case AppField.Awards:
+                case AppField.ShortPlot:
                     return new List<Sources>() { Sources.OMDb };
 
                 case AppField.TMDbScore:

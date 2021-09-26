@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MCRatings
+namespace ZRatings
 {
     public enum DownloadType { Poster, Person };
 

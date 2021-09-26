@@ -1,4 +1,4 @@
-﻿namespace MCRatings
+﻿namespace ZRatings
 {
     partial class GetInfo
     {

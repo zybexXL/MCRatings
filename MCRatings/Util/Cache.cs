@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MCRatings
+namespace ZRatings
 {
     // Movie Info JSON cache
     static class Cache

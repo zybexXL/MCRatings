@@ -11,7 +11,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace MCRatings
+namespace ZRatings
 {
     public static class Util
     {
@@ -25,6 +25,9 @@ namespace MCRatings
             }
             return string.Join(" ", name.Split(Path.GetInvalidFileNameChars(), StringSplitOptions.RemoveEmptyEntries));
         }
+
+        public static string NoSpaces(string txt) { return txt?.Replace(" ", ""); }
+        public static string GetUrl(string txt) { return txt?.Replace(" ", ""); }
 
         // download image to temp folder
         public static Image LoadImageFromUrl(string url, string id)

@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 
-namespace MCRatings
+namespace ZRatings
 {
     // find movie by ImdbID
     // https://api.themoviedb.org/3/find/tt4633694?api_key={key}&language=en&external_source=imdb_id

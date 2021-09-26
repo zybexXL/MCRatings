@@ -1,4 +1,4 @@
-﻿namespace MCRatings
+﻿namespace ZRatings
 {
     partial class PosterBrowser
     {
@@ -205,7 +205,7 @@
             // 
             // btnSelectLockOriginal
             // 
-            this.btnSelectLockOriginal.BackgroundImage = global::MCRatings.Properties.Resources.AcceptLock32;
+            this.btnSelectLockOriginal.BackgroundImage = global::ZRatings.Properties.Resources.AcceptLock32;
             this.btnSelectLockOriginal.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.btnSelectLockOriginal.FlatAppearance.BorderSize = 0;
             this.btnSelectLockOriginal.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(243)))), ((int)(((byte)(198)))));
@@ -222,7 +222,7 @@
             // 
             // btnSelectOriginal
             // 
-            this.btnSelectOriginal.BackgroundImage = global::MCRatings.Properties.Resources.Accept32;
+            this.btnSelectOriginal.BackgroundImage = global::ZRatings.Properties.Resources.Accept32;
             this.btnSelectOriginal.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.btnSelectOriginal.FlatAppearance.BorderSize = 0;
             this.btnSelectOriginal.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(243)))), ((int)(((byte)(198)))));
@@ -238,7 +238,7 @@
             // 
             // btnFitLeft
             // 
-            this.btnFitLeft.BackgroundImage = global::MCRatings.Properties.Resources.height32;
+            this.btnFitLeft.BackgroundImage = global::ZRatings.Properties.Resources.height32;
             this.btnFitLeft.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.btnFitLeft.FlatAppearance.BorderSize = 0;
             this.btnFitLeft.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(243)))), ((int)(((byte)(198)))));
@@ -271,7 +271,7 @@
             // btnHome
             // 
             this.btnHome.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnHome.Image = global::MCRatings.Properties.Resources.home64;
+            this.btnHome.Image = global::ZRatings.Properties.Resources.home64;
             this.btnHome.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnHome.Margin = new System.Windows.Forms.Padding(5, 1, 0, 2);
             this.btnHome.Name = "btnHome";
@@ -283,7 +283,7 @@
             // 
             this.btnPrev.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btnPrev.Enabled = false;
-            this.btnPrev.Image = global::MCRatings.Properties.Resources.arrow_left_sm_2a2b2c_32;
+            this.btnPrev.Image = global::ZRatings.Properties.Resources.arrow_left_sm_2a2b2c_32;
             this.btnPrev.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnPrev.Name = "btnPrev";
             this.btnPrev.Size = new System.Drawing.Size(36, 36);
@@ -294,7 +294,7 @@
             // 
             this.btnNext.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btnNext.Enabled = false;
-            this.btnNext.Image = global::MCRatings.Properties.Resources.arrow_right_sm_2a2b2c_32;
+            this.btnNext.Image = global::ZRatings.Properties.Resources.arrow_right_sm_2a2b2c_32;
             this.btnNext.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnNext.Name = "btnNext";
             this.btnNext.Size = new System.Drawing.Size(36, 36);
@@ -305,7 +305,7 @@
             // 
             this.btnSelect.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btnSelect.Enabled = false;
-            this.btnSelect.Image = global::MCRatings.Properties.Resources.Accept32;
+            this.btnSelect.Image = global::ZRatings.Properties.Resources.Accept32;
             this.btnSelect.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSelect.Name = "btnSelect";
             this.btnSelect.Size = new System.Drawing.Size(36, 36);
@@ -316,7 +316,7 @@
             // 
             this.btnSelectLock.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btnSelectLock.Enabled = false;
-            this.btnSelectLock.Image = global::MCRatings.Properties.Resources.AcceptLock32;
+            this.btnSelectLock.Image = global::ZRatings.Properties.Resources.AcceptLock32;
             this.btnSelectLock.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSelectLock.Name = "btnSelectLock";
             this.btnSelectLock.Size = new System.Drawing.Size(36, 36);
@@ -327,7 +327,7 @@
             // btnThumbsize
             // 
             this.btnThumbsize.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnThumbsize.Image = global::MCRatings.Properties.Resources.grid9_64;
+            this.btnThumbsize.Image = global::ZRatings.Properties.Resources.grid9_64;
             this.btnThumbsize.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnThumbsize.Name = "btnThumbsize";
             this.btnThumbsize.Size = new System.Drawing.Size(36, 36);
@@ -337,7 +337,7 @@
             // btnSort
             // 
             this.btnSort.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnSort.Image = global::MCRatings.Properties.Resources.resolution64;
+            this.btnSort.Image = global::ZRatings.Properties.Resources.resolution64;
             this.btnSort.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSort.Name = "btnSort";
             this.btnSort.Size = new System.Drawing.Size(36, 36);
@@ -347,7 +347,7 @@
             // btnFitRight
             // 
             this.btnFitRight.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnFitRight.Image = global::MCRatings.Properties.Resources.height32;
+            this.btnFitRight.Image = global::ZRatings.Properties.Resources.height32;
             this.btnFitRight.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnFitRight.Name = "btnFitRight";
             this.btnFitRight.Size = new System.Drawing.Size(36, 36);
@@ -358,7 +358,7 @@
             // 
             this.btnCast.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.btnCast.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnCast.Image = global::MCRatings.Properties.Resources.oscar32;
+            this.btnCast.Image = global::ZRatings.Properties.Resources.oscar32;
             this.btnCast.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnCast.Name = "btnCast";
             this.btnCast.Size = new System.Drawing.Size(36, 36);
@@ -373,7 +373,7 @@
             this.btnShowAvatars.CheckOnClick = true;
             this.btnShowAvatars.CheckState = System.Windows.Forms.CheckState.Checked;
             this.btnShowAvatars.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnShowAvatars.Image = global::MCRatings.Properties.Resources.user_414445_24;
+            this.btnShowAvatars.Image = global::ZRatings.Properties.Resources.user_414445_24;
             this.btnShowAvatars.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.btnShowAvatars.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnShowAvatars.Name = "btnShowAvatars";

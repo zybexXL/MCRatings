@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace MCRatings
+namespace ZRatings
 {
     // holds Movie Info for Datagrid display
     // tracks changes to fields

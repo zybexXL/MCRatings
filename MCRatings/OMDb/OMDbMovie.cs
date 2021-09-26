@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 
-namespace MCRatings
+namespace ZRatings
 {
     // Get movie info by ImdbID
     // http://www.omdbapi.com/?i=tt0133093&plot=full&apikey=xxxxxxxx&type=movie
@@ -95,7 +95,8 @@ namespace MCRatings
                 case AppField.Director: return Director;
                 case AppField.Writers: return Writer;
                 case AppField.Actors: return Actors;
-                case AppField.Description: return Plot;
+                case AppField.Description:
+                case AppField.ShortPlot: return Plot;
                 case AppField.Language: return Language;
                 case AppField.Country: return Country;
                 case AppField.Revenue: return BoxOffice;

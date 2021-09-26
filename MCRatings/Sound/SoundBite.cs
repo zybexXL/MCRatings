@@ -10,7 +10,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MCRatings
+namespace ZRatings
 {
     // stores info about a soundclip
     public class SoundBite

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 
-namespace MCRatings
+namespace ZRatings
 {
     // Settings are serialized using this class
 
@@ -38,6 +38,7 @@ namespace MCRatings
         public bool TMDbDisabled = false;
         public bool StartMaximized = false;
         public bool AddActorRoles = false;
+        public bool OMDbBriefPlot = false;
 
         public string IgnoredArticles = "a;an;the;ein;eine;das;der;die;el;il;la;las;le;les;los;un;une;de l';de la;des;du;l';la;le;les;un;une";
         public bool SortIgnoreArticles = false;
@@ -139,6 +140,7 @@ namespace MCRatings
                     {
                         FieldMap[f] = new JRFieldMap(f, Constants.ViewColumnInfo[f].JRField);
                         if (f == AppField.Roles) FieldMap[f].enabled = false;
+                        if (f == AppField.ShortPlot) FieldMap[f].enabled = false;
                     }
                 }
 
@@ -215,40 +217,5 @@ namespace MCRatings
             }
             catch { }
         }
-
-        public static bool MigrationNeeded { get {
-            return !Directory.Exists(Constants.DataFolder) && Directory.Exists(Constants.MCRatingsFolder);
-        } }
-
-        // migrate MCRatings settings to ZRatings (project name change)
-        // return true if migration happened
-        public static bool MigrateSettings()
-        {
-            if (MigrationNeeded)
-            {
-                isMigrated = true;
-                try
-                {
-                    Directory.Move(Constants.MCRatingsFolder, Constants.DataFolder);
-                    return isMigrated;
-                }
-                catch { }
-
-                // rename failed, copy settings files
-                try
-                {
-                    Directory.CreateDirectory(Constants.DataFolder);
-                    var files = Directory.GetFiles(Constants.MCRatingsFolder, "*.*", SearchOption.TopDirectoryOnly);
-                    foreach (var file in files)
-                    {
-                        string f = Path.GetFileName(file);
-                        File.Copy(f, Path.Combine(Constants.DataFolder, f));
-                    }
-                }
-                catch { return false; }
-            }
-            return isMigrated;
-        }
     }
-
 }

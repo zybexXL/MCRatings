@@ -1,6 +1,6 @@
-﻿namespace MCRatings
+﻿namespace ZRatings
 {
-    partial class MCRatingsUI
+    partial class ZRatingsUI
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MCRatingsUI));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ZRatingsUI));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.gridMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.menuTitle = new System.Windows.Forms.ToolStripMenuItem();
@@ -868,7 +868,7 @@
             // imgSpinner
             // 
             this.imgSpinner.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.imgSpinner.Image = global::MCRatings.Properties.Resources.Spinner32;
+            this.imgSpinner.Image = global::ZRatings.Properties.Resources.Spinner32;
             this.imgSpinner.Location = new System.Drawing.Point(900, 440);
             this.imgSpinner.Name = "imgSpinner";
             this.imgSpinner.Size = new System.Drawing.Size(34, 34);
@@ -881,7 +881,7 @@
             // btnAbout
             // 
             this.btnAbout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAbout.BackgroundImage = global::MCRatings.Properties.Resources.help32;
+            this.btnAbout.BackgroundImage = global::ZRatings.Properties.Resources.help32;
             this.btnAbout.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btnAbout.FlatAppearance.BorderSize = 0;
             this.btnAbout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -896,7 +896,7 @@
             // 
             // btnSettings
             // 
-            this.btnSettings.BackgroundImage = global::MCRatings.Properties.Resources.cog32;
+            this.btnSettings.BackgroundImage = global::ZRatings.Properties.Resources.cog32;
             this.btnSettings.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btnSettings.FlatAppearance.BorderSize = 0;
             this.btnSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -914,7 +914,7 @@
             this.btnReconnect.BackColor = System.Drawing.Color.Transparent;
             this.btnReconnect.FlatAppearance.BorderSize = 0;
             this.btnReconnect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnReconnect.Image = global::MCRatings.Properties.Resources.refresh_2a2b2c;
+            this.btnReconnect.Image = global::ZRatings.Properties.Resources.refresh_2a2b2c;
             this.btnReconnect.Location = new System.Drawing.Point(51, 28);
             this.btnReconnect.Name = "btnReconnect";
             this.btnReconnect.Size = new System.Drawing.Size(23, 22);
@@ -926,7 +926,7 @@
             // btnClear
             // 
             this.btnClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnClear.Image = global::MCRatings.Properties.Resources.close_win_414445;
+            this.btnClear.Image = global::ZRatings.Properties.Resources.close_win_414445;
             this.btnClear.Location = new System.Drawing.Point(208, 445);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(23, 22);
@@ -938,7 +938,7 @@
             // btnFindNext
             // 
             this.btnFindNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnFindNext.Image = global::MCRatings.Properties.Resources.search_515151;
+            this.btnFindNext.Image = global::ZRatings.Properties.Resources.search_515151;
             this.btnFindNext.Location = new System.Drawing.Point(182, 445);
             this.btnFindNext.Name = "btnFindNext";
             this.btnFindNext.Size = new System.Drawing.Size(23, 22);
@@ -1075,7 +1075,7 @@
             this.menuOpenImporter.Text = "Collection Importer";
             this.menuOpenImporter.Click += new System.EventHandler(this.menuOpenImporter_Click);
             // 
-            // MCRatingsUI
+            // ZSRatingsUI
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -1106,15 +1106,15 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.MinimumSize = new System.Drawing.Size(1000, 487);
-            this.Name = "MCRatingsUI";
+            this.Name = "ZRatingsUI";
             this.Text = "ZRatings - JRiver Ratings Updater";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MCRatingsUI_FormClosing);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ZRatingsUI_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.Shown += new System.EventHandler(this.MCRatingsUI_Shown);
-            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.MCRatingsUI_DragDrop);
-            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.MCRatingsUI_DragEnter);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MCRatingsUI_KeyDown);
-            this.MouseLeave += new System.EventHandler(this.MCRatingsUI_MouseLeave);
+            this.Shown += new System.EventHandler(this.ZRatingsUI_Shown);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.ZRatingsUI_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.ZRatingsUI_DragEnter);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ZRatingsUI_KeyDown);
+            this.MouseLeave += new System.EventHandler(this.ZRatingsUI_MouseLeave);
             this.gridMenu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.imgSpinner)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridMovies)).EndInit();

@@ -1,4 +1,4 @@
-﻿namespace MCRatings
+﻿namespace ZRatings
 {
     partial class About
     {
@@ -64,15 +64,11 @@
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox5 = new System.Windows.Forms.PictureBox();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.picPaypal = new System.Windows.Forms.PictureBox();
             this.label15 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picPaypal)).BeginInit();
             this.SuspendLayout();
             // 
@@ -165,7 +161,7 @@
             this.linkLabel2.Size = new System.Drawing.Size(82, 15);
             this.linkLabel2.TabIndex = 5;
             this.linkLabel2.TabStop = true;
-            this.linkLabel2.Tag = "https://github.com/zybexXL/MCRatings/blob/master/LICENSE";
+            this.linkLabel2.Tag = "github.com/zybexXL/MCRatings/blob/master/LICENSE";
             this.linkLabel2.Text = "GPL v3 license";
             this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
             // 
@@ -180,7 +176,7 @@
             this.linkLabel3.Size = new System.Drawing.Size(85, 15);
             this.linkLabel3.TabIndex = 5;
             this.linkLabel3.TabStop = true;
-            this.linkLabel3.Tag = "https://github.com/zybexXL/MCRatings";
+            this.linkLabel3.Tag = "github.com/zybexXL/MCRatings";
             this.linkLabel3.Text = "GitHub project";
             this.toolTip1.SetToolTip(this.linkLabel3, "Open sauce. Yummy.");
             this.linkLabel3.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
@@ -196,7 +192,7 @@
             this.linkLabel1.Size = new System.Drawing.Size(90, 15);
             this.linkLabel1.TabIndex = 5;
             this.linkLabel1.TabStop = true;
-            this.linkLabel1.Tag = "https://github.com/zybexXL/MCRatings/wiki";
+            this.linkLabel1.Tag = "github.com/zybexXL/MCRatings/wiki";
             this.linkLabel1.Text = "Documentation";
             this.toolTip1.SetToolTip(this.linkLabel1, "Hey, you never know, maybe someone has written it already...");
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
@@ -233,11 +229,11 @@
             this.linkLabel5.Location = new System.Drawing.Point(146, 231);
             this.linkLabel5.Margin = new System.Windows.Forms.Padding(3, 1, 3, 1);
             this.linkLabel5.Name = "linkLabel5";
-            this.linkLabel5.Size = new System.Drawing.Size(100, 15);
+            this.linkLabel5.Size = new System.Drawing.Size(60, 15);
             this.linkLabel5.TabIndex = 5;
             this.linkLabel5.TabStop = true;
-            this.linkLabel5.Tag = "https://jriver.com";
-            this.linkLabel5.Text = "https://jriver.com";
+            this.linkLabel5.Tag = "jriver.com";
+            this.linkLabel5.Text = "jriver.com";
             this.linkLabel5.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
             // 
             // linkLabel6
@@ -246,13 +242,13 @@
             this.linkLabel6.Font = new System.Drawing.Font("Calibri", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkLabel6.LinkArea = new System.Windows.Forms.LinkArea(0, 12);
             this.linkLabel6.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.linkLabel6.Location = new System.Drawing.Point(219, 334);
+            this.linkLabel6.Location = new System.Drawing.Point(234, 334);
             this.linkLabel6.Margin = new System.Windows.Forms.Padding(3, 1, 3, 1);
             this.linkLabel6.Name = "linkLabel6";
             this.linkLabel6.Size = new System.Drawing.Size(76, 15);
             this.linkLabel6.TabIndex = 5;
             this.linkLabel6.TabStop = true;
-            this.linkLabel6.Tag = "http://www.omdbapi.com/legal.htm";
+            this.linkLabel6.Tag = "www.omdbapi.com/legal.htm";
             this.linkLabel6.Text = "Terms of Use";
             this.linkLabel6.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
             // 
@@ -265,11 +261,12 @@
             this.linkLabel7.Location = new System.Drawing.Point(66, 334);
             this.linkLabel7.Margin = new System.Windows.Forms.Padding(3, 1, 3, 1);
             this.linkLabel7.Name = "linkLabel7";
-            this.linkLabel7.Size = new System.Drawing.Size(147, 15);
+            this.linkLabel7.Size = new System.Drawing.Size(109, 21);
             this.linkLabel7.TabIndex = 5;
             this.linkLabel7.TabStop = true;
-            this.linkLabel7.Tag = "http://www.omdbapi.com";
-            this.linkLabel7.Text = "http://www.omdbapi.com";
+            this.linkLabel7.Tag = "www.omdbapi.com";
+            this.linkLabel7.Text = "www.omdbapi.com";
+            this.linkLabel7.UseCompatibleTextRendering = true;
             this.linkLabel7.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
             // 
             // label8
@@ -362,7 +359,7 @@
             this.linkLabel4.Size = new System.Drawing.Size(73, 15);
             this.linkLabel4.TabIndex = 5;
             this.linkLabel4.TabStop = true;
-            this.linkLabel4.Tag = "https://yabb.jriver.com/interact/index.php/topic,119792.0.html";
+            this.linkLabel4.Tag = "yabb.jriver.com/interact/index.php/topic,119792.0.html";
             this.linkLabel4.Text = "JRiver forum";
             this.linkLabel4.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
             // 
@@ -449,11 +446,12 @@
             this.linkLabel9.Location = new System.Drawing.Point(66, 404);
             this.linkLabel9.Margin = new System.Windows.Forms.Padding(3, 1, 3, 1);
             this.linkLabel9.Name = "linkLabel9";
-            this.linkLabel9.Size = new System.Drawing.Size(162, 15);
+            this.linkLabel9.Size = new System.Drawing.Size(121, 21);
             this.linkLabel9.TabIndex = 5;
             this.linkLabel9.TabStop = true;
-            this.linkLabel9.Tag = "https://www.themoviedb.org";
-            this.linkLabel9.Text = "https://www.themoviedb.org";
+            this.linkLabel9.Tag = "www.themoviedb.org";
+            this.linkLabel9.Text = "www.themoviedb.org";
+            this.linkLabel9.UseCompatibleTextRendering = true;
             this.linkLabel9.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
             // 
             // linkLabel10
@@ -468,7 +466,7 @@
             this.linkLabel10.Size = new System.Drawing.Size(76, 15);
             this.linkLabel10.TabIndex = 5;
             this.linkLabel10.TabStop = true;
-            this.linkLabel10.Tag = "https://www.themoviedb.org/documentation/api/terms-of-use";
+            this.linkLabel10.Tag = "www.themoviedb.org/documentation/api/terms-of-use";
             this.linkLabel10.Text = "Terms of Use";
             this.linkLabel10.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
             // 
@@ -486,7 +484,7 @@
             // 
             // pictureBox4
             // 
-            this.pictureBox4.Image = global::MCRatings.Properties.Resources.movie_reel;
+            this.pictureBox4.Image = global::ZRatings.Properties.Resources.movie_reel;
             this.pictureBox4.Location = new System.Drawing.Point(12, 289);
             this.pictureBox4.Name = "pictureBox4";
             this.pictureBox4.Size = new System.Drawing.Size(48, 48);
@@ -496,7 +494,7 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::MCRatings.Properties.Resources.tmdb_small_blue;
+            this.pictureBox1.Image = global::ZRatings.Properties.Resources.tmdb_small_blue;
             this.pictureBox1.Location = new System.Drawing.Point(12, 371);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(48, 48);
@@ -506,7 +504,7 @@
             // 
             // pictureBox5
             // 
-            this.pictureBox5.Image = global::MCRatings.Properties.Resources.logo;
+            this.pictureBox5.Image = global::ZRatings.Properties.Resources.logo;
             this.pictureBox5.Location = new System.Drawing.Point(12, 13);
             this.pictureBox5.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pictureBox5.Name = "pictureBox5";
@@ -516,38 +514,10 @@
             this.pictureBox5.TabStop = false;
             this.pictureBox5.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MouseDown_Drag);
             // 
-            // pictureBox3
-            // 
-            this.pictureBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox3.Image = global::MCRatings.Properties.Resources.ETH_icon;
-            this.pictureBox3.Location = new System.Drawing.Point(488, 228);
-            this.pictureBox3.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(32, 32);
-            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox3.TabIndex = 2;
-            this.pictureBox3.TabStop = false;
-            this.pictureBox3.Visible = false;
-            this.pictureBox3.Click += new System.EventHandler(this.pictureBox3_Click);
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox2.Image = global::MCRatings.Properties.Resources.BTC_icon;
-            this.pictureBox2.Location = new System.Drawing.Point(446, 228);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(32, 32);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox2.TabIndex = 2;
-            this.pictureBox2.TabStop = false;
-            this.pictureBox2.Visible = false;
-            this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
-            // 
             // picPaypal
             // 
             this.picPaypal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.picPaypal.Image = global::MCRatings.Properties.Resources.paypal;
+            this.picPaypal.Image = global::ZRatings.Properties.Resources.paypal;
             this.picPaypal.Location = new System.Drawing.Point(412, 533);
             this.picPaypal.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.picPaypal.Name = "picPaypal";
@@ -590,8 +560,6 @@
             this.Controls.Add(this.linkLabel5);
             this.Controls.Add(this.linkLabel2);
             this.Controls.Add(this.pictureBox5);
-            this.Controls.Add(this.pictureBox3);
-            this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.picPaypal);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnUpdate);
@@ -625,8 +593,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picPaypal)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -642,8 +608,6 @@
         private System.Windows.Forms.Button btnUpdate;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.PictureBox picPaypal;
-        private System.Windows.Forms.PictureBox pictureBox2;
-        private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.PictureBox pictureBox5;
         private System.Windows.Forms.LinkLabel linkLabel2;
         private System.Windows.Forms.LinkLabel linkLabel3;

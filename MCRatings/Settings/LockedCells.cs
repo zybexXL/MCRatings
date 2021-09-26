@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MCRatings
+namespace ZRatings
 {
     // stores persistent list of locked cells for current library
     public class LockedCellList

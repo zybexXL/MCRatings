@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MCRatings
+namespace ZRatings
 {
     // custom datagrid column used in Settings
     class SourceSelectColumn : DataGridViewColumn

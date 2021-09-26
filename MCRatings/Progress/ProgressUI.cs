@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MCRatings
+namespace ZRatings
 {
     // Runs a given task as a BackgroundWorker while displaying a progress bar
     public partial class ProgressUI : Form

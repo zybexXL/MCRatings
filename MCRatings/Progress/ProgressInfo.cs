@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MCRatings
+namespace ZRatings
 {
     // status tracker for several ProgressBar tasks
     public class ProgressInfo

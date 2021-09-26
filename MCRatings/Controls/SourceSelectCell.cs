@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MCRatings
+namespace ZRatings
 {
     // custom datagrid cell type used in Settings
     class SourceSelectCell : DataGridViewCell

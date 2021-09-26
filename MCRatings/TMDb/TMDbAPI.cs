@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MCRatings
+namespace ZRatings
 {
     // class to talk to TMDb - get movie info by Title/Year or by IMDB Id
     // implements caching of responses to reduce traffic and speed up processing
@@ -35,7 +35,7 @@ namespace MCRatings
             var handler = new HttpClientHandler() {
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate };
             client = new HttpClient(handler);
-            client.BaseAddress = new Uri("https://api.themoviedb.org/");
+            client.BaseAddress = new Uri($"{Constants.https}api.themoviedb.org/");
         }
 
         ~TMDbAPI()
@@ -194,7 +194,7 @@ namespace MCRatings
             string res = size == PosterSize.Large ? large : size == PosterSize.Medium ? "w185" : size == PosterSize.Small ? "w92" : "original";
 
             cachePath = Path.Combine(cacheRoot, res, uri);
-            return $"http://image.tmdb.org/t/p/{res}/{uri}";
+            return $"{Constants.https}image.tmdb.org/t/p/{res}/{uri}";
         }
     }
 }

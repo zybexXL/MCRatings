@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace MCRatings
+namespace ZRatings
 {
     class OpenFolderEx : IDisposable
     {

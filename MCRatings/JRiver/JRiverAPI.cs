@@ -14,7 +14,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MCRatings
+namespace ZRatings
 {
     // talks to JRiver - opens JRiver as a background app if needed (OLE automation)
     // gets list of playlists, list of fields

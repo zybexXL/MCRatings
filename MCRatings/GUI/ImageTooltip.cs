@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MCRatings
+namespace ZRatings
 {
     public partial class ImageTooltip : Form
     {

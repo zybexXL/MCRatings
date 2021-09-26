@@ -18,10 +18,10 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
 
-namespace MCRatings
+namespace ZRatings
 {
 
-    public partial class MCRatingsUI : Form
+    public partial class ZRatingsUI : Form
     {
         OMDbAPI omdbAPI = new OMDbAPI(Program.settings.APIkeyList);
         TMDbAPI tmdbAPI = new TMDbAPI(Program.settings.TMDBkeyList);
@@ -46,7 +46,7 @@ namespace MCRatings
         MovieInfo currentMovie;
         bool inEvent = false;
 
-        public MCRatingsUI()
+        public ZRatingsUI()
         {
             InitializeComponent();
             gridMovies.DoubleBuffered(true);
@@ -99,7 +99,7 @@ namespace MCRatings
             });
         }
 
-        private void MCRatingsUI_Shown(object sender, EventArgs e)
+        private void ZRatingsUI_Shown(object sender, EventArgs e)
         {
             if (Program.settings.StartMaximized)
                 this.WindowState = FormWindowState.Maximized;
@@ -134,7 +134,7 @@ namespace MCRatings
             comboLists.Focus();
         }
 
-        private void MCRatingsUI_FormClosing(object sender, FormClosingEventArgs e)
+        private void ZRatingsUI_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (btnSave.Enabled)
                 if (DialogResult.Cancel == MessageBox.Show("You have unsaved changes.\nAre you sure you want to exit?", "Discard changes", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning))
@@ -168,7 +168,7 @@ namespace MCRatings
         }
 
         // handle some special keys - F3, Tab, ctrl+F, Alt-P
-        private void MCRatingsUI_KeyDown(object sender, KeyEventArgs e)
+        private void ZRatingsUI_KeyDown(object sender, KeyEventArgs e)
         {
             e.Handled = true;
             if (e.KeyCode == Keys.P && e.Alt)
@@ -734,7 +734,7 @@ namespace MCRatings
                 if (DialogResult.No == MessageBox.Show($"Are you sure you want to get OMDb info for {selected.Count} movies with Cache disabled?", "Disable OMDb cache", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                     return;
             }
-
+#if SOUNDFX
             // play a soundbite
             if (!Program.settings.Silent)
             {
@@ -742,7 +742,7 @@ namespace MCRatings
                 Player.PlayRandom(audiocues);
                 Analytics.Event("Audio", "PlaySoundClip");
             }
-
+#endif
             int oCalls = Stats.Session.OMDbAPICall;
             int tCalls = Stats.Session.TMDbAPICall;
 
@@ -827,6 +827,7 @@ namespace MCRatings
                     string imdb = FindByName ? null : movie[AppField.IMDbID];
                     bool doOMDb = !Program.settings.OMDbDisabled;
                     bool doTMDb = !Program.settings.TMDbDisabled;
+                    bool omdbBrief = Program.settings.FieldMap[AppField.ShortPlot].enabled;
 
                     if (FindByName)
                     {
@@ -834,7 +835,7 @@ namespace MCRatings
                         if (doTMDb && preference == Sources.TMDb)
                             tmdbInfo = tmdbAPI?.getByTitle(title, year);
                         if (doOMDb && (preference == Sources.OMDb || tmdb == null))
-                            omdbInfo = omdbAPI?.getByTitle(title, year);
+                            omdbInfo = omdbAPI?.getByTitle(title, year, !omdbBrief);
                         // get TMDB if preference was OMDB but it returned null
                         if (doTMDb && preference == Sources.OMDb && omdb == null && tmdb == null)
                             tmdbInfo = tmdbAPI?.getByTitle(title, year);
@@ -843,7 +844,7 @@ namespace MCRatings
                     }
 
                     if (doOMDb && imdb != null && omdb == null)
-                        omdbInfo = omdbAPI?.getByIMDB(imdb, noCache: progress.noCache);
+                        omdbInfo = omdbAPI?.getByIMDB(imdb, !omdbBrief, progress.noCache);
 
                     if (doTMDb && imdb != null && tmdb == null)
                         tmdbInfo = tmdbAPI?.getByIMDB(imdb, noCache: progress.noCache);
@@ -923,6 +924,9 @@ namespace MCRatings
             if (string.IsNullOrWhiteSpace(ovalue)) return tvalue;
             if (string.IsNullOrWhiteSpace(tvalue)) return ovalue;
 
+            if (field == AppField.ShortPlot) return ovalue.Length < tvalue.Length ? ovalue : tvalue;
+            //if (field == AppField.Description) return ovalue.Length < tvalue.Length ? tvalue : ovalue;
+
             return Program.settings.FieldMap[field].source == Sources.OMDb ? ovalue : tvalue;
         }
 
@@ -978,9 +982,9 @@ namespace MCRatings
                 }
             return string.Join("; ", l1);
         }
-        #endregion
+#endregion
 
-        #region JRiver Save
+#region JRiver Save
         private void btnSave_Click(object sender, EventArgs e)
         {
             var movieList = ModifierKeys.HasFlag(Keys.Shift) ? movies : GetSelectedMovies();
@@ -1076,9 +1080,9 @@ namespace MCRatings
 
             progress.result = true;
         }
-        #endregion
+#endregion
 
-        #region Search and Filter
+#region Search and Filter
     
         // clicking the "X changed movies" label triggers a filter to show only changed movies
         private void lblChanges_Click(object sender, EventArgs e)
@@ -1208,9 +1212,9 @@ namespace MCRatings
             gridMovies.Focus();
         }
 
-        #endregion
+#endregion
 
-        #region Context Menu
+#region Context Menu
         
         // selects/unselects rows based on predicate
         private void SelectRows(Predicate<MovieInfo> predicate, bool fullList = false)
@@ -1549,9 +1553,9 @@ namespace MCRatings
             }
         }
 
-        #endregion
+#endregion
 
-        #region datagrid events
+#region datagrid events
 
         // handles checkbox click - marks row Movie as Selected
         private void grid2_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -1694,14 +1698,14 @@ namespace MCRatings
                 {
                     string id = gridMovies.CurrentCell.EditedFormattedValue as string;
                     if (id != null && id.ToLower().StartsWith("tt"))
-                        Process.Start($"https://www.imdb.com/title/{id.ToLower()}/");
+                        Process.Start(Constants.https + $"www.imdb.com/title/{id.ToLower()}/");
                 }
                 // handle CTRL+click on TMDB link
                 if (field == AppField.TMDbID && ModifierKeys.HasFlag(Keys.Control))
                 {
                     string id = gridMovies.CurrentCell.EditedFormattedValue as string;
                     if (!string.IsNullOrEmpty(id))
-                        Process.Start($"https://www.themoviedb.org/movie/{id}");
+                        Process.Start(Constants.https + $"www.themoviedb.org/movie/{id}");
                 }
                 // handle CTRL+click on Trailer link
                 if ((field == AppField.Trailer || field == AppField.Website) && ModifierKeys.HasFlag(Keys.Control))
@@ -1985,9 +1989,9 @@ namespace MCRatings
             }
         }
 
-        #endregion
+#endregion
 
-        #region IMDB shortcuts
+#region IMDB shortcuts
 
         private void menuShortcutFilename_Click(object sender, EventArgs e)
         {
@@ -2057,7 +2061,7 @@ namespace MCRatings
                 }
                 try
                 {
-                    string text = $"[InternetShortcut]\r\nURL=https://www.imdb.com/title/{imdb}/\r\n";
+                    string text = $"[InternetShortcut]\r\nURL={Constants.https}www.imdb.com/title/{imdb}/\r\n";
                     string fname = Path.Combine(dir, imdbfile);
                     if (!File.Exists(fname))
                     {
@@ -2073,9 +2077,9 @@ namespace MCRatings
             progress.result = true;
         }
 
-        #endregion
+#endregion
 
-        #region Collections
+#region Collections
 
         private void CollectionImporter_CollectionLoaded(object sender, PtpCollection e)
         {
@@ -2083,7 +2087,7 @@ namespace MCRatings
             ImportCollection(e);
         }
 
-        private void MCRatingsUI_DragEnter(object sender, DragEventArgs e)
+        private void ZRatingsUI_DragEnter(object sender, DragEventArgs e)
         {
             string[] files = (string[])(e.Data.GetData(DataFormats.FileDrop, false));
             if (files.Length > 0 && Path.GetExtension(files[0]).ToLower().StartsWith(".htm"))
@@ -2116,7 +2120,7 @@ namespace MCRatings
             return true;
         }
 
-        private void MCRatingsUI_DragDrop(object sender, DragEventArgs e)
+        private void ZRatingsUI_DragDrop(object sender, DragEventArgs e)
         {
             string[] files = (string[])(e.Data.GetData(DataFormats.FileDrop, false));
             if (files.Length == 0) return;
@@ -2212,9 +2216,9 @@ namespace MCRatings
             SetStatus($"Imported collection '{collection.Title}': {count} movies, {added + repeated} matches, {created} new");
         }
 
-        #endregion
+#endregion
 
-        #region posters
+#region posters
 
         private void ShowPosterToolTip(MovieInfo m, Image original, string lbl1, Image updated, string lbl2, string path2, Size size2, int row, int col)
         {
@@ -2425,7 +2429,7 @@ namespace MCRatings
             return null;
         }
 
-        private void MCRatingsUI_MouseLeave(object sender, EventArgs e)
+        private void ZRatingsUI_MouseLeave(object sender, EventArgs e)
         {
             imgTooltip.Hide();
         }
@@ -2574,7 +2578,7 @@ namespace MCRatings
             updateModifiedCount();
         }
 
-        #endregion
+#endregion
 
         private void menuOpenPosterBrowser_Click(object sender, EventArgs e)
         {
@@ -2599,7 +2603,7 @@ namespace MCRatings
             try
             {
                 if (currmovie?.IMDBid != null && currmovie.IMDBid.ToLower().StartsWith("tt"))
-                    Process.Start($"https://www.imdb.com/title/{currmovie.IMDBid.ToLower()}");
+                    Process.Start(Constants.https + $"www.imdb.com/title/{currmovie.IMDBid.ToLower()}");
             }
             catch { }
         }
@@ -2611,7 +2615,7 @@ namespace MCRatings
             {
                 string id = currmovie?[AppField.TMDbID];
                 if (!string.IsNullOrEmpty(id))
-                    Process.Start($"https://www.themoviedb.org/movie/{id}");
+                    Process.Start(Constants.https + $"www.themoviedb.org/movie/{id}");
             }
             catch { }
         }

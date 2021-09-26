@@ -7,11 +7,12 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MCRatings
+namespace ZRatings
 {
     public static class AutoUpgrade
     {
-        const string GitHubReleaseURL = "/repos/zybexXL/MCRatings/releases/latest";
+        const string GitHubReleaseAPI = "/repos/zybexXL/MCRatings/releases/latest";
+        const string GitHubReleaseURL = "github.com/zybexXL/MCRatings/releases";
 
         public static VersionInfo LatestVersion;
         public static DateTime lastCheck;
@@ -37,11 +38,15 @@ namespace MCRatings
                     {
                         if (noQuestions || DialogResult.Yes == MessageBox.Show($"Version {LatestVersion.version} is now available! Do you want to update?",
                             "New version available", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+#if AUTOUPGRADE
                             if (UpgradeNow())
                                 Application.Restart();
                             else
                                 MessageBox.Show($"Update failed! Please update manually from the release page:\n{LatestVersion.url}",
-                                    "Upgrade error",  MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    "Upgrade error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+#else
+                            Process.Start($"{Constants.https}{GitHubReleaseURL}");
+#endif
                     }
                     else
                         MessageBox.Show("You are currently running the latest version.",
@@ -63,9 +68,9 @@ namespace MCRatings
             {
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("https://api.github.com");
+                    client.BaseAddress = new Uri($"{Constants.https}api.github.com");
                     client.DefaultRequestHeaders.Add("User-Agent", "Microsoft .Net HttpClient");        // needed for github
-                    HttpResponseMessage response = client.GetAsync(GitHubReleaseURL).Result;
+                    HttpResponseMessage response = client.GetAsync(GitHubReleaseAPI).Result;
                     if (response.IsSuccessStatusCode)
                     {
                         string result = response.Content.ReadAsStringAsync().Result;
@@ -82,6 +87,7 @@ namespace MCRatings
                 progress.result = false;
         }
 
+#if AUTOUPGRADE
         public static bool UpgradeNow()
         {
             Analytics.Event("GUI", "Upgrading");
@@ -109,7 +115,6 @@ namespace MCRatings
                     if (File.Exists(bakFile)) File.Delete(bakFile);
 
                     File.Move(currEXE, bakFile);
-                    if (currEXE.ToLower() == "mcratings.exe") currEXE = "ZRatings.exe";
                     File.Move(tmpFile, currEXE);
 
                     progress.result = true;
@@ -129,11 +134,7 @@ namespace MCRatings
             string currEXE = Assembly.GetEntryAssembly().Location;
             string bakFile = Path.ChangeExtension(currEXE, ".bak");
             if (File.Exists(bakFile)) try { File.Delete(bakFile); } catch { }
-            // cleanup old MCRatings binaries
-            string mcratings = Path.Combine(Path.GetDirectoryName(currEXE), "MCRatings.exe");
-            if (File.Exists(mcratings)) try { File.Delete(mcratings); } catch { }
-            bakFile = Path.ChangeExtension(mcratings, ".bak");
-            if (File.Exists(bakFile)) try { File.Delete(bakFile); } catch { }
         }
+#endif
     }
 }

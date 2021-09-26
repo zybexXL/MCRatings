@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace MCRatings
+namespace ZRatings
 {
     // PTP Movie Collection
     public class PtpCollection

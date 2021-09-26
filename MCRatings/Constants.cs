@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MCRatings
+namespace ZRatings
 {
     // datagrid columns, default JRiver field mapping
     public enum CellColor {
@@ -19,7 +19,7 @@ namespace MCRatings
         Movie=0, Selected, Filter, Status, FTitle, FYear,       // non-JR fields
         Title, Year, Imported, Playlists, Release, Poster, IMDbID, TMDbID,
         IMDbRating, IMDbVotes, TMDbScore, RottenTomatoes, Metascore, MPAARating,
-        Runtime, OriginalTitle, Series, Collections, Tagline, Description, Genre, Keywords,
+        Runtime, OriginalTitle, Series, Collections, Tagline, Description, ShortPlot, Genre, Keywords,
         Production, Producer, Director, Writers, Actors, Roles, Language, Country, Budget, Revenue,
         Awards, Trailer, Website, File
     }
@@ -28,6 +28,8 @@ namespace MCRatings
 
     public class Constants
     {
+        public static string https => "https://";      // separate prefix to avoid having many URLs in the exe (it triggers AV false positives)
+
         static string _dataFolder;
         public static string DataFolder
         {
@@ -39,11 +41,6 @@ namespace MCRatings
                 return _dataFolder;
             }
         }
-
-        // for settings migration due to project name change
-        public static string MCRatingsFolder = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "MCRatings");
 
         public static string SettingsFile = Path.Combine(DataFolder, "settings.xml");       // TOOD: move to JSON
         public static string LockedCellsFile = Path.Combine(DataFolder, "lockedFields.json");
@@ -113,6 +110,7 @@ namespace MCRatings
             { AppField.Roles, new FieldInfo("Roles", "Actor Roles", true, 100, 0) },
             { AppField.Tagline, new FieldInfo("Tagline", "Tag Line", true, 200, 0) },
             { AppField.Description, new FieldInfo("Description", "Description", true, 200, 0) },
+            { AppField.ShortPlot, new FieldInfo("Short Plot", "Short Plot", true, 200, 0) },
             { AppField.Keywords, new FieldInfo("Keywords", "Keywords", true, 100, 0) },
             { AppField.Production, new FieldInfo("Studios", "Studios", true, 100, 0) },
             { AppField.Writers, new FieldInfo("Writers", "Screenwriter", true, 100, 0) },
@@ -139,6 +137,7 @@ namespace MCRatings
             " dts ac3 ac5 dd5 atmos truehd true-hd hdr mp3 flac";
         //" german italian french english japanese chinese spanish portuguese";
 
+#if SOUNDFX
         public static List<SoundBite> SoundBank = new List<SoundBite>()
         {
             new SoundBite( "brains", "http://soundbible.com/grab.php?id=1051&type=mp3",    // braaaains
@@ -259,5 +258,6 @@ namespace MCRatings
                 new List<string>(){ "odyssey", "kubrick" } ),
 
         };
+#endif
     }
 }

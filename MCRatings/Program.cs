@@ -8,12 +8,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MCRatings
+namespace ZRatings
 {
     static class Program
     {
-        public static Version version = new Version(3, 3, 0);    // major, minor, revision
-        public static string tagline = "\"Nothing Is Random\" - Riders of Justice (2020)";        // changes on every major or minor release
+        public static Version version = new Version(3, 4, 0);    // major, minor, revision
+        public static string tagline = "\"Never underestimate a nobody.\" - Nobody (2021)";        // changes on every major or minor release
         public static Settings settings;
 
         /// <summary>
@@ -28,19 +28,6 @@ namespace MCRatings
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // project renamed - migrate MCRatings settings
-            if (Settings.MigrationNeeded)
-            {
-                new AppRenamed().ShowDialog();
-                if (!Settings.MigrateSettings())
-                { 
-                    MessageBox.Show("Failed to migrate settings to new folder!\n\nPlease manually rename the folder:\n" +
-                        $"    {Constants.MCRatingsFolder}\nto:\n    {Constants.DataFolder}", "Rename/Move failed",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-            }
-
             Logger.Log($"ZRatings v{version}{(Environment.Is64BitProcess ? " x64" : "")} started");
             Logger.Log($"NetFramework version {SysVersions.NetVersion()} on {SysVersions.OSVersion()}");
 
@@ -53,11 +40,12 @@ namespace MCRatings
             Analytics.AppStart("ZRatings", version.ToString(), true);
 
             // remove previous version after upgrading
+#if AUTOUPGRADE
             AutoUpgrade.Cleanup();
-
+#endif
             try
             {
-                Application.Run(new MCRatingsUI());
+                Application.Run(new ZRatingsUI());
             }
             catch (Exception ex) {
                 Analytics.Exception(ex, true);

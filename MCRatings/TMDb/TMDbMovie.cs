@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace MCRatings
+namespace ZRatings
 {
     // Get Movie info + Credits, Keywords, Trailers, Images, Alternative Titles, Release Dates
     // multiple languages supported (fallback to english)
@@ -104,7 +104,8 @@ namespace MCRatings
                 case AppField.Roles: return fixList(getRoles(listItems));
                 case AppField.Keywords: return keywords?.keywords == null ? null : fixCase(fixList(keywords?.keywords.Select(c => c.name), removeCJK: true));
                 case AppField.Tagline: return tagline;
-                case AppField.Description: return overview;
+                case AppField.Description:
+                case AppField.ShortPlot: return overview;
                 case AppField.Language: return spoken_languages == null ? null : fixList(spoken_languages.Select(c => c.englishName), listItems);
                 case AppField.Country: return production_countries == null ? null : fixList(production_countries.Select(c => c.name.Replace("United States of America","USA").Replace("United Kingdom", "UK")), listItems);
                 case AppField.Budget: return budget.HasValue && budget.Value > 0 ? budget.Value.ToString("$#,##0").Replace(".",",") : null;
@@ -119,8 +120,8 @@ namespace MCRatings
                             return $"webmedia://{video.site}/{video.key}";
                         switch (video.site.ToLower())
                         {
-                            case "youtube": return $"https://www.youtube.com/watch?v={video.key}";
-                            case "vimeo": return $"https://vimeo.com/{video.key}";
+                            case "youtube": return $"{Constants.https}www.youtube.com/watch?v={video.key}";
+                            case "vimeo": return $"{Constants.https}vimeo.com/{video.key}";
                             default: return $"webmedia://{video.site}/{video.key}";
                         }
                     }

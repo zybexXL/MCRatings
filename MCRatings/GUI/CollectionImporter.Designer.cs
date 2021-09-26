@@ -1,4 +1,4 @@
-﻿namespace MCRatings
+﻿namespace ZRatings
 {
     partial class CollectionImporter
     {
@@ -97,7 +97,7 @@
             this.txtURL.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
             this.txtURL.Name = "txtURL";
             this.txtURL.Size = new System.Drawing.Size(500, 31);
-            this.txtURL.Tag = "https://passthepopcorn.me/collages.php";
+            this.txtURL.Tag = "pass the popcorn .me/collages.php";
             this.txtURL.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtURL_KeyPress);
             // 
             // statusStrip1
@@ -135,7 +135,7 @@
             // btnHome
             // 
             this.btnHome.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnHome.Image = global::MCRatings.Properties.Resources.home_fff_24;
+            this.btnHome.Image = global::ZRatings.Properties.Resources.home_fff_24;
             this.btnHome.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnHome.Name = "btnHome";
             this.btnHome.Size = new System.Drawing.Size(28, 28);
@@ -147,7 +147,7 @@
             // 
             this.btnImportAll.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.btnImportAll.ForeColor = System.Drawing.Color.Aqua;
-            this.btnImportAll.Image = global::MCRatings.Properties.Resources.save_as_fff_24;
+            this.btnImportAll.Image = global::ZRatings.Properties.Resources.save_as_fff_24;
             this.btnImportAll.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnImportAll.Name = "btnImportAll";
             this.btnImportAll.Size = new System.Drawing.Size(83, 28);
@@ -160,7 +160,7 @@
             // 
             this.btnImport.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.btnImport.ForeColor = System.Drawing.Color.Lime;
-            this.btnImport.Image = global::MCRatings.Properties.Resources.save_fff_24;
+            this.btnImport.Image = global::ZRatings.Properties.Resources.save_fff_24;
             this.btnImport.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnImport.Margin = new System.Windows.Forms.Padding(10, 1, 10, 2);
             this.btnImport.Name = "btnImport";
@@ -187,7 +187,7 @@
             // btnReload
             // 
             this.btnReload.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnReload.Image = global::MCRatings.Properties.Resources.refresh_fff_24;
+            this.btnReload.Image = global::ZRatings.Properties.Resources.refresh_fff_24;
             this.btnReload.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnReload.Margin = new System.Windows.Forms.Padding(10, 1, 0, 2);
             this.btnReload.Name = "btnReload";
@@ -199,7 +199,7 @@
             // btnBack
             // 
             this.btnBack.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnBack.Image = global::MCRatings.Properties.Resources.back_fff_24;
+            this.btnBack.Image = global::ZRatings.Properties.Resources.back_fff_24;
             this.btnBack.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnBack.Margin = new System.Windows.Forms.Padding(10, 1, 0, 2);
             this.btnBack.Name = "btnBack";

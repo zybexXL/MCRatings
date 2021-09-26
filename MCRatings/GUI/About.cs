@@ -12,18 +12,19 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MCRatings
+namespace ZRatings
 {
     public partial class About : Form
     {
-        const string donationPaypal = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=59W3EUXWQ4BZS&source=url";
-        const string donationBTC = "3N7xp35ExDC87xRJQFU7i9SoV3Qt3b7oyL";
-        const string donationETH = "0x90fdd0f04C32bE356b5a73dbf7D50528bb9Ed4ba";
+        string donationPaypal = Constants.https + "www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=59W3EUXWQ4BZS&source=url";
         const string email = "pbfonseca@gmail.com";
 
         public About()
         {
             InitializeComponent();
+            linkLabel5.Text = Constants.https + linkLabel5.Text;
+            linkLabel7.Text = Constants.https + linkLabel7.Text;
+            linkLabel9.Text = Constants.https + linkLabel9.Text;
         }
 
         private void About_Load(object sender, EventArgs e)
@@ -67,26 +68,13 @@ namespace MCRatings
             catch { }
         }
 
-        private void pictureBox2_Click(object sender, EventArgs e)
-        {
-            Clipboard.SetText(donationBTC);
-            MessageBox.Show("Bitcoin wallet address copied to clipboard.\nThank you! :)", "BTC Donation", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private void pictureBox3_Click(object sender, EventArgs e)
-        {
-            Clipboard.SetText(donationETH);
-            MessageBox.Show("Ethereum wallet address copied to clipboard.\nThank you! :)", "ETH Donation", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-        }
-
         private void linkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             try
             {
                 string url = ((Control)sender).Tag as string;
                 if (!string.IsNullOrEmpty(url))
-                    Process.Start(url);
+                    Process.Start(Constants.https + url);
             }
             catch { }
         }

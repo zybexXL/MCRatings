@@ -1,4 +1,4 @@
-﻿namespace MCRatings
+﻿namespace ZRatings
 {
     partial class ProgressUI
     {
@@ -105,7 +105,7 @@
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.BackgroundImage = global::MCRatings.Properties.Resources.close_red_619539;
+            this.btnCancel.BackgroundImage = global::ZRatings.Properties.Resources.close_red_619539;
             this.btnCancel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btnCancel.FlatAppearance.BorderSize = 0;
             this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;

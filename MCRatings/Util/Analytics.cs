@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
 
-namespace MCRatings
+namespace ZRatings
 {
     // Google Analytics tracking
     // ZRatings tracks the following info anonymously:
@@ -19,6 +19,18 @@ namespace MCRatings
 
     public class Analytics
     {
+
+#if !ANALYTICS
+        public static void Init() {}
+        public static void AppStart(string app, string version, bool startSession = true) {}
+        public static void AppClose() {}
+        public static void ScreenView(string screen, string app = null, string version = null) {}
+        public static void Event(string category, string evnt, string label = null, int value = -1) {}
+        public static void Timing(string category, string variable, string label, int durationMs) {}
+        public static void Exception(Exception ex, bool fatal = false) {}
+
+#else
+
         // Google Analytics property code - tied to ZRatings developer account
         internal static string property = "VUEtMTM1MzU2MDM4LTE=";
         private static HttpClient client;
@@ -27,7 +39,7 @@ namespace MCRatings
         {
             property = Encoding.ASCII.GetString(Convert.FromBase64String(property));
             client = new HttpClient();
-            client.BaseAddress = new Uri("https://www.google-analytics.com");
+            client.BaseAddress = new Uri($"{Constants.https}www.google-analytics.com");
 
             string x64 = Environment.Is64BitOperatingSystem ? "; x64; AMD64" : "";
             client.DefaultRequestHeaders.UserAgent.TryParseAdd($"ZRatings/{Program.version.ToString()} (compatible; Windows; {Util.OSName()}{x64})");
@@ -132,5 +144,6 @@ namespace MCRatings
                 parameters.Add(new Tuple<string, string>(name, val));
             }
         }
+#endif
     }
 }

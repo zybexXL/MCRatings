@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MCRatings
+namespace ZRatings
 {
     public partial class SettingsUI : Form
     {
@@ -18,7 +18,7 @@ namespace MCRatings
         bool audio = true;
         bool badFields = false;
         bool loading = false;
-        int posterRow = 0;
+        Dictionary<AppField, int> rowIndex = new Dictionary<AppField, int>();
 
         JRiverAPI jr;
         List<Control> labels;
@@ -53,7 +53,10 @@ namespace MCRatings
             setDirty(startDirty);
 
             // mute icon hidden until a sound is played
-            btnAudio.Visible = Directory.Exists(Constants.AudioCache) && Directory.GetFiles(Constants.AudioCache).Length > 0;
+            btnAudio.Visible = false;
+#if SOUNDFX
+            btnAudio.Visible = Directory.Exists(Constants.AudioCache) && Directory.GetFiles(Constants.AudioCache).Length > 0;   
+#endif
             loading = false;
         }
 
@@ -181,6 +184,13 @@ namespace MCRatings
                     Sources src = ((SourceSelect)row.Cells["dgSource"].Value).Value;
                     Program.settings.FieldMap[field] = new JRFieldMap(field, value, enabled, overwrite, src);
                 }
+
+                if (Program.settings.FieldMap[AppField.Description].source == Sources.OMDb && Program.settings.FieldMap[AppField.ShortPlot].enabled)
+                {
+                    Program.settings.FieldMap[AppField.Description].source = Sources.TMDb;
+                    MessageBox.Show($"Description and Short Plot cannot both come from OMDb.\nDescription source was changed to TMDb.", "Source conflict", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+
                 Program.settings.CellColors = GetColors();
                 Program.settings.Silent = !audio;
                 Program.settings.FastStart = chkFastStart.Checked;
@@ -248,7 +258,7 @@ namespace MCRatings
             chkPosterFilterLanguage.Checked = settings.PosterFilterLanguage;
             chkPosterSortVotes.Checked = settings.PosterSortVotes;
             chkFullSize.Checked = settings.LoadFullSizePoster;
-            chkPosterSupport.Checked = (bool)gridFields.Rows[posterRow].Cells[0].Value;
+            chkPosterSupport.Checked = (bool)gridFields.Rows[rowIndex[AppField.Poster]].Cells[0].Value;
             chkActorRoles.Checked = settings.AddActorRoles;
             comboActorSize.SelectedIndex = settings.ActorThumbnailSize;
             chkGetActorPics.Checked = settings.SaveActorThumbnails;
@@ -279,7 +289,7 @@ namespace MCRatings
             groupPoster.Enabled = chkPosterSupport.Checked;
             txtPosterScript.Enabled = chkRunPosterPP.Checked;
             txtThumbScript.Enabled = chkRunThumbPP.Checked;
-            gridFields[0, posterRow].Value = chkPosterSupport.Checked;
+            gridFields[0, rowIndex[AppField.Poster]].Value = chkPosterSupport.Checked;
         }
 
         private void addRow(Settings settings, AppField field)
@@ -305,13 +315,13 @@ namespace MCRatings
                 if (!sources.Contains(source)) source = sources.FirstOrDefault();
                 SourceSelect ss = new SourceSelect(sources, source);
                 row = gridFields.Rows.Add(enabled, name, jrName, overwrite, ss);
-                
+                rowIndex[field] = row;
+
                 if (field == AppField.Poster)
                 {
                     gridFields.Rows[row].Cells["dgField"].ReadOnly = true;
                     // TODO: this doesn't work for some reason
                     gridFields.Rows[row].Cells["dgField"].Style.ForeColor = Color.Purple;
-                    posterRow = row;
                 }
             }
             else
@@ -323,8 +333,9 @@ namespace MCRatings
         private void gridFields_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (loading) return;
-            if (e.ColumnIndex == 0 && e.RowIndex == posterRow)
-                chkPosterSupport.Checked = (bool)gridFields.Rows[posterRow].Cells[0].Value;
+            AppField field = (AppField)gridFields.Rows[e.RowIndex].Tag;
+            if (e.ColumnIndex == 0 && field == AppField.Poster)
+                chkPosterSupport.Checked = (bool)gridFields.Rows[e.RowIndex].Cells[0].Value;
             setDirty();
         }
 
@@ -335,11 +346,6 @@ namespace MCRatings
                 e.Handled = true;
                 btnDiscard_Click(null, EventArgs.Empty);
             }
-        }
-
-        private void linkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            Process.Start(((LinkLabel)sender).Tag.ToString());
         }
 
         private void lblReset_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -390,13 +396,13 @@ namespace MCRatings
             setDirty();
         }
 
-        private void linkHelp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void linkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             try
             {
                 string url = ((Control)sender).Tag as string;
                 if (!string.IsNullOrEmpty(url))
-                    Process.Start(url);
+                    Process.Start(Constants.https + url);
             }
             catch { }
         }

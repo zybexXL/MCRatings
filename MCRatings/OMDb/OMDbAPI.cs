@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MCRatings
+namespace ZRatings
 {
     // class to talk to OMDb - get movie info by Title/Year or by IMDB Id
     // implements caching of responses to reduce traffic and speed up processing
@@ -31,7 +31,7 @@ namespace MCRatings
             var handler = new HttpClientHandler() {
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate };
             client = new HttpClient(handler);
-            client.BaseAddress = new Uri("http://www.omdbapi.com/");
+            client.BaseAddress = new Uri($"{Constants.https}www.omdbapi.com/");
         }
 
         ~OMDbAPI()
