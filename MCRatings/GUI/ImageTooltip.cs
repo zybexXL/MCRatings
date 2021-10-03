@@ -45,7 +45,9 @@ namespace ZRatings
                 }
             }
 
-            if (original == null && updated == null) Hide();
+            bool showCurrent = original != null && !oLabel.Contains("no poster");
+
+            if (!showCurrent && updated == null) Hide();
             else
             {
                 Analytics.Event("GUI", "PosterTooltip", "PosterTooltipView", 1);
@@ -58,21 +60,21 @@ namespace ZRatings
                 img2.SizeMode = loading ? PictureBoxSizeMode.CenterImage : PictureBoxSizeMode.StretchImage;
 
                 panel2.Visible = img2.Visible = label2.Visible = updated != null;
-                panel1.Visible = img1.Visible = label1.Visible = original != null;
+                panel1.Visible = img1.Visible = label1.Visible = showCurrent;
 
                 // image sizes
-                int maxHeight = original == null ? uSize.Height : original.Height;
-                panel1.Height = original == null ? 400 : original.Height + label1.Height + 2;
-                panel1.Width = original == null ? 200 : original.Width + 2;
+                int maxHeight = showCurrent ? original.Height : uSize.Height;
+                panel1.Height = showCurrent ? original.Height + label1.Height + 2 : 400;
+                panel1.Width = showCurrent ? original.Width + 2 : 200;
 
                 panel2.Height = maxHeight + label2.Height + 2;
                 panel2.Width = loading || updated == null ? Program.settings.ShowSmallThumbnails ? 100 : 200
                     : uSize.Width * maxHeight / uSize.Height + 2;
                 
-                panel2.Left = original == null ? 0 : panel1.Right + 10;
+                panel2.Left = showCurrent ? panel1.Right + 10 : 0;
 
                 // form position
-                int height = original == null ? panel2.Bottom + 1 : panel1.Bottom + 1;
+                int height = showCurrent ? panel1.Bottom + 1 : panel2.Bottom + 1;
                 int maxY = Screen.FromControl(this).WorkingArea.Height;
                 if (point.Y + 10 + height > maxY)
                     this.Top = maxY - 10 - height;

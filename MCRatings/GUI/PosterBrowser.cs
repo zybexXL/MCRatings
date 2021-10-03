@@ -111,6 +111,10 @@ namespace ZRatings
                 Show();
                 return;
             }
+
+            if (currRes == "no poster")
+                thumbnail = null;
+
             currMovie = movie;
             currThumbnail = thumbnail;
             currFullPoster = null;

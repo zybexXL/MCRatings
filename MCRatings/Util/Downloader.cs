@@ -205,7 +205,7 @@ namespace ZRatings
             try
             {
                 bool pngConvert = item.destPath.ToLower().EndsWith(".png") && !item.url.ToLower().EndsWith(".png");
-                if (!item.url.ToLower().StartsWith("http:"))
+                if (!item.url.ToLower().StartsWith("http"))
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(item.destPath));
                     if (pngConvert)

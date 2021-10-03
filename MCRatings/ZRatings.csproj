@@ -35,7 +35,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SOUNDFX ANALYTICS AUTOUPGRADE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;_SOUNDFX _ANALYTICS _AUTOUPGRADE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
