@@ -43,6 +43,7 @@ namespace ZRatings
 
                 case AppField.TMDbScore:
                 case AppField.OriginalTitle:
+                case AppField.OriginalLanguage:
                 case AppField.Series:
                 case AppField.Tagline:
                 case AppField.Keywords:

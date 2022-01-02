@@ -20,7 +20,7 @@ namespace ZRatings
         Title, Year, Imported, Playlists, Release, Poster, IMDbID, TMDbID,
         IMDbRating, IMDbVotes, TMDbScore, RottenTomatoes, Metascore, MPAARating,
         Runtime, OriginalTitle, Series, Collections, Tagline, Description, ShortPlot, Genre, Keywords,
-        Production, Producer, Director, Writers, Actors, Roles, Language, Country, Budget, Revenue,
+        Production, Producer, Director, Writers, Actors, Roles, OriginalLanguage, Language, Country, Budget, Revenue,
         Awards, Trailer, Website, File
     }
 
@@ -114,7 +114,8 @@ namespace ZRatings
             { AppField.Keywords, new FieldInfo("Keywords", "Keywords", true, 100, 0) },
             { AppField.Production, new FieldInfo("Studios", "Studios", true, 100, 0) },
             { AppField.Writers, new FieldInfo("Writers", "Screenwriter", true, 100, 0) },
-            { AppField.Language, new FieldInfo("Language", "Language", true, 100, 0) },
+            { AppField.OriginalLanguage, new FieldInfo("Language", "Original Language", true, 100, 0) },
+            { AppField.Language, new FieldInfo("Spoken", "Language", true, 100, 0) },
             { AppField.Country, new FieldInfo("Country", "Country", true, 100, 0) },
             { AppField.Budget, new FieldInfo("Budget", "Budget", true, 100, 2) },
             { AppField.Revenue, new FieldInfo("Revenue", "Gross Revenue", true, 100, 2) },

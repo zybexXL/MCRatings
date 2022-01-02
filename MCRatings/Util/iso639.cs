@@ -9,7 +9,12 @@ namespace ZRatings
     public static class iso639
     {
         public static string GetName(string code) {
-            return code == null ? null : (iso639_1.TryGetValue(code?.ToLower(), out string name)) ? name : null; }
+            return code == null ? null : (iso639_1.TryGetValue(code?.ToLower(), out string name)) ? name : null;
+        }
+
+        public static string GetName(string code, string name) {
+            return GetName(code) ?? (string.IsNullOrEmpty(name) ? $"[{code}]" : name.Replace("No Language","None"));  
+        }
 
         static Dictionary<string, string> iso639_1 = new Dictionary<string, string>()
         {

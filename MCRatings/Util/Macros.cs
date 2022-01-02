@@ -50,6 +50,7 @@ namespace ZRatings
                 path = replace(path, "metascore", movie[AppField.Metascore]);
                 path = replace(path, "imdbscore", movie[AppField.IMDbRating]);
                 path = replace(path, "rottenscore", movie[AppField.RottenTomatoes]);
+                path = replace(path, "originallanguages?", movie[AppField.OriginalLanguage]);
                 path = replace(path, "languages?", movie[AppField.Language]);
                 path = replace(path, "studios?", movie[AppField.Production]);
                 path = replace(path, "country", movie[AppField.Country]);

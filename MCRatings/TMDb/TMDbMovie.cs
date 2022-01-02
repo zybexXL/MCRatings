@@ -106,6 +106,7 @@ namespace ZRatings
                 case AppField.Tagline: return tagline;
                 case AppField.Description:
                 case AppField.ShortPlot: return overview;
+                case AppField.OriginalLanguage: return iso639.GetName(original_language);
                 case AppField.Language: return spoken_languages == null ? null : fixList(spoken_languages.Select(c => c.englishName), listItems);
                 case AppField.Country: return production_countries == null ? null : fixList(production_countries.Select(c => c.name.Replace("United States of America","USA").Replace("United Kingdom", "UK")), listItems);
                 case AppField.Budget: return budget.HasValue && budget.Value > 0 ? budget.Value.ToString("$#,##0").Replace(".",",") : null;
@@ -258,8 +259,7 @@ namespace ZRatings
         public string iso_639_1;
         public string name;
 
-        public string englishName { get { 
-            return iso639.GetName(iso_639_1) ?? (string.IsNullOrEmpty(name) ? $"[{iso_639_1}]" : name.Replace("No Language","None")); } }
+        public string englishName => iso639.GetName(iso_639_1, name);
     }
 
     public class TMDbMovieCredits
