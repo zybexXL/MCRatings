@@ -1,6 +1,5 @@
 
 Settings:
-- create missing fields?
 - convert to JSON
 
 Main:

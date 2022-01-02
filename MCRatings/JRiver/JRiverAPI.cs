@@ -99,6 +99,30 @@ namespace ZRatings
             return false;
         }
 
+        public bool createFields(List<string> names, bool editable = true, bool saveTag = true)
+        {
+            bool ok = true;
+            foreach (var name in names)
+                ok &= createField(name, name, editable, saveTag, false);
+            getFields();
+            return ok;
+        }
+
+        public bool createField(string name, string display = null, bool editable = true, bool saveTag = true, bool refresh = true)
+        {
+            if (Fields.ContainsKey(name.ToLower()))
+                return true;
+            try {
+                IMJFieldsAutomation iFields = jr.GetFields();
+                IMJFieldAutomation field = iFields.CreateFieldSimple(name, display, editable ? 1 : 0, saveTag ? 1 : 0);
+                if (refresh)
+                    getFields();
+                return Fields.ContainsKey(name.ToLower());
+            }
+            catch (Exception ex) { Logger.Log(ex, $"JRiverAPI.createField({name})"); }
+            return false;
+        }
+
         public Dictionary<string, string> getFields()
         {
             Fields = new Dictionary<string, string>();

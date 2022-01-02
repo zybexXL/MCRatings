@@ -80,7 +80,8 @@ namespace ZRatings
         private void SettingsUI_Shown(object sender, EventArgs e)
         {
             Analytics.Event("GUI", "Settings");
-            badFields = !checkFieldNames(Program.settings.valid);
+            if (!checkFieldNames(false, true))
+                badFields = !checkFieldNames(Program.settings.valid, false);
             if (!Program.settings.valid)
             {
                 MessageBox.Show("Please review the JRiver fields to be updated by ZRatings.\n" +
@@ -100,11 +101,12 @@ namespace ZRatings
         }
 
         // validate mappings
-        private bool checkFieldNames(bool show = true)
+        private bool checkFieldNames(bool show = true, bool create = true)
         {
             Cursor = Cursors.WaitCursor;
             jr?.getFields();     // refresh field list
             bool ok = true;
+            List<string> missing = new List<string>();
             foreach (DataGridViewRow row in gridFields.Rows)
             {
                 AppField field = (AppField)row.Tag;
@@ -114,17 +116,29 @@ namespace ZRatings
                 row.Cells["dgField"].Style = null;
                 if (field != AppField.Poster && enabled && (string.IsNullOrEmpty(value) || !jr.Fields.ContainsKey(value.ToLower())))
                 {
-                    row.Cells["dgField"].Style.ForeColor = Color.Red;
                     ok = false;
+                    missing.Add(value);
+                    row.Cells["dgField"].Style.ForeColor = Color.Red;
                 }
             }
             Cursor = Cursors.Default;
-            if (!ok && show)
+
+            if (missing.Count > 0 && create)
             {
+                if (DialogResult.Yes == MessageBox.Show($"The following fields do not exist in JRiver:\n    {string.Join("\n    ", missing)}\n\nDo You want to create them?",
+                    "Missing fields", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                    ok = jr.createFields(missing);
+                else
+                    ok = false;
+            }
+
+            if (!ok && show)
+            { 
                 tabSettings.SelectedTab = tabFields;
                 MessageBox.Show($"One or more fields are undefined or do not exist in JRiver.\nPlease fix or disable the red fields.",
                     "Invalid fields", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+
             return ok;
         }
 
