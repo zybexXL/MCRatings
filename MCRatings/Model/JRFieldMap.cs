@@ -47,6 +47,8 @@ namespace ZRatings
                 case AppField.Series:
                 case AppField.Tagline:
                 case AppField.Keywords:
+                case AppField.Photography:
+                case AppField.Composer:
                 case AppField.Producer:
                 case AppField.Budget:
                 case AppField.Trailer:

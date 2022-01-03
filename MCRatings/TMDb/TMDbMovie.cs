@@ -98,6 +98,8 @@ namespace ZRatings
                 case AppField.Series: return Regex.Replace(belongs_to_collection?.name ?? "", @"\s*(collection)\s*$", "", RegexOptions.IgnoreCase);
                 case AppField.Production: return production_companies == null ? null : fixList(production_companies.Select(c => c.name), listItems);
                 case AppField.Director: return credits?.crew == null ? null : fixList(getCrewNames(listItems, "director"));
+                case AppField.Photography: return credits?.crew == null ? null : fixList(getCrewNames(listItems, "director of photography", contains: true));
+                case AppField.Composer: return credits?.crew == null ? null : fixList(getCrewNames(listItems, "original music composer"));
                 case AppField.Writers: return credits?.crew == null ? null : fixList(getCrewNames(listItems, "writing", true));
                 case AppField.Producer: return credits?.crew == null ? null : fixList(getCrewNames(listItems, "producer"));
                 case AppField.Actors: return fixList(getCastNames(listItems, Program.settings.AddActorRoles));
@@ -156,13 +158,19 @@ namespace ZRatings
                 .ToList();
         }
 
-        private List<string> getCrewNames(int max, string job, bool byDepartment = false)
+        private List<string> getCrewNames(int max, string job, bool byDepartment = false, bool contains = false)
         {
             string filter = job.ToLower();
-            return credits?.crew?
-                .Where(c => byDepartment ? c.department?.ToLower() == filter : c.job?.ToLower() == filter)
-                .Take(max)
-                .Select(c => Util.SanitizeFilename(c.name)).ToList();  
+            if (contains)
+                return credits?.crew?
+                    .Where(c => byDepartment ? c.department != null && c.department.ToLower().Contains(filter) : c.job != null && c.job.ToLower().Contains(filter))
+                    .Take(max)
+                    .Select(c => Util.SanitizeFilename(c.name)).ToList();  
+            else
+                return credits?.crew?
+                    .Where(c => byDepartment ? c.department?.ToLower() == filter : c.job?.ToLower() == filter)
+                    .Take(max)
+                    .Select(c => Util.SanitizeFilename(c.name)).ToList();
         }
 
         private List<string> getRoles(int max)

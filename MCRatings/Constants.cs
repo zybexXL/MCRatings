@@ -20,7 +20,7 @@ namespace ZRatings
         Title, Year, Imported, Playlists, Release, Poster, IMDbID, TMDbID,
         IMDbRating, IMDbVotes, TMDbScore, RottenTomatoes, Metascore, MPAARating,
         Runtime, OriginalTitle, Series, Collections, Tagline, Description, ShortPlot, Genre, Keywords,
-        Production, Producer, Director, Writers, Actors, Roles, OriginalLanguage, Language, Country, Budget, Revenue,
+        Production, Producer, Director, Composer, Photography, Writers, Actors, Roles, OriginalLanguage, Language, Country, Budget, Revenue,
         Awards, Trailer, Website, File
     }
 
@@ -73,7 +73,8 @@ namespace ZRatings
 
         // fields which are semicolon-separated lists
         public static List<AppField> listFields = new List<AppField>() {
-            AppField.Actors, AppField.Roles, AppField.Collections, AppField.Country, AppField.Director, AppField.Genre,
+            AppField.Actors, AppField.Roles, AppField.Collections, AppField.Country, AppField.Director,
+            AppField.Composer, AppField.Photography, AppField.Genre,
             AppField.Keywords, AppField.Language, AppField.Producer, AppField.Production, AppField.Writers };
 
         // datagrid column names
@@ -106,6 +107,8 @@ namespace ZRatings
             { AppField.Collections, new FieldInfo("Collections", "Collections", true, 100, 0) },
             { AppField.Producer, new FieldInfo("Producer", "Producer", true, 100, 0) },
             { AppField.Director, new FieldInfo("Director", "Director", true, 100, 0) },
+            { AppField.Composer, new FieldInfo("Composer", "Composer", true, 100, 0) },
+            { AppField.Photography, new FieldInfo("Cinematography", "Cinematographer", true, 100, 0) },
             { AppField.Actors, new FieldInfo("Actors", "Actors", true, 100, 0) },
             { AppField.Roles, new FieldInfo("Roles", "Actor Roles", true, 100, 0) },
             { AppField.Tagline, new FieldInfo("Tagline", "Tag Line", true, 200, 0) },
