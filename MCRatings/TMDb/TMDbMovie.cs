@@ -197,6 +197,7 @@ namespace ZRatings
             if (!mainOnly) crew = crew.Concat(credits.crew.Where(c => c.job?.ToLower() == "executive producer").Take(max));
             crew = crew.Concat(credits.crew.Where(c => c.department?.ToLower() == "writing").Take(max));
             if (!mainOnly) crew = crew.Concat(credits.crew.Where(c => c.job?.ToLower() == "original music composer").Take(max));
+            if (!mainOnly) crew = crew.Concat(credits.crew.Where(c => c.job != null && c.job.ToLower().Contains("director of photography")).Take(max));
 
             if (withPicOnly) crew = crew.Where(c => !string.IsNullOrEmpty(c.profile_path) && c.profile_path != "/");
             return crew.ToList();
