@@ -107,7 +107,7 @@ namespace ZRatings
             { AppField.Collections, new FieldInfo("Collections", "Collections", true, 100, 0) },
             { AppField.Producer, new FieldInfo("Producer", "Producer", true, 100, 0) },
             { AppField.Director, new FieldInfo("Director", "Director", true, 100, 0) },
-            { AppField.Composer, new FieldInfo("Composer", "Composer", true, 100, 0) },
+            { AppField.Composer, new FieldInfo("Music By", "Music By", true, 100, 0) },
             { AppField.Photography, new FieldInfo("Cinematography", "Cinematographer", true, 100, 0) },
             { AppField.Actors, new FieldInfo("Actors", "Actors", true, 100, 0) },
             { AppField.Roles, new FieldInfo("Roles", "Actor Roles", true, 100, 0) },

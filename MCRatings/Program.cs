@@ -12,7 +12,7 @@ namespace ZRatings
 {
     static class Program
     {
-        public static Version version = new Version(3, 4, 4);    // major, minor, revision
+        public static Version version = new Version(3, 4, 5);    // major, minor, revision
         public static string tagline = "\"Never underestimate a nobody.\" - Nobody (2021)";        // changes on every major or minor release
         public static Settings settings;
 

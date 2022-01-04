@@ -170,19 +170,31 @@ namespace ZRatings
                         settings.CellColors[i] = currColors[i];
                 }
 
+                bool save = false;
+
+                // change field "Composer" to "Music By" (v3.4.4 bug workaround)
+                var jrComposer = settings.Fields.Where(f => f.JRfield?.ToLower() == "composer").SingleOrDefault();
+                if (jrComposer != null && settings.appVersion.CompareTo("3.4.5") < 0)
+                {
+                    jrComposer.JRfield = "Music By";
+                    save = true;
+                }
                 // upgrade settings
                 if (settings.valid && settings.version < CURRVERSION)
                 {
                     settings.version = CURRVERSION;
-                    settings.Save();
+                    save = true;
                 }
 
                 // generate random clientID
                 if (!Guid.TryParse(settings.AnalyticsID, out Guid guid))
                 {
                     settings.AnalyticsID = Guid.NewGuid().ToString();
-                    settings.Save();
+                    save = true;
                 }
+
+                if (save)
+                    settings.Save();
 
                 return settings;
             }
