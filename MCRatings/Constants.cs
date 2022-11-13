@@ -91,7 +91,7 @@ namespace ZRatings
             { AppField.Release, new FieldInfo("Release", "Date (release)", true, 75, 1) },
             { AppField.Imported, new FieldInfo("Imported", "Date Imported", false, 120, 1) },
             { AppField.IMDbID, new FieldInfo("IMDbID", "IMDb ID", false, 75, 1) },
-            { AppField.TMDbID, new FieldInfo("TMDbID", "TMDb ID", true, 60, 1) },
+            { AppField.TMDbID, new FieldInfo("TMDbID", "TMDb ID", false, 60, 1) },
             { AppField.Poster, new FieldInfo("Poster", "Image File", true, 75, 1) },
             { AppField.IMDbRating, new FieldInfo("IMDb", "IMDb Rating", true, 50, 1) },
             { AppField.IMDbVotes, new FieldInfo("Votes", "IMDb Votes", true, 75, 2) },

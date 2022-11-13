@@ -82,6 +82,8 @@ namespace ZRatings
 
         public TMDbMovie getByTitle(string title, string year)
         {
+            if (string.IsNullOrEmpty(title)) return null;
+
             Interlocked.Increment(ref Stats.Session.TMDbSearch);
             if (!hasKeys || lastResponse == (int)HttpStatusCode.Unauthorized) return null;
             try
@@ -109,6 +111,8 @@ namespace ZRatings
 
         public TMDbMovie getByIMDB(string imdb, bool noCache = false)
         {
+            if (string.IsNullOrEmpty(imdb)) return null;
+
             Interlocked.Increment(ref Stats.Session.TMDbGet);
             string language = Program.settings.Language?.ToLower();
             if (string.IsNullOrWhiteSpace(language)) language = "en";
@@ -143,12 +147,39 @@ namespace ZRatings
             return null;
         }
 
-        public TMDbMovie getByID(int id, string language = "en", string imdb = null)
+        public TMDbMovie getByID(string id, string imdb, bool noCache = false)
+        {
+            if (!int.TryParse(id, out int tmdbId)) return null;
+
+            Interlocked.Increment(ref Stats.Session.TMDbGet);
+            string language = Program.settings.Language?.ToLower();
+            if (string.IsNullOrWhiteSpace(language)) language = "en";
+
+            string cached = noCache ? null : string.IsNullOrEmpty(imdb) ? null : Cache.Get($"tmdb.{language}.{imdb}");
+            if (cached != null)
+            {
+                var movie = TMDbMovie.Parse(cached);
+                movie.cached = true;
+                if (movie.images != null && movie.images.id == movie.id)    // ignore old cached items which don't have full image lists
+                    return movie;
+            }
+
+            if (!hasKeys || lastResponse == (int)HttpStatusCode.Unauthorized) return null;
+            try
+            {
+                // get movie Info
+                return getByID(tmdbId, language, null);
+            }
+            catch { Interlocked.Increment(ref Stats.Session.AppException); }
+            return null;
+        }
+
+        private TMDbMovie getByID(int id, string language = "en", string imdb = null)
         {
             // get movie Info
             var result = HttpGetRequest($"/3/movie/{id}?language={language}&append_to_response=credits,videos,keywords,alternative_titles,release_dates");//,images&include_image_language={language},en,null");
             var Movie = TMDbMovie.Parse(result);
-            if (Movie != null && Movie.status_code <= 1 && !string.IsNullOrEmpty(Movie.imdb_id) && (imdb == null || imdb.ToLower() == Movie.imdb_id.ToLower()))
+            if (Movie != null && Movie.status_code <= 1)
             {
                 // get posters
                 result = HttpGetRequest($"/3/movie/{id}/images?");
@@ -156,7 +187,9 @@ namespace ZRatings
                 if (images != null && images.id == id)
                     Movie.images = images;
 
-                Cache.Put($"tmdb.{language}.{Movie.imdb_id}", Util.JsonSerialize(Movie));
+                if (!string.IsNullOrEmpty(Movie.imdb_id) && (imdb == null || imdb.ToLower() == Movie.imdb_id.ToLower()))
+                    Cache.Put($"tmdb.{language}.{Movie.imdb_id}", Util.JsonSerialize(Movie));
+
                 return Movie;
             }
             Interlocked.Increment(ref Stats.Session.TMDbAPINotFound);

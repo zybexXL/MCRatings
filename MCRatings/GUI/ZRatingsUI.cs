@@ -294,20 +294,22 @@ namespace ZRatings
 
         #region UI status labels
 
-        void ApplyColors()
+        void ApplyColors(bool refresh = true)
         {
             gridMovies.DefaultCellStyle.BackColor = getColor(CellColor.Default);
             gridMovies.DefaultCellStyle.SelectionBackColor = getColor(CellColor.ActiveRow);
             if (gridMovies.Columns.Count > 0)
             {
                 gridMovies.Columns[(int)AppField.IMDbID].DefaultCellStyle.BackColor = getColor(CellColor.ColumnEdit);
+                gridMovies.Columns[(int)AppField.TMDbID].DefaultCellStyle.BackColor = getColor(CellColor.ColumnEdit);
                 gridMovies.Columns[(int)AppField.FTitle].DefaultCellStyle.BackColor = getColor(CellColor.ColumnEdit);
                 gridMovies.Columns[(int)AppField.FYear].DefaultCellStyle.BackColor = getColor(CellColor.ColumnEdit);
                 gridMovies.Columns[(int)AppField.Imported].DefaultCellStyle.BackColor = getColor(CellColor.ColumnEdit);
                 gridMovies.Columns[(int)AppField.Playlists].DefaultCellStyle.BackColor = getColor(CellColor.ColumnEdit);
-
+                gridMovies.Columns[(int)AppField.Status].DefaultCellStyle.BackColor = Color.Gainsboro;
             }
-            gridMovies.Refresh();
+            if (refresh)
+                gridMovies.Refresh();
 
             // other cell colors are applied by onPaint events
         }
@@ -672,21 +674,16 @@ namespace ZRatings
             gridMovies.Columns[(int)AppField.Movie].Visible = false;
             gridMovies.Columns[(int)AppField.Filter].Visible = false;
             gridMovies.Columns[(int)AppField.Collections].Visible = Program.settings.Collections;
-            
-            // column colors
-            gridMovies.Columns[(int)AppField.IMDbID].DefaultCellStyle.BackColor = getColor(CellColor.ColumnEdit);
-            gridMovies.Columns[(int)AppField.FTitle].DefaultCellStyle.BackColor = getColor(CellColor.ColumnEdit);
-            gridMovies.Columns[(int)AppField.FYear].DefaultCellStyle.BackColor = getColor(CellColor.ColumnEdit);
-            gridMovies.Columns[(int)AppField.Imported].DefaultCellStyle.BackColor = getColor(CellColor.ColumnEdit);
-            gridMovies.Columns[(int)AppField.Playlists].DefaultCellStyle.BackColor = getColor(CellColor.ColumnEdit);
-            gridMovies.Columns[(int)AppField.Status].DefaultCellStyle.BackColor = Color.Gainsboro;
-
             gridMovies.Columns[(int)AppField.Playlists].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+
+            // column colors
+            ApplyColors(false);
 
             // adjust column order
             gridMovies.Columns[(int)AppField.Title].DisplayIndex = 4;
             gridMovies.Columns[(int)AppField.Year].DisplayIndex = 5;
             gridMovies.Columns[(int)AppField.IMDbID].DisplayIndex = 6;
+            gridMovies.Columns[(int)AppField.TMDbID].DisplayIndex = 7;
             gridMovies.Columns[(int)AppField.IMDbID].Frozen = true;
 
             if (gridMovies.Rows.Count > 0)
@@ -813,41 +810,47 @@ namespace ZRatings
                         Thread.Sleep(250);
 
                     var movie = movies[x];
-                    bool FindByName = string.IsNullOrEmpty(movie[AppField.IMDbID]);
                     string title = progress.useAltTitle ? movie.Title : movie.FTitle;
                     string year = progress.useAltTitle ? movie.Year : movie.FYear;
                     progress.currentItem = Interlocked.Increment(ref i);
                     progress.subtitle = title;
                     progress.Update(false);
 
-                    string omdb = null;
-                    string tmdb = null;
                     OMDbMovie omdbInfo = null;
                     TMDbMovie tmdbInfo = null;
-                    string imdb = FindByName ? null : movie[AppField.IMDbID];
+                    string imdb = movie[AppField.IMDbID];
+                    string tmdb = movie[AppField.TMDbID];
                     bool doOMDb = !Program.settings.OMDbDisabled;
                     bool doTMDb = !Program.settings.TMDbDisabled;
                     bool omdbBrief = Program.settings.FieldMap[AppField.ShortPlot].enabled;
+                    bool hasImdb = !string.IsNullOrEmpty(imdb);
+                    bool hasTmdb = !string.IsNullOrEmpty(tmdb);
 
-                    if (FindByName)
+                    // get info by IMDB ID
+                    if (hasImdb)
+                    {
+                        if (doOMDb)
+                            omdbInfo = omdbAPI?.getByIMDB(imdb, !omdbBrief, progress.noCache);
+
+                        if (doTMDb)
+                            tmdbInfo = tmdbAPI?.getByIMDB(imdb, noCache: progress.noCache);
+                    }
+
+                    // get info by TMDb ID
+                    if (doTMDb && tmdbInfo == null && hasTmdb)
+                        tmdbInfo = tmdbAPI?.getByID(tmdb, imdb, noCache: progress.noCache);
+
+                    // get info by Title
+                    if (!hasImdb && !hasTmdb)
                     {
                         Sources preference = Program.settings.FieldMap[AppField.IMDbID].source;
-                        if (doTMDb && preference == Sources.TMDb)
-                            tmdbInfo = tmdbAPI?.getByTitle(title, year);
-                        if (doOMDb && (preference == Sources.OMDb || tmdb == null))
+                        if (doOMDb && preference == Sources.OMDb)
                             omdbInfo = omdbAPI?.getByTitle(title, year, !omdbBrief);
-                        // get TMDB if preference was OMDB but it returned null
-                        if (doTMDb && preference == Sources.OMDb && omdb == null && tmdb == null)
+                        if (doTMDb && omdbInfo == null)
                             tmdbInfo = tmdbAPI?.getByTitle(title, year);
 
                         imdb = omdbInfo?.imdbID ?? tmdbInfo?.imdb_id;
                     }
-
-                    if (doOMDb && imdb != null && omdb == null)
-                        omdbInfo = omdbAPI?.getByIMDB(imdb, !omdbBrief, progress.noCache);
-
-                    if (doTMDb && imdb != null && tmdb == null)
-                        tmdbInfo = tmdbAPI?.getByIMDB(imdb, noCache: progress.noCache);
 
                     movie.omdbInfo = omdbInfo;
                     movie.tmdbInfo = tmdbInfo;
@@ -1742,6 +1745,7 @@ namespace ZRatings
             if (e.RowIndex < 0) return;
 
             if ((e.ColumnIndex == (int)AppField.IMDbID ||
+                e.ColumnIndex == (int)AppField.TMDbID ||
                 e.ColumnIndex == (int)AppField.FTitle ||
                 e.ColumnIndex == (int)AppField.Imported ||
                 e.ColumnIndex == (int)AppField.FYear))
