@@ -846,8 +846,15 @@ namespace ZRatings
                         Sources preference = Program.settings.FieldMap[AppField.IMDbID].source;
                         if (doOMDb && preference == Sources.OMDb)
                             omdbInfo = omdbAPI?.getByTitle(title, year, !omdbBrief);
-                        if (doTMDb && omdbInfo == null)
-                            tmdbInfo = tmdbAPI?.getByTitle(title, year);
+                        if (doTMDb && tmdbInfo == null)
+                        {
+                            // try getting TMDB info using IMDB Id if it's now available
+                            if (omdbInfo?.imdbID != null)
+                                tmdbInfo = tmdbAPI?.getByIMDB(omdbInfo?.imdbID, noCache: progress.noCache);
+                            // otherwise, search by name+year
+                            if (tmdbInfo == null)
+                                tmdbInfo = tmdbAPI?.getByTitle(title, year);
+                        }
 
                         imdb = omdbInfo?.imdbID ?? tmdbInfo?.imdb_id;
                     }
