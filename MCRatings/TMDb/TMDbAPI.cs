@@ -159,9 +159,12 @@ namespace ZRatings
             if (cached != null)
             {
                 var movie = TMDbMovie.Parse(cached);
-                movie.cached = true;
-                if (movie.images != null && movie.images.id == movie.id)    // ignore old cached items which don't have full image lists
-                    return movie;
+                if (movie != null && movie.imdb_id?.ToLower() == imdb?.ToLower())
+                {
+                    movie.cached = true;
+                    if (movie.images != null && movie.images.id == movie.id)    // ignore old cached items which don't have full image lists
+                        return movie;
+                }
             }
 
             if (!hasKeys || lastResponse == (int)HttpStatusCode.Unauthorized) return null;

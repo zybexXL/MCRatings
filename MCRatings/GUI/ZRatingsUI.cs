@@ -823,11 +823,9 @@ namespace ZRatings
                     bool doOMDb = !Program.settings.OMDbDisabled;
                     bool doTMDb = !Program.settings.TMDbDisabled;
                     bool omdbBrief = Program.settings.FieldMap[AppField.ShortPlot].enabled;
-                    bool hasImdb = !string.IsNullOrEmpty(imdb);
-                    bool hasTmdb = !string.IsNullOrEmpty(tmdb);
 
                     // get info by IMDB ID
-                    if (hasImdb)
+                    if (!string.IsNullOrEmpty(imdb))
                     {
                         if (doOMDb)
                             omdbInfo = omdbAPI?.getByIMDB(imdb, !omdbBrief, progress.noCache);
@@ -837,26 +835,33 @@ namespace ZRatings
                     }
 
                     // get info by TMDb ID
-                    if (doTMDb && tmdbInfo == null && hasTmdb)
+                    if (doTMDb && tmdbInfo == null && !string.IsNullOrEmpty(tmdb))
+                    { 
                         tmdbInfo = tmdbAPI?.getByID(tmdb, imdb, noCache: progress.noCache);
 
+                        if (string.IsNullOrEmpty(imdb))
+                            imdb = tmdbInfo?.imdb_id;
+
+                        if (doOMDb && omdbInfo == null && !string.IsNullOrEmpty(imdb))
+                            omdbInfo = omdbAPI?.getByIMDB(imdb, !omdbBrief, progress.noCache);
+                    }
+
                     // get info by Title
-                    if (!hasImdb && !hasTmdb)
+                    if (string.IsNullOrEmpty(imdb) && tmdbInfo == null && omdbInfo == null)
                     {
                         Sources preference = Program.settings.FieldMap[AppField.IMDbID].source;
-                        if (doOMDb && preference == Sources.OMDb)
+                        if (doTMDb && preference == Sources.TMDb)
+                            tmdbInfo = tmdbAPI?.getByTitle(title, year);
+                        else if (doOMDb)
                             omdbInfo = omdbAPI?.getByTitle(title, year, !omdbBrief);
-                        if (doTMDb && tmdbInfo == null)
-                        {
-                            // try getting TMDB info using IMDB Id if it's now available
-                            if (omdbInfo?.imdbID != null)
-                                tmdbInfo = tmdbAPI?.getByIMDB(omdbInfo?.imdbID, noCache: progress.noCache);
-                            // otherwise, search by name+year
-                            if (tmdbInfo == null)
-                                tmdbInfo = tmdbAPI?.getByTitle(title, year);
-                        }
 
                         imdb = omdbInfo?.imdbID ?? tmdbInfo?.imdb_id;
+
+                        if (doTMDb && tmdbInfo == null && !string.IsNullOrEmpty(imdb))
+                            tmdbInfo = tmdbAPI?.getByIMDB(imdb, noCache: progress.noCache);
+
+                        if (doOMDb && omdbInfo == null && !string.IsNullOrEmpty(imdb))
+                            omdbInfo = omdbAPI?.getByIMDB(imdb, !omdbBrief, progress.noCache);
                     }
 
                     movie.omdbInfo = omdbInfo;
