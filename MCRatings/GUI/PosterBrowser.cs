@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -31,7 +29,6 @@ namespace ZRatings
         internal MovieInfo currMovie;
         internal bool selectAndLock = false;
 
-        List<Tuple<string, int>> languages = new List<Tuple<string, int>>();
         bool loading = true;
         bool inEvent = false;
         bool closing = false;
@@ -54,6 +51,9 @@ namespace ZRatings
             Icon = Icon.FromHandle(Properties.Resources.logo.GetHicon());
             toolStrip1.Renderer = new ToolStripBorderFix();
 
+            if (Program.settings.PosterBrowserFilterLanguage)
+                currLanguage = iso639.GetName(Program.settings.Language) ?? "No Language";
+
             comboLanguage.ComboBox.DrawMode = DrawMode.OwnerDrawFixed;
             comboLanguage.ComboBox.DrawItem += drawCombobox;
             Width = Screen.FromControl(this).Bounds.Width - 200;
@@ -68,7 +68,6 @@ namespace ZRatings
         }
 
         // capture mouse back/forward keys
-        [System.Security.Permissions.PermissionSet(System.Security.Permissions.SecurityAction.Demand, Name = "FullTrust")]
         protected override void WndProc(ref Message m)
         {
             if (this.IsHandleCreated && this.Visible && m.Msg == WM_APPCOMMAND)
@@ -295,20 +294,21 @@ namespace ZRatings
         // handle click on a poster/link
         private void browser_Navigating(object sender, WebBrowserNavigatingEventArgs e)
         {
-            if (loading || e.Url.AbsolutePath == "blank") return;
+            Match m = Regex.Match(e.Url.ToString(), @"[:/](\w+)(?:\?p=(\d+))?");
+            string verb = m.Groups[1].Value;
 
-            int id = -1;
+            if (loading || !m.Success || verb == "blank") return;
+
             e.Cancel = true;
             TMDbMovieImage poster = null;
-            Match m = Regex.Match(e.Url.Query, @"\?p=(\d+)");
-            if (m.Success)
-            {
-                id = int.Parse(m.Groups[1].Value);
+            if (m.Success && int.TryParse(m.Groups[2].Value, out int id))
                 poster = posters.SingleOrDefault(p => p.index == id);
-            }
-            switch (e.Url.AbsolutePath)
+            else
+                id = -1;
+
+            switch (verb)
             {
-                case "/":
+                case "":
                     LoadHome(); break;
                 case "open":
                     LoadPoster(poster);
@@ -330,7 +330,7 @@ namespace ZRatings
         {
             if (poster == null) return;
             string url = TMDbAPI.GetImageUrl(poster.file_path, PosterSize.Original, out string cachedOriginal);
-            OpenBrowser(url);
+            Util.ShellStart(url);
         }
 
         // open poster in external browser
@@ -339,18 +339,8 @@ namespace ZRatings
             if (movieCredits != null && id >= 0 && movieCredits.Count >= id)
             {
                 string url = TMDbAPI.GetImageUrl(movieCredits[id], PosterSize.Original, out string cached);
-                OpenBrowser(url);
+                Util.ShellStart(url);
             }
-        }
-
-        private void OpenBrowser(string url)
-        {
-            if (string.IsNullOrEmpty(url)) return;
-            try
-            {
-                Process.Start(url);
-            }
-            catch { }
         }
 
         // adjust size of thumbnail/poster according to selected scaling mode
@@ -497,7 +487,7 @@ namespace ZRatings
 
             filtered = posters?.ToList();
             if (comboLanguage.SelectedIndex > 0)
-                filtered = posters?.Where(p => (iso639.GetName(p.iso_639_1) ?? "No Language") == comboLanguage.Text).ToList();
+                filtered = posters?.Where(p => { var a = iso639.GetName(p.iso_639_1) ?? "No Language"; return a == comboLanguage.Text || a == "No Language"; }).ToList();
 
             if (SortMode == 0)
                 filtered = filtered?.OrderByDescending(p => p.width * p.height).ThenByDescending(p => p.vote_average).ToList();
@@ -735,7 +725,7 @@ img {{  vertical-align: middle; }}
         private void img1_Click(object sender, EventArgs e)
         {
             if (ModifierKeys.HasFlag(Keys.Shift))
-                OpenBrowser(currMovie.currPosterPath);
+                Util.ShellStart(currMovie.currPosterPath);
             else if (isHiRes)
                 ToggleThumbnail(currThumbnail, false);
             else if (currFullPoster != null)
@@ -748,7 +738,7 @@ img {{  vertical-align: middle; }}
         {
             if (this.InvokeRequired)
             {
-                this.BeginInvoke((MethodInvoker)delegate { ToggleThumbnail(img, isFullPoster); });
+                this.BeginInvoke(delegate { ToggleThumbnail(img, isFullPoster); });
                 return;
             }
 
@@ -828,6 +818,10 @@ img {{  vertical-align: middle; }}
             toolTip1.SetToolTip(btnFitLeft, FitModeLeft == 0 ? "Poster is scaled to fit vertically"
                 : FitModeLeft == 1 ? "Poster is scaled to fit horizontally"
                 : "Showing original sized poster (no scaling)");
+
+            lblPosterCount.Visible = !showCast && posters != null && filtered != null && filtered.Count != posters.Length;
+            if (lblPosterCount.Visible)
+                lblPosterCount.Text = $"Showing {filtered?.Count ?? posters.Length} of {posters.Length} posters";
 
             int curr = filtered == null ? -1 : filtered.IndexOf(currPoster);
             btnPrev.Enabled = currPoster != null && curr > 0;

@@ -270,7 +270,7 @@ namespace ZRatings
 
             // merge embedded and user provided tags, generate regex
             customtags = customtags ?? "";
-            string tags = $"{Constants.FileCleanup} {customtags}".Trim();
+            string tags = $"{Util.FromBase64(Constants.FileCleanup)} {customtags}".Trim();
             tags = Regex.Replace(tags.Trim(), @"\s+", "|").Replace("||", "|").Trim('|');
             tags = $@"((?:\W|^)({tags})(?:\W|$))";
 

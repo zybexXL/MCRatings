@@ -1,19 +1,15 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ZRatings
 {
     static class Program
     {
-        public static Version version = new Version(3, 4, 8);    // major, minor, revision
-        public static string tagline = "\"Never underestimate a nobody.\" - Nobody (2021)";        // changes on every major or minor release
+        public static Version version = Assembly.GetExecutingAssembly().GetName().Version;
+        public static string tagline = "\"It's nothing personal.\" - Terminator 2: Judgement Day (1991)";        // changes on every major or minor release
         public static Settings settings;
 
         /// <summary>

@@ -2,15 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Media;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -43,7 +39,6 @@ namespace ZRatings
         PosterBrowser posterBrowser;
         CollectionImporter collectionImporter;
         Downloader downloader;
-        MovieInfo currentMovie;
         bool inEvent = false;
 
         public ZRatingsUI()
@@ -68,7 +63,7 @@ namespace ZRatings
                 collectionImporter.CollectionLoaded += CollectionImporter_CollectionLoaded;
             }
 
-            this.Text = $"ZRatings v{Program.version} - {Program.tagline}";
+            this.Text = $"ZRatings v{Program.version.ToString(3)} - {Program.tagline}";
             Stats.Init();
         }
 
@@ -138,13 +133,17 @@ namespace ZRatings
         {
             if (btnSave.Enabled)
                 if (DialogResult.Cancel == MessageBox.Show("You have unsaved changes.\nAre you sure you want to exit?", "Discard changes", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning))
+                {
                     e.Cancel = true;
+                    return;
+                }
 
             downloader.Stop();
             posterBrowser?.Exit();
             collectionImporter?.Exit();
             LockedCells.Save();
             Stats.Save();
+            jrAPI?.Dispose();
         }
 
         private void btnAbout_MouseDown(object sender, MouseEventArgs e)
@@ -328,7 +327,7 @@ namespace ZRatings
         {
             if (this.InvokeRequired)
             {
-                BeginInvoke((MethodInvoker)delegate { SetStatus(status, isError); });
+                BeginInvoke(delegate { SetStatus(status, isError); });
                 return;
             }
             lblStatus.Text = status;
@@ -359,7 +358,7 @@ namespace ZRatings
         {
             if (this.InvokeRequired)
             {
-                this.BeginInvoke((MethodInvoker)delegate { UpdateTaskCount(tasks); });
+                this.BeginInvoke(delegate { UpdateTaskCount(tasks); });
                 return;
             }
 
@@ -711,10 +710,15 @@ namespace ZRatings
 
         private void btnGetMovieInfo_Click(object sender, EventArgs e)
         {
+            var selected = GetSelectedMovies(true);
+            getMovieInfoWrapper(selected);
+        }
+
+        private void getMovieInfoWrapper(List<MovieInfo> selected, bool apply = true)
+        {
             bool noCache = ModifierKeys.HasFlag(Keys.Shift);
             bool forceBlanks = ModifierKeys.HasFlag(Keys.Control);
-            var selected = GetSelectedMovies(true); 
-
+            
             if (selected.Count == 0)
             {
                 MessageBox.Show("Please select movies to process", "No rows selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -749,9 +753,10 @@ namespace ZRatings
             bar.progress.useAltTitle = chkUseJRTitle.Checked;
             bar.progress.noCache = noCache;
             bar.progress.blanks = forceBlanks;
+            bar.progress.updateRecords = apply;
 
             bar.ShowDialog();   // ignore result - even if cancelled, the already updated movies are kept
-            
+
             string msg = $"{bar.progress.success} updated";
             if (bar.progress.fail > 0) msg += $", {bar.progress.fail} failed";
             if (bar.progress.skip > 0) msg += $", {bar.progress.skip} skipped";
@@ -763,7 +768,7 @@ namespace ZRatings
             if (Stats.Session.OMDbAPICall - oCalls > 0) Analytics.Event("API", "OMDb API Calls", "OMDbAPICalls", Stats.Session.OMDbAPICall - oCalls);
             if (Stats.Session.TMDbAPICall - tCalls > 0) Analytics.Event("API", "TMDb API Calls", "TMDbAPICalls", Stats.Session.TMDbAPICall - tCalls);
             if (bar.progress.success > 0)
-                Analytics.Timing("API", "GetMovieInfo", "AverageTime", (int)(DateTime.Now - bar.progress.startTime).TotalMilliseconds/bar.progress.success);
+                Analytics.Timing("API", "GetMovieInfo", "AverageTime", (int)(DateTime.Now - bar.progress.startTime).TotalMilliseconds / bar.progress.success);
 
             this.Cursor = Cursors.WaitCursor;
             UpdateDataGrid(bar.progress.startTime);
@@ -771,13 +776,14 @@ namespace ZRatings
             updateSelectedCount();
             this.Cursor = Cursors.Default;
 
-            if (posterBrowser != null && posterBrowser.Visible)
+            if (posterBrowser != null && posterBrowser.Visible && apply)
                 ShowPictureBrowser(posterBrowser.currMovie, false, true);
 
             if (omdbAPI.lastResponse == 401)
                 MessageBox.Show("OMDb keys are invalid or reached the daily limit!", "Unauthorized", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-            gridMovies.Focus();
+            if (apply)
+                gridMovies.Focus();
         }
 
         private string getAudioCues(List<MovieInfo> movies)
@@ -873,19 +879,22 @@ namespace ZRatings
                     {
                         bool ok = false;
                         Interlocked.Increment(ref progress.success);
-                        movie.clearUpdates();
-                        movie.setUpdate(AppField.Imported, movie[AppField.Imported]);
-                        movie.setUpdate(AppField.Playlists, movie[AppField.Playlists]);
+                        if (progress.updateRecords)
+                        {
+                            movie.clearUpdates();
+                            movie.setUpdate(AppField.Imported, movie[AppField.Imported]);
+                            movie.setUpdate(AppField.Playlists, movie[AppField.Playlists]);
 
-                        foreach (AppField f in Enum.GetValues(typeof(AppField)))
-                            if (f >= AppField.Title && f != AppField.Imported && f!= AppField.Playlists && f!= AppField.File)
-                                ok |= overwriteField(movie, f, getPreferredValue(f, omdbInfo, tmdbInfo), progress.canOverwrite, progress.blanks);
+                            foreach (AppField f in Enum.GetValues(typeof(AppField)))
+                                if (f >= AppField.Title && f != AppField.Imported && f != AppField.Playlists && f != AppField.File)
+                                    ok |= overwriteField(movie, f, getPreferredValue(f, omdbInfo, tmdbInfo), progress.canOverwrite, progress.blanks);
 
-                        if (movie.isModified(AppField.Poster))
-                            movie.newPoster = tmdbInfo.bestPoster;
+                            if (movie.isModified(AppField.Poster))
+                                movie.newPoster = tmdbInfo.bestPoster;
 
-                        setMovieStatus(movie, true);
-                        movie.selected = false;
+                            setMovieStatus(movie, true);
+                            movie.selected = false;
+                        }
                     }
                     else
                     {
@@ -1121,7 +1130,7 @@ namespace ZRatings
         {
             if (this.InvokeRequired)
             {
-                this.BeginInvoke((MethodInvoker)delegate () { Search(fromNext); });
+                this.BeginInvoke(delegate () { Search(fromNext); });
                 return;
             }
             if (chkFilter.Checked)
@@ -1713,28 +1722,28 @@ namespace ZRatings
                 {
                     string id = gridMovies.CurrentCell.EditedFormattedValue as string;
                     if (id != null && id.ToLower().StartsWith("tt"))
-                        Process.Start(Constants.https + $"www.imdb.com/title/{id.ToLower()}/");
+                        Util.ShellStart(Constants.https + $"www.imdb.com/title/{id.ToLower()}/");
                 }
                 // handle CTRL+click on TMDB link
                 if (field == AppField.TMDbID && ModifierKeys.HasFlag(Keys.Control))
                 {
                     string id = gridMovies.CurrentCell.EditedFormattedValue as string;
                     if (!string.IsNullOrEmpty(id))
-                        Process.Start(Constants.https + $"www.themoviedb.org/movie/{id}");
+                        Util.ShellStart(Constants.https + $"www.themoviedb.org/movie/{id}");
                 }
                 // handle CTRL+click on Trailer link
                 if ((field == AppField.Trailer || field == AppField.Website) && ModifierKeys.HasFlag(Keys.Control))
                 {
                     string url = gridMovies.CurrentCell.EditedFormattedValue as string;
                     if (url != null && url.ToLower().StartsWith("http"))
-                        Process.Start(url);
+                        Util.ShellStart(url);
                 }
                 // handle CTRL+click on File path
                 else if (field == AppField.File && ModifierKeys.HasFlag(Keys.Control))
                 {
                     string path = gridMovies.CurrentCell.EditedFormattedValue as string;
                     if (!string.IsNullOrEmpty(path))
-                        Process.Start(Path.GetDirectoryName(path));
+                        Util.ShellStart(Path.GetDirectoryName(path));
                 }
             }
             catch { }   // ignore link click errors
@@ -2240,7 +2249,7 @@ namespace ZRatings
         {
             if (this.InvokeRequired)
             {
-                BeginInvoke((MethodInvoker)delegate { ShowPosterToolTip(m, original, lbl1, updated, lbl2, path2, size2, row, col); });
+                BeginInvoke(delegate { ShowPosterToolTip(m, original, lbl1, updated, lbl2, path2, size2, row, col); });
                 return;
             }
 
@@ -2308,6 +2317,9 @@ namespace ZRatings
         private void ShowPictureBrowser(MovieInfo m, bool bringtoFront, bool reload=false)
         {
             if (!Program.settings.PostersEnabled) return;
+
+            if (m.tmdbInfo == null)
+                getMovieInfoWrapper(new List<MovieInfo> { m }, false);
 
             if (posterBrowser == null || posterBrowser.IsDisposed)
                 posterBrowser = new PosterBrowser();
@@ -2458,7 +2470,6 @@ namespace ZRatings
                 MovieInfo m = row.Cells[0].Value as MovieInfo;
                 if (m != null)
                 {
-                    currentMovie = m;
                     if (!Program.settings.PostersEnabled || posterBrowser == null || !posterBrowser.Visible) return;
                     {
                         menuOpenImdb.Enabled = m?.IMDBid != null;
@@ -2469,7 +2480,6 @@ namespace ZRatings
                     }
                 }
             }
-            else currentMovie = null;
         }
 
         private void menuRebuildThumbs_Click(object sender, EventArgs e)
@@ -2608,7 +2618,7 @@ namespace ZRatings
             try
             {
                 if (currmovie != null)
-                    Process.Start(Path.GetDirectoryName(currmovie[AppField.File]));
+                    Util.ShellStart(Path.GetDirectoryName(currmovie[AppField.File]));
             }
             catch { }
         }
@@ -2619,7 +2629,7 @@ namespace ZRatings
             try
             {
                 if (currmovie?.IMDBid != null && currmovie.IMDBid.ToLower().StartsWith("tt"))
-                    Process.Start(Constants.https + $"www.imdb.com/title/{currmovie.IMDBid.ToLower()}");
+                    Util.ShellStart(Constants.https + $"www.imdb.com/title/{currmovie.IMDBid.ToLower()}");
             }
             catch { }
         }
@@ -2631,7 +2641,7 @@ namespace ZRatings
             {
                 string id = currmovie?[AppField.TMDbID];
                 if (!string.IsNullOrEmpty(id))
-                    Process.Start(Constants.https + $"www.themoviedb.org/movie/{id}");
+                    Util.ShellStart(Constants.https + $"www.themoviedb.org/movie/{id}");
             }
             catch { }
         }
@@ -2643,7 +2653,7 @@ namespace ZRatings
             {
                 string url = currmovie?[AppField.Trailer];
                 if (url != null && url.ToLower().StartsWith("http"))
-                    Process.Start(url);
+                    Util.ShellStart(url);
             }
             catch { }
         }

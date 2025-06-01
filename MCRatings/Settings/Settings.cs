@@ -47,6 +47,7 @@ namespace ZRatings
         public bool SavePosterCommonFolder = false;
         public bool SavePosterMovieFolder = true;
         public bool PosterFilterLanguage = true;
+        public bool PosterBrowserFilterLanguage = true;
         public bool PosterSortVotes = false;
         public bool LoadFullSizePoster = true;
         public string PosterFolder;
@@ -112,9 +113,6 @@ namespace ZRatings
                 return _ignoredArticlesRE;
             } }
 
-        [XmlIgnore]
-        public static bool isMigrated { get; private set; } = false;
-
         public Settings()
         {
         }
@@ -179,6 +177,13 @@ namespace ZRatings
                     jrComposer.JRfield = "Music By";
                     save = true;
                 }
+
+                if (!string.IsNullOrEmpty(settings.PosterFolder) && settings.appVersion.CompareTo("3.5.0") < 0)
+                {
+                    settings.PosterFolder += @"\$filename.$Key";
+                    save = true;
+                }
+
                 // upgrade settings
                 if (settings.valid && settings.version < CURRVERSION)
                 {

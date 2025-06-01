@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Eventing.Reader;
 
 namespace ZRatings
 {
@@ -23,6 +24,7 @@ namespace ZRatings
         public bool canCancel = true;
         public bool canOverwrite = false;
         public bool useAltTitle = false;
+        public bool updateRecords = true;
         public AppField field = AppField.Movie;
 
         public Action RefreshHandler;

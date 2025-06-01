@@ -12,8 +12,7 @@ namespace ZRatings
     public static class AutoUpgrade
     {
         const string GitHubReleaseAPI = "/repos/zybexXL/MCRatings/releases/latest";
-        const string GitHubReleaseURL = "github.com/zybexXL/MCRatings/releases";
-
+        
         public static VersionInfo LatestVersion;
         public static DateTime lastCheck;
         public static bool restartNeeded = false;
@@ -36,21 +35,21 @@ namespace ZRatings
                 {
                     if (LatestVersion.version > Program.version)
                     {
-                        if (noQuestions || DialogResult.Yes == MessageBox.Show($"Version {LatestVersion.version} is now available! Do you want to update?",
+                        if (noQuestions || DialogResult.Yes == MessageBox.Show($"Version {LatestVersion.version} is now available! Do you want to upgrade?",
                             "New version available", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
 #if AUTOUPGRADE
                             if (UpgradeNow())
-                                Application.Restart();
+                                return true;
                             else
-                                MessageBox.Show($"Update failed! Please update manually from the release page:\n{LatestVersion.url}",
+                                MessageBox.Show($"Upgrade failed! Please upgrade manually from the release page:\n{LatestVersion.url}",
                                     "Upgrade error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 #else
-                            Process.Start($"{Constants.https}{GitHubReleaseURL}");
+                            Util.ShellStart($"{Constants.https}{GitHubReleaseURL}");
 #endif
-                    }
-                    else
-                        MessageBox.Show("You are currently running the latest version.",
+                        else
+                            MessageBox.Show("You are currently running the latest version.",
                             "No new version", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                     return hasUpgrade;
                 }
             }
@@ -91,26 +90,29 @@ namespace ZRatings
         public static bool UpgradeNow()
         {
             Analytics.Event("GUI", "Upgrading");
-            ProgressUI bar = new ProgressUI($"Updating ZRatings to v{LatestVersion.version}", DoUpgrade, false);
+            ProgressUI bar = new ProgressUI($"Upgrading ZRatings to v{LatestVersion.version}", DoUpgrade, false);
             return (bar.ShowDialog() == DialogResult.OK && bar.progress.result == true);
         }
 
         public static void DoUpgrade(ProgressInfo progress)
         {
+            progress.result = false;
             try
             {
                 string tmpFile = Path.Combine(Path.GetTempPath(), $"ZRatings.{LatestVersion.version}.tmp");
                 if (File.Exists(tmpFile)) File.Delete(tmpFile);
 
-                using (var client = new WebClient())
+                using (var client = new HttpClient())
                 {
                     progress.subtitle = "downloading new version";
                     progress.Update();
-                    client.Headers.Add("User-Agent", "Microsoft .Net HttpClient");
-                    client.DownloadFile(LatestVersion.package, tmpFile);
+                    client.DefaultRequestHeaders.Add("User-Agent", "Microsoft .Net HttpClient");
+                    var response = client.GetAsync(LatestVersion.package).Result;
+                    using (var fs = new FileStream(tmpFile, FileMode.Create))
+                        response.Content.CopyToAsync(fs).Wait();
 
-                    progress.subtitle = "updating";
-                    string currEXE = Assembly.GetEntryAssembly().Location;
+                    progress.subtitle = "upgrading";
+                    string currEXE = Application.ExecutablePath;
                     string bakFile = Path.ChangeExtension(currEXE, ".bak");
                     if (File.Exists(bakFile)) File.Delete(bakFile);
 
@@ -120,18 +122,15 @@ namespace ZRatings
                     progress.result = true;
                     restartNeeded = true;
                     progress.subtitle = "starting new version";
-                    Application.Restart();
-                    return;
                 }
             }
             catch { }
-            progress.result = false;
-        }  
+        }
 
         public static void Cleanup()
         {
             // delete .bak file from previous upgrade
-            string currEXE = Assembly.GetEntryAssembly().Location;
+            string currEXE = Application.ExecutablePath;
             string bakFile = Path.ChangeExtension(currEXE, ".bak");
             if (File.Exists(bakFile)) try { File.Delete(bakFile); } catch { }
         }

@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ZRatings
@@ -217,6 +213,7 @@ namespace ZRatings
                 Program.settings.ListItemsLimit = (int)maxListLimit.Value;
                 Program.settings.Language = string.IsNullOrWhiteSpace(txtLanguage.Text) ? "EN" : txtLanguage.Text;
                 Program.settings.PosterFolder = txtPosterPath.Text.Trim();
+                Program.settings.PosterBrowserFilterLanguage = chkPosterBrowserLanguage.Checked;
                 Program.settings.PosterFilterLanguage = chkPosterFilterLanguage.Checked;
                 Program.settings.PosterSortVotes = chkPosterSortVotes.Checked;
                 Program.settings.SavePosterCommonFolder = chkPosterFolder.Checked;
@@ -269,6 +266,7 @@ namespace ZRatings
             chkPosterFolder.Checked = settings.SavePosterCommonFolder;
             chkPosterMovieFolder.Checked = settings.SavePosterMovieFolder;
             txtPosterPath.Text = settings.PosterFolder;
+            chkPosterBrowserLanguage.Checked = settings.PosterBrowserFilterLanguage;
             chkPosterFilterLanguage.Checked = settings.PosterFilterLanguage;
             chkPosterSortVotes.Checked = settings.PosterSortVotes;
             chkFullSize.Checked = settings.LoadFullSizePoster;
@@ -416,7 +414,7 @@ namespace ZRatings
             {
                 string url = ((Control)sender).Tag as string;
                 if (!string.IsNullOrEmpty(url))
-                    Process.Start(Constants.https + url);
+                    Util.ShellStart(Constants.https + url);
             }
             catch { }
         }

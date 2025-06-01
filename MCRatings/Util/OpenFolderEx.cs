@@ -76,7 +76,7 @@ namespace ZRatings
             }
             return DialogResult.Cancel;
         }
-
+        
         private DialogResult ShowLegacyDialog(IWin32Window owner)
         {
             using (var frm = new SaveFileDialog())
@@ -233,6 +233,7 @@ namespace ZRatings
             uint Compare([In, MarshalAs(UnmanagedType.Interface)] IShellItem psi, [In] uint hint, out int piOrder);
         }
 
+        
         [DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         internal static extern int SHCreateItemFromParsingName([MarshalAs(UnmanagedType.LPWStr)] string pszPath, IntPtr pbc, ref Guid riid, [MarshalAs(UnmanagedType.Interface)] out IShellItem ppv);
 

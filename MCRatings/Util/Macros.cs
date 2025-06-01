@@ -46,6 +46,13 @@ namespace ZRatings
                 path = replace(path, "moviedir", Path.GetDirectoryName(movieFile));
                 path = replace(path, "movie", movieFile);
 
+                path = replace(path, "filename", Path.GetFileNameWithoutExtension(movieFile));
+                path = replace(path, "fileext", Regex.Replace(Path.GetExtension(movieFile), @"^\.(.+)","$1"));
+                path = replace(path, "file", Path.GetFileName(movieFile));
+                path = replace(path, "filedir", Path.GetDirectoryName(movieFile));
+                path = replace(path, "filepath", movieFile);
+
+                path = replace(path, "key", movie.JRKey.ToString());
                 path = replace(path, "rating", movie[AppField.MPAARating]);
                 path = replace(path, "metascore", movie[AppField.Metascore]);
                 path = replace(path, "imdbscore", movie[AppField.IMDbRating]);

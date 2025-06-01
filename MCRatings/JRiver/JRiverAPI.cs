@@ -1,25 +1,19 @@
 ﻿using MediaCenter;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
-using System.Security.Permissions;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace ZRatings
 {
     // talks to JRiver - opens JRiver as a background app if needed (OLE automation)
     // gets list of playlists, list of fields
     // reads and writes Fields from Files (movies)
-    public class JRiverAPI
+    public class JRiverAPI : IDisposable
     {
         static IMJAutomation jr;
         public bool Connected;
@@ -36,7 +30,13 @@ namespace ZRatings
         { }
 
         ~JRiverAPI()
-        { try
+        {
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            try
             {
                 Disconnect();
                 if (lastFile != null && File.Exists(lastFile))
@@ -55,7 +55,7 @@ namespace ZRatings
             {
                 // connect to existing instance
                 Logger.Log("Connect: getting existing JRiver instance");
-                jr = (IMJAutomation)Marshal.GetActiveObject("MediaJukebox Application");
+                jr = (IMJAutomation)COMMarshal.GetActiveObject("MediaJukebox Application");
                 Connected = CheckConnection();
                 if (Connected) return true;
                 else Logger.Log("Connect to existing instance failed!");

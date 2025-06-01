@@ -123,8 +123,8 @@ namespace ZRatings
                             return $"webmedia://{video.site}/{video.key}";
                         switch (video.site.ToLower())
                         {
-                            case "youtube": return $"{Constants.https}www.youtube.com/watch?v={video.key}";
-                            case "vimeo": return $"{Constants.https}vimeo.com/{video.key}";
+                            case "youtube": return $"{Util.FromBase64("PXY/aGN0YXcvbW9jLmVidXR1b3kud3d3Ly86c3B0dGg=", true)}{video.key}";  // https://www.youtube.com/watch?v=
+                            case "vimeo": return $"{Util.FromBase64("L21vYy5vZW1pdi8vOnNwdHRo", true)}{video.key}";                        // https://vimeo.com/
                             default: return $"webmedia://{video.site}/{video.key}";
                         }
                     }

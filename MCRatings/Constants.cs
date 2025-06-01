@@ -132,13 +132,12 @@ namespace ZRatings
         // items used for filename cleanup
         // dots and underscores are removed from filename before this step, so these particules should not include them
         public static string FileCleanup =
-            "proper remastered rerip remux repack" +
-            " unrated extended theatrical uncut directors collectors" +
-            " dubbed subbed cd1 cd2" +
-            " webdl web-dl webrip web-rip dvd dvdscr dvdrip dvd-rip hdtv hdrip hd-rip bdrip brrip br-rip bluray blu-ray" +
-            " xvid divx h264 x264 hevc h265 x265" +
-            " 2160p 1440p 1080p 720p 480p 576p imax" +
-            " dts ac3 ac5 dd5 atmos truehd true-hd hdr mp3 flac";
+            "cHJvcGVyIHJlbWFzdGVyZWQgcmVyaXAgcmVtdXggcmVwYWNrIHVucmF0ZWQgZXh0ZW5kZWQgdGhlYX" +
+            "RyaWNhbCB1bmN1dCBkaXJlY3RvcnMgY29sbGVjdG9ycyBkdWJiZWQgc3ViYmVkIGNkMSBjZDIgd2Vi" +
+            "ZGwgd2ViLWRsIHdlYnJpcCB3ZWItcmlwIGR2ZCBkdmRzY3IgZHZkcmlwIGR2ZC1yaXAgaGR0diBoZH" +
+            "JpcCBoZC1yaXAgYmRyaXAgYnJyaXAgYnItcmlwIGJsdXJheSBibHUtcmF5IHh2aWQgZGl2eCBoMjY0" +
+            "IHgyNjQgaGV2YyBoMjY1IHgyNjUgMjE2MHAgMTQ0MHAgMTA4MHAgNzIwcCA0ODBwIDU3NnAgaW1heC" +
+            "BkdHMgYWMzIGFjNSBkZDUgYXRtb3MgdHJ1ZWhkIHRydWUtaGQgaGRyIG1wMyBmbGFj";
         //" german italian french english japanese chinese spanish portuguese";
 
 #if SOUNDFX

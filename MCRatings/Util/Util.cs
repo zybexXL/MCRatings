@@ -1,18 +1,19 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using Microsoft.Win32;
 
 namespace ZRatings
 {
+    [SupportedOSPlatform("windows")]
+
     public static class Util
     {
         public static string SanitizeFilename(string name, bool fixQuotes = true)
@@ -174,6 +175,29 @@ namespace ZRatings
             using (RegistryKey hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
             using (RegistryKey key = hklm.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion"))
                 return (string)key.GetValue("ProductName", "Windows");
+        }
+
+        public static string FromBase64(string base64, bool reverse = false)
+        {
+            var bytes = Convert.FromBase64String(base64);
+            if (reverse)
+                Array.Reverse(bytes);
+            return Encoding.UTF8.GetString(bytes);
+        }
+
+        public static void ShellStart(string command)
+        {
+            if (string.IsNullOrEmpty(command)) return;
+            try
+            {
+                var ps = new ProcessStartInfo(command)
+                {
+                    UseShellExecute = true,
+                    Verb = "open"
+                };
+                Process.Start(ps);
+            }
+            catch { }
         }
     }
 }
